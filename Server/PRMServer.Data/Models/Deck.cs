@@ -9,7 +9,7 @@ namespace PRMServer.Data.Models
 {
     public record Deck
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [MaxLength(NAME_MAX_LENGTH)]
         public required string Name { get; set; }
@@ -21,13 +21,18 @@ namespace PRMServer.Data.Models
 
         public int Version { get; set; } = 1;
 
-        public int Views { get; set; } = 0;
+        public int ViewsTotal { get; set; } = 0;
+        public int ViewsWeekly { get; set; } = 0;
 
-        public int Downloads { get; set; } = 0;
+        public int DownloadsTotal { get; set; } = 0;
+        public int DownloadsWeekly { get; set; } = 0;
 
-        public required DateTime CreatedAt { get; set; }
+        public required DateOnly CreatedAt { get; set; }
 
-        public ICollection<Card> Cards { get; set; } = null!;
+        public virtual ICollection<Card> Cards { get; set; } = null!;
+
+        public required int CreatorId { get; set; }
+        public virtual User Creator { get; set; } = null!;
 
 
         public const int NAME_MAX_LENGTH = 100;

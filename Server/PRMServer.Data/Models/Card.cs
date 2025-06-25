@@ -4,7 +4,7 @@ namespace PRMServer.Data.Models
 {
     public record Card
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [MaxLength(FRONT_MAX_LENGTH)]
         public required string Front { get; set; }
@@ -14,7 +14,7 @@ namespace PRMServer.Data.Models
 
         public required int Index { get; set; }
 
-        public required Guid DeckId { get; set; }
+        public required int DeckId { get; set; }
         public virtual Deck Deck { get; set; } = null!;
 
 

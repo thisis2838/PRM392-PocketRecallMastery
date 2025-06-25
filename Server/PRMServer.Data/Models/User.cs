@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace PRMServer.Data.Models
 {
-    public class User : IdentityUser<Guid>
+    public class User : IdentityUser<int>
     {
         [MaxLength(LANGUAGE_MAX_LENGTH)]
         public string? Language { get; set; }
@@ -18,7 +18,7 @@ namespace PRMServer.Data.Models
 
         public bool IsNotificationOn { get; set; }
 
-        public ICollection<Deck> Decks { get; set; } = null!;
+        public virtual ICollection<Deck> Decks { get; set; } = null!;
 
 
         public const int LANGUAGE_MAX_LENGTH = 50;
