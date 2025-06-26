@@ -1,4 +1,4 @@
-package com.prm392g2.prmapp;
+package com.prm392g2.prmapp.activities;
 
 import android.os.Bundle;
 
@@ -8,9 +8,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.prm392g2.prmapp.database.PRMDatabase;
-
-import java.util.concurrent.Executors;
+import com.prm392g2.prmapp.R;
 
 public class MainActivity extends AppCompatActivity
 {
