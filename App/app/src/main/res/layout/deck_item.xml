@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:layout_margin="8dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/txtDeckName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Placeholder"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:id="@+id/txtCardCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="card count place holder"
+            app:layout_constraintTop_toBottomOf="@+id/txtDeckName"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="16sp"
+            />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profile_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile_placeholder"
+            app:layout_constraintTop_toBottomOf="@+id/txtCardCount"
+            app:layout_constraintStart_toStartOf="parent"
+            app:shapeAppearanceOverlay="@style/CircleImageShape" />
+
+        <TextView
+            android:id="@+id/txtUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="username placeholder"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/profile_image"
+            app:layout_constraintTop_toBottomOf="@id/txtCardCount" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
