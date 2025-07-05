@@ -41,11 +41,9 @@ public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewH
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Deck deck = decks.get(position);
-        User creator = PRMDatabase.getInstance().userDao().getById(deck.creatorId);
-        List<Card> cards = PRMDatabase.getInstance().cardDao().getByDeckId(deck.id);
+
         holder.deckName.setText(deck.name);
-        holder.cardCount.setText(String.valueOf(cards.size()));
-        holder.username.setText(creator.username);
+
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
