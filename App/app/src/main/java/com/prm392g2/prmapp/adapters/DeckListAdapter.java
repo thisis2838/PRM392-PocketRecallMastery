@@ -1,21 +1,16 @@
 package com.prm392g2.prmapp.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
 import com.prm392g2.prmapp.R;
-import com.prm392g2.prmapp.database.PRMDatabase;
-import com.prm392g2.prmapp.entities.Card;
 import com.prm392g2.prmapp.entities.Deck;
-import com.prm392g2.prmapp.entities.User;
 
 import java.util.List;
 
@@ -34,7 +29,7 @@ public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewH
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.deck_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_deck, parent, false);
         return new ViewHolder(view);
     }
 
@@ -43,7 +38,12 @@ public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewH
         Deck deck = decks.get(position);
 
         holder.deckName.setText(deck.name);
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(deck);
+            }
+        });
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
