@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.prm392g2.prmapp.R;
-import com.prm392g2.prmapp.api.AuthApi;
+import com.prm392g2.prmapp.api.UserApi;
 import com.prm392g2.prmapp.dtos.users.LoginRequest;
 import com.prm392g2.prmapp.dtos.users.LoginResponse;
 import com.prm392g2.prmapp.network.ApiClient;
@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Register link click
         registerLink.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
     }
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         LoginRequest request = new LoginRequest(username, password);
-        AuthApi api = ApiClient.getClient().create(AuthApi.class);
+        UserApi api = ApiClient.getClient().create(UserApi.class);
         Call<LoginResponse> call = api.login(request);
 
         loginButton.setEnabled(false);

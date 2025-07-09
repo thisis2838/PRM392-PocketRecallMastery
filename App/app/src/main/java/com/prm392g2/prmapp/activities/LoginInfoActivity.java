@@ -15,7 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.prm392g2.prmapp.R;
-import com.prm392g2.prmapp.api.AuthApi;
+import com.prm392g2.prmapp.api.UserApi;
 import com.prm392g2.prmapp.dtos.users.UserDto;
 import com.prm392g2.prmapp.network.ApiClient;
 
@@ -56,7 +56,7 @@ public class LoginInfoActivity extends AppCompatActivity {
         }
 
         // Call backend to get user info
-        AuthApi api = ApiClient.getClient().create(AuthApi.class);
+        UserApi api = ApiClient.getClient().create(UserApi.class);
         Call<UserDto> call = api.getCurrentUser("Bearer " + token);
 
         call.enqueue(new Callback<UserDto>() {
