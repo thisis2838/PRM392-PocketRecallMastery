@@ -19,6 +19,8 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.adapters.MainViewPager;
 import com.prm392g2.prmapp.fragments.ProfileFragment;
+import com.prm392g2.prmapp.fragments.HomeFragment;
+import com.prm392g2.prmapp.fragments.DeckListFragment;
 
 public class MainActivity extends AppCompatActivity
 {

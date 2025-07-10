@@ -8,21 +8,16 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainViewPager extends FragmentStateAdapter {
-    private List<Fragment> fragments = new ArrayList<>();
-    private List<String> titles = new ArrayList<>();
-    private List<Integer> icons = new ArrayList<>();
-
-    public MainViewPager(@NonNull FragmentActivity fragmentActivity) {
+public class DeckListViewPagerAdapter  extends FragmentStateAdapter {
+    private final List<Fragment> fragments = new ArrayList<>();
+    private final List<String> titles = new ArrayList<>();
+    public DeckListViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
-
-    public void addFragment(Fragment fragment, String title, int icon) {
+    public void addFragment(Fragment fragment, String title) {
         fragments.add(fragment);
         titles.add(title);
-        icons.add(Integer.valueOf(icon));
     }
-
     @NonNull
     @Override
     public Fragment createFragment(int position) {
@@ -35,8 +30,5 @@ public class MainViewPager extends FragmentStateAdapter {
     }
     public String getPageTitle(int position) {
         return titles.get(position);
-    }
-    public int getIcon(int position) {
-        return icons.get(position);
     }
 }
