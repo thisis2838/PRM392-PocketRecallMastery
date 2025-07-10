@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     private static final String TAG = "LoginActivity";
-    private static final String PREF_NAME = "auth_pref";
+    private static final String PREF_NAME = "user_prefs";
     private static final String KEY_TOKEN = "jwt_token";
 
     @Override

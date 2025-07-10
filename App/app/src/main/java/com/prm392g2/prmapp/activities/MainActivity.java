@@ -12,15 +12,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.prm392g2.prmapp.R;
+import com.prm392g2.prmapp.adapters.MainViewPager;
+import com.prm392g2.prmapp.fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity
 {
 
-    private Button btnLoginLogout, btnLoginInfo;
+    private Button btnLoginLogout, btnProfile;
     private SharedPreferences prefs;
-    private static final String PREF_NAME = "auth_pref";
+    private static final String PREF_NAME = "user_prefs";
     private static final String KEY_TOKEN = "jwt_token";
 
     @Override
@@ -36,36 +41,18 @@ public class MainActivity extends AppCompatActivity
             return insets;
         });
 
-        btnLoginLogout = findViewById(R.id.btnLoginLogout);
-        btnLoginInfo = findViewById(R.id.btnLoginInfo);
-        prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        ViewPager2 viewPager = findViewById(R.id.viewPager);
+        TabLayout tabLayout = findViewById(R.id.bottomNav);
 
-        updateLoginButton();
+        MainViewPager adapter = new MainViewPager(this);
+        adapter.addFragment(new HomeFragment(), "Home", R.drawable.ic_home);
+        adapter.addFragment(new DeckListFragment(), "Decks", R.drawable.ic_decks);
+        adapter.addFragment(new ProfileFragment(), "Profile", R.drawable.ic_profile);
+        viewPager.setAdapter(adapter);
 
-        btnLoginLogout.setOnClickListener(v -> {
-            String token = prefs.getString(KEY_TOKEN, null);
-            if (token == null) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            } else {
-                prefs.edit().remove(KEY_TOKEN).apply();
-                Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
-                updateLoginButton();
-            }
-        });
-
-        btnLoginInfo.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, LoginInfoActivity.class);
-            startActivity(intent);
-        });
-    }
-
-    private void updateLoginButton() {
-        String token = prefs.getString(KEY_TOKEN, null);
-        if (token == null) {
-            btnLoginLogout.setText("Login");
-        } else {
-            btnLoginLogout.setText("Logout");
-        }
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) ->{
+            tab.setText(adapter.getPageTitle(position));
+            tab.setIcon(adapter.getIcon(position));
+        }).attach();
     }
 }

@@ -28,7 +28,7 @@ public class LoginInfoActivity extends AppCompatActivity {
     private TextView loginInfoTextView;
     private EditText tokenEditText;
     private Button btnGoToHome;
-    private static final String PREF_NAME = "auth_pref";
+    private static final String PREF_NAME = "user_prefs";
     private static final String KEY_TOKEN = "jwt_token";
 
     @Override
