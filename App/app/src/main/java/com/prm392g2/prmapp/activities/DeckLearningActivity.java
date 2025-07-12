@@ -1,8 +1,6 @@
 package com.prm392g2.prmapp.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,26 +13,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.prm392g2.prmapp.R;
-import com.prm392g2.prmapp.adapters.CardDetailAdapter;
-import com.prm392g2.prmapp.adapters.CardMainAdapter;
+import com.prm392g2.prmapp.adapters.CardLearningAdapter;
 import com.prm392g2.prmapp.entities.Card;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeckDetailActivity extends AppCompatActivity {
+public class DeckLearningActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_deck_detail);
+        setContentView(R.layout.activity_deck_learning);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        RecyclerView recyclerView = findViewById(R.id.card_list);
+        RecyclerView recyclerView = findViewById(R.id.card_list_learning);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         SnapHelper snapHelper = new LinearSnapHelper();
@@ -47,32 +44,21 @@ public class DeckDetailActivity extends AppCompatActivity {
         cards.add(new Card(4, "Front 4 Front 5 lorem iptsum dolor", "Back 14", 4, 1));
         cards.add(new Card(4, "Front 5 lorem iptsum dolor Front 5 lorem iptsum dolorFront 5 lorem iptsum dolor", "Back 5", 5, 1));
 
-        CardMainAdapter adapter = new CardMainAdapter(cards, new CardMainAdapter.OnItemClickListener() {
+        CardLearningAdapter adapter = new CardLearningAdapter(cards, new CardLearningAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Card card) {
                 // Handle item click
             }
-        });
-        recyclerView.setAdapter(adapter);
 
-        RecyclerView recyclerView2 = findViewById(R.id.cardDetailsList);
-        recyclerView2.setLayoutManager(new LinearLayoutManager(this));
-        CardDetailAdapter adapter2 = new CardDetailAdapter(cards,
-                new CardDetailAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Card card) {
+        },
+            new CardLearningAdapter.OnMarkClickListener() {
+                @Override
+                public void onMarkClick(Card card) {
 
-                    }
                 }
+            }
         );
-        recyclerView2.setAdapter(adapter2);
-
-        Button btnBeginLearning = findViewById(R.id.btnBeginLearning);
-        btnBeginLearning.setOnClickListener(v -> {
-            Intent intent = new Intent(DeckDetailActivity.this, DeckLearningActivity.class);
-//            intent.putExtra()
-            startActivity(intent);
-        });
+        recyclerView.setAdapter(adapter);
 
     }
 }
