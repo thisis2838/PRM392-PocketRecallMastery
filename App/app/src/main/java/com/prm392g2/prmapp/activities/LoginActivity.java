@@ -25,8 +25,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameEditText, passwordEditText;
-    private Button loginButton;
-    private TextView registerLink;
+    private Button loginButton, registerButton;
     private SharedPreferences sharedPreferences;
 
     private static final String TAG = "LoginActivity";
@@ -41,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
-        registerLink = findViewById(R.id.registerLink);
+        registerButton = findViewById(R.id.registerButton);
 
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
@@ -49,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> attemptLogin());
 
         // Register link click
-        registerLink.setOnClickListener(v -> {
+        registerButton.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
