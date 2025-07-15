@@ -22,6 +22,14 @@ namespace PRMServer.Application.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDTO model)
         {
+            if (await _usersService.DoesUserNameExist(model.UserName))
+            {
+                return BadRequest("UserName existed");
+            }
+            if (await _usersService.DoesEmailExist(model.Email))
+            {
+                return BadRequest("Email existed");
+            }
             var result = await _usersService.RegisterAsync(model);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);

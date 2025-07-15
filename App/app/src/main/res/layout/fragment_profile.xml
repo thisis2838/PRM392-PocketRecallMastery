@@ -62,4 +62,16 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"/>
 
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Log In"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etJwt" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

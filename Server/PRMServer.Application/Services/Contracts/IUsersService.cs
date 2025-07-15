@@ -11,5 +11,7 @@ namespace PRMServer.Application.Services.Contracts
         Task LogoutAsync();
         public Task<UserDetailDTO?> GetUser(int userId);
         Task<UserDTO?> GetCurrentUserAsync(ClaimsPrincipal user);
+        public Task<bool> DoesUserNameExist(string userName);
+        public Task<bool> DoesEmailExist(string email);
     }
 }

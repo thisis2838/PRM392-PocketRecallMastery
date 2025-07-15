@@ -35,7 +35,11 @@ namespace PRMServer.Application.Services
             var user = new User
             {
                 UserName = dto.UserName,
-                Email = dto.Email
+                Email = dto.Email,
+                Language = "English",
+                ThemeName = "Light",
+                IsNotificationOn = true,
+
             };
 
             return await _userManager.CreateAsync(user, dto.Password);
@@ -106,6 +110,16 @@ namespace PRMServer.Application.Services
             return _context.Users
                 .ProjectTo<UserDetailDTO>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync(x => x.Id == userId);
+        }
+
+        public async Task<bool> DoesUserNameExist(string userName)
+        {
+            return await _userManager.Users.AnyAsync(u => u.UserName == userName);
+        }
+
+        public async Task<bool> DoesEmailExist(string email)
+        {
+            return await _userManager.Users.AnyAsync(u => u.Email == email);
         }
     }
 }
