@@ -1,4 +1,5 @@
-﻿using PRMServer.Application.DTOs.Decks;
+﻿using Microsoft.AspNetCore.Identity;
+using PRMServer.Application.DTOs.Decks;
 
 namespace PRMServer.Application.Services.Contracts
 {

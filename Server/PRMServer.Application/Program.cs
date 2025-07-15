@@ -1,9 +1,12 @@
 
 using System.Reflection;
+using System.Text;
 using EOS.Application.API.Middlewares;
 using EOS.Application.API.Utilities.Helpers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PRMServer.Data.Context;
 using PRMServer.Data.Models;
 
@@ -31,8 +34,8 @@ namespace PRMServer.Application
                         var adminEmail = config["AdminAccount:Email"];
                         var adminPassword = config["AdminAccount:Password"];
 
-                        if (adminUsername != null && 
-                            adminEmail != null && 
+                        if (adminUsername != null &&
+                            adminEmail != null &&
                             adminPassword != null)
                         {
                             // Replace 'User' with your actual User entity class name
@@ -55,12 +58,49 @@ namespace PRMServer.Application
                             }
                         }
                     });
-                    
+
             });
 
             // services
             builder.AutoAddServices();
             builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
+            builder.Services.AddIdentity<User, IdentityRole<int>>()
+                .AddEntityFrameworkStores<PRMContext>()
+                .AddDefaultTokenProviders();
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.MapInboundClaims = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new Exception("Jwt key not found.")))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+                        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+                        {
+                            context.Token = authHeader.Substring("Bearer ".Length);
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            builder.Services.AddAuthorization();
 
             // sessions
             builder.Services.AddDistributedMemoryCache();
@@ -100,9 +140,10 @@ namespace PRMServer.Application
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
-            app.UseAuthorization();
             app.UseCors(CORS_POLICY_NAME);
+            app.UseAuthentication();
+            app.UseAuthorization();
+            
             app.MapControllers();
 
             app.Run();
