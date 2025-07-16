@@ -74,5 +74,7 @@ public class DeckDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        Button backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(v -> finish());
     }
 }

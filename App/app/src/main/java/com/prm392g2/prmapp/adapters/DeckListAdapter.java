@@ -46,6 +46,12 @@ public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewH
         });
     }
 
+    public void updateData(List<Deck> newDecks) {
+        decks.clear();
+        decks.addAll(newDecks);
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView deckName;
         public TextView cardCount;
