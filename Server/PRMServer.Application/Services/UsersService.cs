@@ -35,11 +35,7 @@ namespace PRMServer.Application.Services
             var user = new User
             {
                 UserName = dto.UserName,
-                Email = dto.Email,
-                Language = "English",
-                ThemeName = "Light",
-                IsNotificationOn = true,
-
+                Email = dto.Email
             };
 
             return await _userManager.CreateAsync(user, dto.Password);
@@ -98,10 +94,7 @@ namespace PRMServer.Application.Services
             {
                 Id = userEntity.Id,
                 Username = userEntity.UserName,
-                Email = userEntity.Email,
-                Language = userEntity.Language,
-                ThemeName = userEntity.ThemeName,
-                IsNotificationOn = userEntity.IsNotificationOn
+                Email = userEntity.Email
             };
         }
 

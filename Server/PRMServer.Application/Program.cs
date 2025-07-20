@@ -5,8 +5,11 @@ using EOS.Application.API.Middlewares;
 using EOS.Application.API.Utilities.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using PRMServer.Application.Services.Contracts;
+using PRMServer.Application.Services;
 using PRMServer.Data.Context;
 using PRMServer.Data.Models;
 
@@ -62,6 +65,8 @@ namespace PRMServer.Application
             });
 
             // services
+            builder.Services.AddMemoryCache();
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.AutoAddServices();
             builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
             builder.Services.AddIdentity<User, IdentityRole<int>>()

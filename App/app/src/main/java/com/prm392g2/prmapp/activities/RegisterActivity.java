@@ -1,5 +1,6 @@
 package com.prm392g2.prmapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,15 +65,23 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             RegisterDto dto = new RegisterDto(username, email, password);
+
             UserApi userApi = ApiClient.getClient().create(UserApi.class);
-            userApi.register(dto).enqueue(new Callback<Void>() {
+            userApi.preRegister(dto).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(RegisterActivity.this, "Registered successfully", Toast.LENGTH_SHORT).show();
-                        finish(); // go back to login screen
+                        Toast.makeText(RegisterActivity.this, "OTP sent. Please verify your email.", Toast.LENGTH_SHORT).show();
+
+                        // Go to OTP activity
+                        Intent intent = new Intent(RegisterActivity.this, VerifyOtpActivity.class);
+                        intent.putExtra("email", email);
+                        intent.putExtra("password", password);
+                        intent.putExtra("username", username);
+                        intent.putExtra("purpose", "register");
+                        startActivity(intent);
                     } else {
-                        String errorMessage = "Registration failed: " + response.code();
+                        String errorMessage = "Failed: " + response.code();
                         try {
                             if (response.errorBody() != null) {
                                 errorMessage = response.errorBody().string();
