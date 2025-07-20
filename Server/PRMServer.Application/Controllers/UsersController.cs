@@ -28,28 +28,6 @@ namespace PRMServer.Application.Controllers
             _cache = cache;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDTO model)
-        {
-            if (string.IsNullOrWhiteSpace(model.UserName) || !Regex.IsMatch(model.UserName, @"^[a-zA-Z0-9]+$"))
-            {
-                return BadRequest("Username must contain only letters and numbers, with no spaces.");
-            }
-            if (await _usersService.DoesUserNameExist(model.UserName))
-            {
-                return BadRequest("Username already exists.");
-            }
-            if (await _usersService.DoesEmailExist(model.Email))
-            {
-                return BadRequest("Email already exists.");
-            }
-            var result = await _usersService.RegisterAsync(model);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            return Ok(new { Message = "Registration successful.", model.Email });
-        }
-
         [HttpPost("pre-register")]
         public async Task<IActionResult> PreRegister(RegisterDTO model)
         {
@@ -143,8 +121,12 @@ namespace PRMServer.Application.Controllers
             if (request.Purpose != "register")
             {
                 var user = await _userManager.FindByEmailAsync(request.Email);
-                if (user == null)
-                    return NotFound("User not found.");
+                if (user != null)
+                {
+                    await _otpService.GenerateAndSendOtp(request.Email, request.Purpose);
+                }
+
+                return Ok("If your email is registered, an OTP has been sent.");
             }
 
             await _otpService.GenerateAndSendOtp(request.Email, request.Purpose);
@@ -175,13 +157,34 @@ namespace PRMServer.Application.Controllers
                     await _userManager.UpdateAsync(user);
                     return Ok("Email confirmed.");
 
-                case "forgot_password":
+                case "reset-password":
                     var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                     return Ok(new { ResetToken = resetToken });
 
                 default:
-                    return BadRequest("Unsupported OTP purpose.");
+                    return BadRequest("Unsupported OTP purpose: " + request.Purpose);
             }
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Email) ||
+                string.IsNullOrWhiteSpace(dto.NewPassword))
+            {
+                return BadRequest("All fields are required.");
+            }
+
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user == null)
+                return NotFound("User not found.");
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok("Password has been reset successfully.");
         }
     }
 }

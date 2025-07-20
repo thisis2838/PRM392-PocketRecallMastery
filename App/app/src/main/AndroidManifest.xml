@@ -17,19 +17,19 @@
         android:theme="@style/Theme.PocketRecallMastery"
         tools:targetApi="31">
         <activity
-            android:name=".activities.TestActivity"
+            android:name=".activities.PasswordResetSuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ForgotPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".activities.VerifyOtpActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SendOtpActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.LoginInfoActivity"
             android:exported="false" />
         <activity
             android:name=".activities.LoginActivity"

@@ -111,10 +111,7 @@ public class ProfileFragment extends Fragment {
 
                     String info = "ID: " + user.id + "\n"
                             + "Username: " + user.username + "\n"
-                            + "Email: " + user.email + "\n"
-                            + "Language: " + user.language + "\n"
-                            + "Theme: " + user.themeName + "\n"
-                            + "Notifications: " + (user.isNotificationOn ? "On" : "Off");
+                            + "Email: " + user.email + "\n";
 
                     tvUserInfo.setText(info);
                 } else {

@@ -10,4 +10,16 @@ public class VerifyOtpRequestDTO {
         this.otp = otp;
         this.purpose = purpose;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public String getPurpose() {
+        return purpose;
+    }
 }

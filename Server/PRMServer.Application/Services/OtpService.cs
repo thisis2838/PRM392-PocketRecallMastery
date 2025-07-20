@@ -8,11 +8,13 @@ namespace PRMServer.Application.Services
     {
         private readonly IMemoryCache _cache;
         private readonly IEmailSender _emailSender;
+        private readonly ILogger<OtpService> _logger;
 
-        public OtpService(IMemoryCache cache, IEmailSender emailSender)
+        public OtpService(IMemoryCache cache, IEmailSender emailSender, ILogger<OtpService> logger)
         {
             _cache = cache;
             _emailSender = emailSender;
+            _logger = logger;
         }
 
         public async Task GenerateAndSendOtp(string email, string purpose)
@@ -25,11 +27,14 @@ namespace PRMServer.Application.Services
 
             _cache.Set(cacheKey, otp, options);
 
+            _logger.LogInformation($"[OTP Generation] Email: {email}, OTP: {otp}, Purpose: {purpose}");
+
             await _emailSender.SendEmailAsync(email, "Your OTP Code", $"Your OTP is: <strong>{otp}</strong>");
         }
 
         public Task<bool> VerifyOtp(string email, string otp, string purpose)
         {
+            _logger.LogInformation($"[OTP Verification] Email: {email}, Provided OTP: {otp}, Purpose: {purpose}");
             var cacheKey = $"otp:{email}:{purpose}";
             if (_cache.TryGetValue(cacheKey, out string? storedOtp) && storedOtp == otp)
             {

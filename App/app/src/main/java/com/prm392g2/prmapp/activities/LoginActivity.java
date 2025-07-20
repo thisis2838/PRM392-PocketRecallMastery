@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,8 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameEditText, passwordEditText;
+    private TextView forgotPasswordTextView;
+    private ImageButton backToMainButton;
     private Button loginButton, registerButton;
     private SharedPreferences sharedPreferences;
 
@@ -39,10 +42,23 @@ public class LoginActivity extends AppCompatActivity {
 
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
+        forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
+        backToMainButton = findViewById(R.id.backToMainButton);
         loginButton = findViewById(R.id.loginButton);
         registerButton = findViewById(R.id.registerButton);
 
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        // Forgot Password text click
+        forgotPasswordTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
+
+        // Back to main button click
+        backToMainButton.setOnClickListener(v -> {
+            finish();
+        });
 
         // Login button click
         loginButton.setOnClickListener(v -> attemptLogin());

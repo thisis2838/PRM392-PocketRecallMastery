@@ -4,15 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.api.UserApi;
-import com.prm392g2.prmapp.dtos.users.CompleteRegistrationRequest;
 import com.prm392g2.prmapp.dtos.users.LoginRequest;
 import com.prm392g2.prmapp.dtos.users.LoginResponse;
 import com.prm392g2.prmapp.dtos.users.RegisterDto;
@@ -25,6 +26,7 @@ import retrofit2.Response;
 
 public class VerifyOtpActivity extends AppCompatActivity {
 
+    TextView infoMessageTextView;
     private EditText otpEditText;
     private Button verifyOtpButton;
     private Button resendOtpButton;
@@ -45,6 +47,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_otp);
 
+        infoMessageTextView = findViewById(R.id.textViewInfoMessage);
         otpEditText = findViewById(R.id.editTextOtp);
         verifyOtpButton = findViewById(R.id.buttonVerifyOtp);
         resendOtpButton = findViewById(R.id.buttonResendOtp);
@@ -58,6 +61,16 @@ public class VerifyOtpActivity extends AppCompatActivity {
         password = intent.getStringExtra("password");
         purpose = intent.getStringExtra("purpose");
 
+        switch (purpose) {
+            case "register":
+                infoMessageTextView.setText("An OTP has been sent to your email, please confirm your email to complete the registration.");
+                break;
+            case "reset-password":
+                infoMessageTextView.setText("If your email is registered, an OTP has been sent.");
+                break;
+            default:
+        }
+
         verifyOtpButton.setOnClickListener(v -> {
             String otp = otpEditText.getText().toString().trim();
             if (otp.isEmpty()) {
@@ -70,7 +83,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
                 case "register":
                     completeRegistration(verifyRequest);
                     break;
-                case "forgot-password":
+                case "reset-password":
                     verifyForgotPassword(verifyRequest);
                     break;
                 default:
@@ -100,7 +113,16 @@ public class VerifyOtpActivity extends AppCompatActivity {
                         }
                     }
 
-                    resendOtpButton.postDelayed(() -> resendOtpButton.setEnabled(true), 1000);
+                    new CountDownTimer(15000, 1000) {
+                        public void onTick(long millisUntilFinished) {
+                            resendOtpButton.setText("Resend OTP (" + millisUntilFinished / 1000 + "s)");
+                        }
+
+                        public void onFinish() {
+                            resendOtpButton.setEnabled(true);
+                            resendOtpButton.setText("Resend OTP");
+                        }
+                    }.start();
                 }
 
                 @Override
@@ -181,8 +203,48 @@ public class VerifyOtpActivity extends AppCompatActivity {
     }
 
     private void verifyForgotPassword(VerifyOtpRequestDTO request) {
-        // Hit the "verify-reset-otp" endpoint,
-        // or navigate to a ResetPasswordActivity after verification
-        // depending on your server design.
+        verifyOtpButton.setEnabled(false);
+
+        UserApi api = ApiClient.getClient().create(UserApi.class);
+        api.verifyOtp(request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                verifyOtpButton.setEnabled(true);
+                if (response.isSuccessful()) {
+                    Toast.makeText(VerifyOtpActivity.this, "OTP verified. You can now reset your password.", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(VerifyOtpActivity.this, ResetPasswordActivity.class);
+                    intent.putExtra("email", request.getEmail());
+                    intent.putExtra("otp", request.getOtp());
+                    startActivity(intent);
+                    finish();
+                } else {
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBody = response.errorBody().string();
+                            Log.e(TAG, "OTP verification failed: " + errorBody);
+
+                            if (errorBody.contains("expired") || errorBody.contains("invalid")) {
+                                Toast.makeText(VerifyOtpActivity.this, "The OTP is invalid or has expired.", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(VerifyOtpActivity.this, "OTP verification failed. Please try again.", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(VerifyOtpActivity.this, "Unknown server error during OTP verification.", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error reading errorBody", e);
+                        Toast.makeText(VerifyOtpActivity.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                verifyOtpButton.setEnabled(true);
+                Log.e(TAG, "Network error during OTP verification", t);
+                Toast.makeText(VerifyOtpActivity.this, "Network error. Please try again.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

@@ -4,7 +4,4 @@ public class UserDto {
     public int id;
     public String username;
     public String email;
-    public String language;
-    public String themeName;
-    public boolean isNotificationOn;
 }

@@ -1,8 +1,8 @@
 package com.prm392g2.prmapp.api;
 
-import com.prm392g2.prmapp.dtos.users.CompleteRegistrationRequest;
 import com.prm392g2.prmapp.dtos.users.LoginRequest;
 import com.prm392g2.prmapp.dtos.users.LoginResponse;
+import com.prm392g2.prmapp.dtos.users.ResetPasswordDTO;
 import com.prm392g2.prmapp.dtos.users.SendOtpRequestDTO;
 import com.prm392g2.prmapp.dtos.users.UserDto;
 import com.prm392g2.prmapp.dtos.users.RegisterDto;
@@ -32,4 +32,7 @@ public interface UserApi {
 
     @POST("api/users/verify-otp")
     Call<Void> verifyOtp(@Body VerifyOtpRequestDTO request);
+
+    @POST("api/users/reset-password")
+    Call<Void> resetPassword(@Body ResetPasswordDTO dto);
 }

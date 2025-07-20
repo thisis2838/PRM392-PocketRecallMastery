@@ -67,9 +67,11 @@ public class RegisterActivity extends AppCompatActivity {
             RegisterDto dto = new RegisterDto(username, email, password);
 
             UserApi userApi = ApiClient.getClient().create(UserApi.class);
+            btnRegister.setEnabled(false);
             userApi.preRegister(dto).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
+                    btnRegister.setEnabled(true);
                     if (response.isSuccessful()) {
                         Toast.makeText(RegisterActivity.this, "OTP sent. Please verify your email.", Toast.LENGTH_SHORT).show();
 
@@ -95,6 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
+                    btnRegister.setEnabled(true);
                     Toast.makeText(RegisterActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
