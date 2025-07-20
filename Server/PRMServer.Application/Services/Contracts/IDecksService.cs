@@ -4,6 +4,7 @@ namespace PRMServer.Application.Services.Contracts
 {
     public interface IDecksService
     {
+        public Task<DeckListDTO> GetUserPublicDecks(int userId, DeckListArgumentsDTO arguments);
         public Task<DeckListDTO> GetUserDecks(int userId, DeckListArgumentsDTO arguments);
         public Task<DeckListDTO> GetPublicDecks(DeckListArgumentsDTO arguments);
         public Task<DeckDetailDTO?> GetDeck(int id);

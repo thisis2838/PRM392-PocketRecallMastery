@@ -34,6 +34,12 @@ namespace PRMServer.Application.Services
             return await GetList(query, arguments);
         }
 
+        public async Task<DeckListDTO> GetUserPublicDecks(int userId, DeckListArgumentsDTO arguments)
+        {
+            var query = _context.Decks.Where(d => d.CreatorId == userId && d.IsPublic);
+            return await GetList(query, arguments);
+        }
+
         public async Task<DeckListDTO> GetUserDecks(int userId, DeckListArgumentsDTO arguments)
         {
             var query = _context.Decks.Where(d => d.CreatorId == userId);

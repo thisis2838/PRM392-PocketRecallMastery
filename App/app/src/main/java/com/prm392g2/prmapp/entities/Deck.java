@@ -31,27 +31,20 @@ public class Deck
     public String description;
     public int creatorId;
     public int version;
-    public int dateYear, dateMonth, dateDay;
+    public GregorianCalendar createdAt;
     public Integer learningId = null;
 
-    public Deck(int id, String name, String description, int creatorId, int version, GregorianCalendar date)
+    public Deck(int id, String name, String description, int creatorId, int version, GregorianCalendar createdAt)
     {
         this.id = id;
         this.name = name;
         this.description = description;
         this.creatorId = creatorId;
         this.version = version;
-        this.dateYear = date.get(Calendar.YEAR);
-        this.dateMonth = date.get(Calendar.MONTH);
-        this.dateDay = date.get(Calendar.DAY_OF_MONTH);
+        this.createdAt = createdAt;
     }
 
     public Deck()
     {
-    }
-
-    public GregorianCalendar getDate()
-    {
-        return new GregorianCalendar(dateYear, dateMonth, dateDay);
     }
 }

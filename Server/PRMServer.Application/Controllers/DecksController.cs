@@ -16,14 +16,21 @@ namespace PRMServer.Application.Controllers
             _decks = decks;
         }
 
-        [HttpGet("user")]
-        public async Task<ActionResult<DeckListDTO>> GetUserDecks([FromQuery] DeckListArgumentsDTO arguments)
+        [HttpGet("own")]
+        public async Task<ActionResult<DeckListDTO>> GetOwnDecks([FromQuery] DeckListArgumentsDTO arguments)
         {
             throw new NotImplementedException();
             /*
             var result = await _decks.GetUserDecks(userId, arguments);
             return Ok(result);
             */
+        }
+
+        [HttpGet("user")]
+        public async Task<ActionResult<DeckListDTO>> GetUserDecks(int userId, [FromQuery] DeckListArgumentsDTO arguments)
+        {
+            var result = await _decks.GetUserDecks(userId, arguments);
+            return Ok(result);
         }
 
         [HttpGet("public")]

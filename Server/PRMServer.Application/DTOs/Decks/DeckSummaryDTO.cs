@@ -13,7 +13,8 @@ namespace PRMServer.Application.DTOs.Decks
         public required int ViewsWeekly { get; set; }
         public required int DownloadsTotal { get; set; }
         public required int DownloadsWeekly { get; set; }
-        public required DateTime CreatedAt { get; set; }
+        public required DateOnly CreatedAt { get; set; }
+        public required DateOnly UpdatedAt { get; set; }
         public required int CardsCount { get; set; }
         public required UserSummaryDTO Creator { get; set; }
     }
