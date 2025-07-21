@@ -3,6 +3,8 @@ package com.prm392g2.prmapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,55 +16,126 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import com.prm392g2.prmapp.PRMApplication;
 import com.prm392g2.prmapp.R;
-import com.prm392g2.prmapp.adapters.CardDetailAdapter;
 import com.prm392g2.prmapp.adapters.CardMainAdapter;
-import com.prm392g2.prmapp.entities.Card;
+import com.prm392g2.prmapp.dtos.decks.DeckDetailDTO;
+import com.prm392g2.prmapp.services.DecksService;
 
-import java.util.ArrayList;
-import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class DeckDetailActivity extends AppCompatActivity {
+public class DeckDetailActivity extends AppCompatActivity
+{
+    private int deckId;
+    private RecyclerView cardRecycler;
+    private CardMainAdapter adapter;
+
+    // UI fields
+    private TextView txtDeckName, txtDeckDescription, txtDeckCreator, txtCardCount, txtDownloadCount, txtViewCount, txtDate, txtVersion;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_deck_detail);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        RecyclerView recyclerView = findViewById(R.id.card_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
-        SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(recyclerView);
-
-        List<Card> cards = new ArrayList<>();
-        cards.add(new Card(1, "Front 1", "Back 1", 1, 1));;
-        cards.add(new Card(2, "Front 2", "Back 2", 2, 1));
-        cards.add(new Card(3, "Front 3", "Back 3", 3, 1));
-        cards.add(new Card(4, "Front 4 Front 5 lorem iptsum dolor", "Back 14", 4, 1));
-        cards.add(new Card(4, "Front 5 lorem iptsum dolor Front 5 lorem iptsum dolorFront 5 lorem iptsum dolor", "Back 5", 5, 1));
-
-        CardMainAdapter adapter = new CardMainAdapter(cards, new CardMainAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Card card) {
-                // Handle item click
+        ViewCompat.setOnApplyWindowInsetsListener(
+            findViewById(R.id.main), (v, insets) ->
+            {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
             }
-        });
-        recyclerView.setAdapter(adapter);
+        );
+
+        deckId = getIntent().getIntExtra("deckId", -1);
+        if (deckId == -1)
+        {
+            finish();
+            return;
+        }
+
+        // Find UI fields
+        cardRecycler = findViewById(R.id.card_list);
+        cardRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(cardRecycler);
+
+        txtDeckName = findViewById(R.id.txtDetailDeckName);
+        txtDeckDescription = findViewById(R.id.txtDetailDeckDescription);
+        txtDeckCreator = findViewById(R.id.txtDetailDeckCreator);
+        txtCardCount = findViewById(R.id.txtDetailCardCount);
+        txtDate = findViewById(R.id.txtDate);
+        txtDownloadCount = findViewById(R.id.txtDownloadCount);
+        txtViewCount = findViewById(R.id.txtViewCount);
+        txtVersion = findViewById(R.id.txtDetailVersion);
+
+        // Set up empty adapter for now
+        cardRecycler.setVisibility(RecyclerView.GONE);
 
         Button btnBeginLearning = findViewById(R.id.btnBeginLearning);
-        btnBeginLearning.setOnClickListener(v -> {
+        btnBeginLearning.setOnClickListener(v ->
+        {
             Intent intent = new Intent(DeckDetailActivity.this, DeckLearningActivity.class);
-//            intent.putExtra()
+            // intent.putExtra() as needed
             startActivity(intent);
         });
 
         Button backButton = findViewById(R.id.btn_back);
         backButton.setOnClickListener(v -> finish());
+
+        // Fetch deck details
+        fetchDeckDetails();
+    }
+
+    private void fetchDeckDetails()
+    {
+        DecksService.getInstance().getDeckById(
+            deckId, new Callback<DeckDetailDTO>()
+            {
+                @Override
+                public void onResponse(Call<DeckDetailDTO> call, Response<DeckDetailDTO> response)
+                {
+                    if (response.isSuccessful() && response.body() != null)
+                    {
+                        DeckDetailDTO deck = response.body();
+                        runOnUiThread(() -> showDeckDetails(deck));
+                    }
+                    else
+                    {
+                        runOnUiThread(() -> Toast.makeText(DeckDetailActivity.this, "Failed to load deck details", Toast.LENGTH_SHORT).show());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DeckDetailDTO> call, Throwable t)
+                {
+                    runOnUiThread(() -> Toast.makeText(DeckDetailActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show());
+                }
+            }
+        );
+    }
+
+    private void showDeckDetails(DeckDetailDTO deck)
+    {
+        txtDeckName.setText(deck.name);
+        txtDeckDescription.setText(deck.description != null ? deck.description : "");
+        txtDeckCreator.setText(deck.creator.username != null ? deck.creator.username : "");
+        txtCardCount.setText(Integer.toString(deck.cardsCount));
+
+        txtDownloadCount.setText(String.format("%d (%d this week)", deck.downloadsTotal, deck.downloadsWeekly));
+        txtViewCount.setText(String.format("%d (%d this week)", deck.viewsTotal, deck.viewsWeekly));
+
+        txtDate.setText(PRMApplication.GLOBAL_DATE_FORMAT.format(deck.getCreatedAt().getTime()));
+        txtVersion.setText("v" + deck.version);
+
+        cardRecycler.setVisibility(RecyclerView.VISIBLE);
+
+        adapter = new CardMainAdapter(deck.cards, card ->
+        {
+        });
+        cardRecycler.setAdapter(adapter);
     }
 }

@@ -3,12 +3,15 @@ package com.prm392g2.prmapp.fragments;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.RadioGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,11 +23,11 @@ import com.google.android.material.button.MaterialButton;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.activities.DeckDetailActivity;
 import com.prm392g2.prmapp.adapters.DeckListAdapter;
-import com.prm392g2.prmapp.api.DeckApi;
 import com.prm392g2.prmapp.dtos.decks.DeckListArgumentsDTO;
 import com.prm392g2.prmapp.dtos.decks.DeckListDTO;
+import com.prm392g2.prmapp.dtos.decks.DeckListMetric;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
-import com.prm392g2.prmapp.network.ApiClient;
+import com.prm392g2.prmapp.services.DecksService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,89 +36,86 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PublicDeckFragment extends Fragment
+public class PublicDecksFragment extends Fragment
 {
     public RecyclerView recyclerView;
     public DeckListAdapter adapter;
     public List<DeckSummaryDTO> decks = new ArrayList<>();
-    /*
-    {
-        decks.add(new Deck(1, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2023, 4, 1)));
-        decks.add(new Deck(2, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2022, 4, 1)));
-        decks.add(new Deck(3, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2021, 4, 1)));
-    }
-     */
+    private DeckListArgumentsDTO arguments = new DeckListArgumentsDTO();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_public_deck, container, false);
+        View view = inflater.inflate(R.layout.fragment_public_decks, container, false);
         recyclerView = view.findViewById(R.id.deck_list);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new DeckListAdapter(
             decks,
-            new DeckListAdapter.OnItemClickListener()
+            deck ->
             {
-                @Override
-                public void onItemClick(DeckSummaryDTO deck)
-                {
-                    Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
-                    intent.putExtra("deckId", deck.id);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
+                intent.putExtra("deckId", deck.id);
+                startActivity(intent);
             }
         );
         recyclerView.setAdapter(adapter);
 
         MaterialButton filterButton = view.findViewById(R.id.filterButton);
-        filterButton.setOnClickListener(new View.OnClickListener()
+        filterButton.setOnClickListener(v -> showFilterDialog());
+
+        EditText searchBox = view.findViewById(R.id.search_bar);
+        searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override
-            public void onClick(View v)
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                showFilterDialog();
+                if (actionId == EditorInfo.IME_ACTION_DONE)
+                {
+                    arguments.search = v.getText().toString();
+                    getDecks(arguments);
+                    return true; // Consume the event
+                }
+
+                return false;
             }
         });
+
+        getDecks(arguments);
         return view;
     }
 
     private void getDecks(DeckListArgumentsDTO arguments)
     {
-        DeckApi api = ApiClient.getInstance().create(DeckApi.class);
-        Call<DeckListDTO> call = api.getPublicDecks(arguments);
-
-        call.enqueue(new Callback<DeckListDTO>()
-        {
-            @Override
-            public void onResponse(Call<DeckListDTO> call, Response<DeckListDTO> response)
+        DecksService.getInstance().getPublicDecks(
+            arguments, new Callback<DeckListDTO>()
             {
-                if (response.isSuccessful() && response.body() != null)
+                @Override
+                public void onResponse(Call<DeckListDTO> call, Response<DeckListDTO> response)
                 {
-                    DeckListDTO deckListDTO = response.body();
-                    decks.clear();
-                    adapter.updateData(deckListDTO.decks);
+                    if (response.isSuccessful() && response.body() != null)
+                    {
+                        DeckListDTO deckListDTO = response.body();
+                        decks.clear();
+                        decks.addAll(deckListDTO.decks);
+                        adapter.updateData(deckListDTO.decks);
+                    }
                 }
-                else
-                {
 
+                @Override
+                public void onFailure(Call<DeckListDTO> call, Throwable t)
+                {
+                    // Handle error
                 }
             }
-
-            @Override
-            public void onFailure(Call<DeckListDTO> call, Throwable t)
-            {
-
-            }
-        });
+        );
     }
 
     private void showFilterDialog()
     {
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_filter, null);
 
-        // Get references to dialog widgets
         RadioGroup radioGroupSortBy = dialogView.findViewById(R.id.radioGroupSortBy);
         RadioGroup radioGroupSortOrder = dialogView.findViewById(R.id.radioGroupSortOrder);
         EditText editTextMinCardCount = dialogView.findViewById(R.id.editTextMinCardCount);
@@ -124,51 +124,40 @@ public class PublicDeckFragment extends Fragment
         Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
         Button buttonReset = dialogView.findViewById(R.id.buttonReset);
 
+        // Set current values
+        if (arguments.minCardCount != null)
+            editTextMinCardCount.setText(String.valueOf(arguments.minCardCount));
+        if (arguments.maxCardCount != null)
+            editTextMaxCardCount.setText(String.valueOf(arguments.maxCardCount));
+        radioGroupSortBy.check(arguments.sortingMetric == DeckListMetric.Name ? R.id.radioButtonSortByName :
+            arguments.sortingMetric == DeckListMetric.View ? R.id.radioButtonSortByView : R.id.radioButtonSortByDownload);
+        radioGroupSortOrder.check(arguments.sortingAscending ? R.id.radioButtonAscending : R.id.radioButtonDescending);
+
         AlertDialog dialog = new AlertDialog.Builder(getContext())
             .setView(dialogView)
             .create();
 
         buttonApply.setOnClickListener(v ->
         {
-            // Get sort by
+            // Sort by
             int sortById = radioGroupSortBy.getCheckedRadioButtonId();
-            boolean sortByName = sortById == R.id.radioButtonSortByName;
+            if (sortById == R.id.radioButtonSortByName)
+                arguments.sortingMetric = DeckListMetric.Name;
+            else if (sortById == R.id.radioButtonSortByView)
+                arguments.sortingMetric = DeckListMetric.View;
+            else if (sortById == R.id.radioButtonSortByDownload)
+                arguments.sortingMetric = DeckListMetric.Download;
 
-            // Get sort order
-            int sortOrderId = radioGroupSortOrder.getCheckedRadioButtonId();
-            boolean ascending = sortOrderId == R.id.radioButtonAscending;
+            // Sort order
+            arguments.sortingAscending = radioGroupSortOrder.getCheckedRadioButtonId() == R.id.radioButtonAscending;
 
-            // Get min/max card count
+            // Min/max card count
             String minStr = editTextMinCardCount.getText().toString();
             String maxStr = editTextMaxCardCount.getText().toString();
-            int min = minStr.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(minStr);
-            int max = maxStr.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(maxStr);
+            arguments.minCardCount = minStr.isEmpty() ? null : Integer.parseInt(minStr);
+            arguments.maxCardCount = maxStr.isEmpty() ? null : Integer.parseInt(maxStr);
 
-            // Filter and sort decks
-            List<DeckSummaryDTO> filtered = new ArrayList<>();
-            for (DeckSummaryDTO deck : decks)
-            {
-                int cardCount = deck.cardsCount; // Replace with your actual card count property if different
-                if (cardCount >= min && cardCount <= max)
-                {
-                    filtered.add(deck);
-                }
-            }
-            // Sort
-            if (sortByName)
-            {
-                filtered.sort((d1, d2) -> ascending ?
-                    d1.name.compareToIgnoreCase(d2.name) :
-                    d2.name.compareToIgnoreCase(d1.name));
-            }
-            else
-            {
-                filtered.sort((d1, d2) -> ascending ?
-                    Integer.compare(d1.cardsCount, d2.cardsCount) :
-                    Integer.compare(d2.cardsCount, d1.cardsCount));
-            }
-
-            adapter.updateData(filtered); // You may need to implement updateData in your adapter
+            getDecks(arguments);
             dialog.dismiss();
         });
 
@@ -176,11 +165,11 @@ public class PublicDeckFragment extends Fragment
 
         buttonReset.setOnClickListener(v ->
         {
-            // Reset all fields
             radioGroupSortBy.check(R.id.radioButtonSortByName);
             radioGroupSortOrder.check(R.id.radioButtonAscending);
             editTextMinCardCount.setText("");
             editTextMaxCardCount.setText("");
+            arguments = new DeckListArgumentsDTO();
         });
 
         dialog.show();

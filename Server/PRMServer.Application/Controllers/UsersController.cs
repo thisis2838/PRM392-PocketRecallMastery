@@ -67,7 +67,7 @@ namespace PRMServer.Application.Controllers
         }
 
 
-        [HttpGet("{userId:guid}")]
+        [HttpGet("{userId:int}")]
         public async Task<ActionResult<UserDetailDTO>> GetUser(int userId)
         {
             var user = await _usersService.GetUser(userId);

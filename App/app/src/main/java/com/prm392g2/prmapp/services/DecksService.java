@@ -3,6 +3,7 @@ package com.prm392g2.prmapp.services;
 import android.content.Context;
 
 import com.prm392g2.prmapp.api.DeckApi;
+import com.prm392g2.prmapp.dtos.decks.DeckDetailDTO;
 import com.prm392g2.prmapp.dtos.decks.DeckListArgumentsDTO;
 import com.prm392g2.prmapp.dtos.decks.DeckListDTO;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
@@ -28,7 +29,27 @@ public class DecksService
     public void getPublicDecks(DeckListArgumentsDTO args, Callback<DeckListDTO> callback)
     {
         DeckApi api = ApiClient.getInstance().create(DeckApi.class);
-        Call<DeckListDTO> call = api.getPublicDecks(args);
+        Call<DeckListDTO> call = api.getPublicDecks(
+            args.search,
+            args.minCardCount,
+            args.maxCardCount,
+            args.sortingMetric,
+            args.sortingAscending
+        );
+        call.enqueue(callback);
+    }
+
+    public void getDeckById(int id, Callback<DeckDetailDTO> callback)
+    {
+        DeckApi api = ApiClient.getInstance().create(DeckApi.class);
+        var call = api.getDeckById(id);
+        call.enqueue(callback);
+    }
+
+    public void getMyDecks(Callback<DeckListDTO> callback)
+    {
+        DeckApi api = ApiClient.getInstance().create(DeckApi.class);
+        Call<DeckListDTO> call = api.getMyDecks();
         call.enqueue(callback);
     }
 

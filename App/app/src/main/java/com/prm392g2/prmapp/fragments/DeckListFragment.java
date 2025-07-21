@@ -27,9 +27,9 @@ public class DeckListFragment extends Fragment
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
 
         DeckListViewPagerAdapter adapter = new DeckListViewPagerAdapter(requireActivity());
-        // Add PublicDeckFragment and SavedDeckFragment
-        adapter.addFragment(new PublicDeckFragment(), "Public Deck");
-        adapter.addFragment(new SavedDeckFragment(), "Saved Deck");
+        adapter.addFragment(new PublicDecksFragment(), "Public Decks");
+        adapter.addFragment(new SavedDecksFragment(), "Saved Decks");
+        adapter.addFragment(new MyDecksFragment(), "My Decks");
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(

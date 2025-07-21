@@ -8,8 +8,12 @@ import com.prm392g2.prmapp.network.ApiClient;
 import com.prm392g2.prmapp.services.DecksService;
 import com.prm392g2.prmapp.services.UsersService;
 
+import java.text.SimpleDateFormat;
+
 public class PRMApplication extends Application
 {
+    public static final SimpleDateFormat GLOBAL_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
     private static Context context;
 
     @Override
