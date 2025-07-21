@@ -20,7 +20,7 @@ namespace PRMServer.Application.Controllers
         }
 
         [HttpGet("user")]
-        public async Task<ActionResult<DeckListDTO>> GetUserDecks(int userId)
+        public async Task<ActionResult<DeckListDTO>> GetByUser(int userId)
         {
             var result = await _decks.GetUserDecks(userId, new(), true);
             return Ok(result);
@@ -28,7 +28,7 @@ namespace PRMServer.Application.Controllers
 
         [HttpGet("my")]
         [Authorize]
-        public async Task<ActionResult<DeckListDTO>> GetMyDecks()
+        public async Task<ActionResult<DeckListDTO>> GetMine()
         {
             var userId = HttpContext.GetUserId()!.Value;
             var result = await _decks.GetUserDecks(userId, new(), false);
@@ -36,19 +36,65 @@ namespace PRMServer.Application.Controllers
         }
 
         [HttpGet("public")]
-        public async Task<ActionResult<DeckListDTO>> GetPublicDecks([FromQuery] DeckListArgumentsDTO arguments)
+        public async Task<ActionResult<DeckListDTO>> GetPublic([FromQuery] DeckListArgumentsDTO arguments)
         {
             var result = await _decks.GetPublicDecks(arguments);
             return Ok(result);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<DeckDetailDTO>> GetDeck(int id)
+        public async Task<ActionResult<DeckDetailDTO>> Get(int id)
         {   
-            var result = await _decks.GetDeck(id);
-            if (result == null)
-                return NotFound();
-            return Ok(result);
+            try
+            {
+                var result = await _decks.GetDeck(id, HttpContext.GetUserId());
+                if (result == null)
+                    return NotFound();
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException) { return Unauthorized(); }
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<ActionResult<int>> Create([FromBody] DeckCreationDTO dto)
+        {
+            var userId = HttpContext.GetUserId()!.Value;
+            var id = await _decks.CreateDeck(userId, dto);
+            return Ok(id);
+        }
+
+        [HttpPost("{id:int}")]
+        [Authorize]
+        public async Task<IActionResult> Edit(int id, [FromBody] DeckEditDTO dto)
+        {
+            var userId = HttpContext.GetUserId()!.Value;
+
+            try
+            {
+                await _decks.EditDeck(id, userId, dto);
+            }
+            catch (KeyNotFoundException) { return NotFound();  }
+            catch (ArgumentException) { return BadRequest();  }
+            catch (UnauthorizedAccessException) { return Unauthorized(); }
+
+            return Ok();
+        }
+
+        [HttpDelete("{id:int}")]
+        [Authorize]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var userId = HttpContext.GetUserId()!.Value;
+
+            try
+            {
+                await _decks.DeleteDeck(id, userId);
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
+            catch (UnauthorizedAccessException) { return Unauthorized(); }
+
+            return Ok();
         }
     }
 }

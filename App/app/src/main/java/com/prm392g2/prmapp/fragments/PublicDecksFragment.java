@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.activities.DeckDetailActivity;
+import com.prm392g2.prmapp.activities.DeckEditingActivity;
 import com.prm392g2.prmapp.adapters.DeckListAdapter;
 import com.prm392g2.prmapp.dtos.decks.DeckListArgumentsDTO;
 import com.prm392g2.prmapp.dtos.decks.DeckListDTO;
@@ -53,11 +54,23 @@ public class PublicDecksFragment extends Fragment
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new DeckListAdapter(
             decks,
-            deck ->
+            new DeckListAdapter.OnItemClickListener()
             {
-                Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
-                intent.putExtra("deckId", deck.id);
-                startActivity(intent);
+                @Override
+                public void onItemClick(DeckSummaryDTO deck)
+                {
+                    Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
+                    intent.putExtra("deckId", deck.id);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onEditClick(DeckSummaryDTO deck)
+                {
+                    Intent intent = new Intent(getActivity(), DeckEditingActivity.class);
+                    intent.putExtra("deckId", deck.id);
+                    startActivity(intent);
+                }
             }
         );
         recyclerView.setAdapter(adapter);
@@ -88,7 +101,7 @@ public class PublicDecksFragment extends Fragment
 
     private void getDecks(DeckListArgumentsDTO arguments)
     {
-        DecksService.getInstance().getPublicDecks(
+        DecksService.getInstance().getPublic(
             arguments, new Callback<DeckListDTO>()
             {
                 @Override

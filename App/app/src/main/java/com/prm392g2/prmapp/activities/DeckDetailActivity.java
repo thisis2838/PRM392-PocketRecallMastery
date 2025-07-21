@@ -92,7 +92,7 @@ public class DeckDetailActivity extends AppCompatActivity
 
     private void fetchDeckDetails()
     {
-        DecksService.getInstance().getDeckById(
+        DecksService.getInstance().getById(
             deckId, new Callback<DeckDetailDTO>()
             {
                 @Override

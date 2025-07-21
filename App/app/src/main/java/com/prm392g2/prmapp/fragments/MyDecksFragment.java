@@ -14,9 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.prm392g2.prmapp.R;
-import com.prm392g2.prmapp.activities.DeckAuthoringActivity;
+import com.prm392g2.prmapp.activities.DeckCreationActivity;
+import com.prm392g2.prmapp.activities.DeckDetailActivity;
+import com.prm392g2.prmapp.activities.DeckEditingActivity;
 import com.prm392g2.prmapp.adapters.DeckListAdapter;
 import com.prm392g2.prmapp.dtos.decks.DeckListDTO;
+import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
 import com.prm392g2.prmapp.services.DecksService;
 
 import java.util.ArrayList;
@@ -38,10 +41,25 @@ public class MyDecksFragment extends Fragment
         recyclerView = view.findViewById(R.id.recylerMain);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new DeckListAdapter(
-            new ArrayList<>(), deck ->
-        {
-            // Handle deck click if needed
-        }
+            new ArrayList<>(),
+            new DeckListAdapter.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(DeckSummaryDTO deck)
+                {
+                    Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
+                    intent.putExtra("deckId", deck.id);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onEditClick(DeckSummaryDTO deck)
+                {
+                    Intent intent = new Intent(getActivity(), DeckEditingActivity.class);
+                    intent.putExtra("deckId", deck.id);
+                    startActivity(intent);
+                }
+            }
         );
         recyclerView.setAdapter(adapter);
 
@@ -50,7 +68,7 @@ public class MyDecksFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(getActivity(), DeckAuthoringActivity.class);
+                Intent intent = new Intent(getActivity(), DeckCreationActivity.class);
                 startActivity(intent);
             }
         });
@@ -60,9 +78,18 @@ public class MyDecksFragment extends Fragment
         return view;
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        // Reload decks when fragment is resumed
+        loadMyDecks();
+    }
+
     private void loadMyDecks()
     {
-        DecksService.getInstance().getMyDecks(new Callback<DeckListDTO>()
+        DecksService.getInstance().getMine(new Callback<DeckListDTO>()
         {
             @Override
             public void onResponse(Call<DeckListDTO> call, Response<DeckListDTO> response)

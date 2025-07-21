@@ -1,5 +1,6 @@
 package com.prm392g2.prmapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.prm392g2.prmapp.R;
+import com.prm392g2.prmapp.activities.DeckDetailActivity;
+import com.prm392g2.prmapp.activities.DeckEditingActivity;
 import com.prm392g2.prmapp.adapters.DeckListAdapter;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
 import com.prm392g2.prmapp.entities.Deck;
@@ -48,7 +51,17 @@ public class HomeFragment extends Fragment
                 @Override
                 public void onItemClick(DeckSummaryDTO deck)
                 {
+                    Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
+                    intent.putExtra("deckId", deck.id);
+                    startActivity(intent);
+                }
 
+                @Override
+                public void onEditClick(DeckSummaryDTO deck)
+                {
+                    Intent intent = new Intent(getActivity(), DeckEditingActivity.class);
+                    intent.putExtra("deckId", deck.id);
+                    startActivity(intent);
                 }
             }
         );

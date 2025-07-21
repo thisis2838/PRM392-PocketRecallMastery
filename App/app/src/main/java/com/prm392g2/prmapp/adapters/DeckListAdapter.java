@@ -8,7 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.prm392g2.prmapp.PRMApplication;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
 
@@ -22,6 +24,7 @@ public class DeckListAdapter extends RecyclerView.Adapter<DeckListAdapter.ViewHo
     public interface OnItemClickListener
     {
         void onItemClick(DeckSummaryDTO deck);
+        void onEditClick(DeckSummaryDTO deck);
     }
 
     public DeckListAdapter(List<DeckSummaryDTO> decks, OnItemClickListener listener)
@@ -46,9 +49,18 @@ public class DeckListAdapter extends RecyclerView.Adapter<DeckListAdapter.ViewHo
         holder.deckName.setText(deck.name);
         holder.cardCount.setText(String.valueOf(deck.cardsCount));
         holder.username.setText(deck.creator.username);
-        holder.version.setText(String.valueOf(deck.version));
+        holder.date.setText(PRMApplication.GLOBAL_DATE_FORMAT.format(deck.getCreatedAt().getTime()));
         holder.viewCount.setText(String.valueOf(deck.viewsTotal));
         holder.downloadCount.setText(String.valueOf(deck.downloadsTotal));
+
+        holder.butEdit.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                listener.onEditClick(deck);
+            }
+        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
@@ -72,10 +84,11 @@ public class DeckListAdapter extends RecyclerView.Adapter<DeckListAdapter.ViewHo
         public TextView deckName;
         public TextView cardCount;
         public TextView username;
-        public TextView version;
+        public TextView date;
         public TextView viewCount;
         public TextView downloadCount;
         public ShapeableImageView profileImage;
+        public MaterialButton butEdit;
 
         public ViewHolder(@NonNull View itemView)
         {
@@ -84,9 +97,10 @@ public class DeckListAdapter extends RecyclerView.Adapter<DeckListAdapter.ViewHo
             cardCount = itemView.findViewById(R.id.txtCardCount);
             username = itemView.findViewById(R.id.txtUsername);
             profileImage = itemView.findViewById(R.id.profile_image);
-            version = itemView.findViewById(R.id.txtVersion);
+            date = itemView.findViewById(R.id.txtDate);
             viewCount = itemView.findViewById(R.id.txtViewCount);
             downloadCount = itemView.findViewById(R.id.txtDownloadCount);
+            butEdit = itemView.findViewById(R.id.butEdit);
         }
     }
 

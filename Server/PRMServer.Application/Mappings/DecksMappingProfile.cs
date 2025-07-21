@@ -8,7 +8,8 @@ namespace PRMServer.Application.Mappings
         public DecksMappingProfile()
         {
             CreateMap<Deck, DeckSummaryDTO>();
-            CreateMap<Deck, DeckDetailDTO>();
+            CreateMap<Deck, DeckDetailDTO>()
+                .ForMember(x => x.Cards, x => x.MapFrom(y => y.Cards.OrderBy(z => z.Index)));
         }
     }
 }

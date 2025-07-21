@@ -30,12 +30,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="username placeholder"
-            android:textStyle="bold"
             android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@id/profile_image"
-            app:layout_constraintTop_toTopOf="@id/profile_image"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/profile_image"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/profile_image"
+            app:layout_constraintTop_toTopOf="@id/profile_image" />
 
         <!-- Row 2: Deck name and version -->
         <TextView
@@ -119,26 +118,41 @@
             app:layout_constraintTop_toTopOf="@+id/icDownload" />
 
         <ImageView
-            android:id="@+id/icVersion"
+            android:id="@+id/icDate"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_pen"
+            android:src="@drawable/ic_calendar"
             app:layout_constraintBottom_toBottomOf="@+id/txtDownloadCount"
             app:layout_constraintStart_toEndOf="@+id/txtDownloadCount"
             app:layout_constraintTop_toTopOf="@+id/txtDownloadCount" />
 
         <TextView
-            android:id="@+id/txtVersion"
+            android:id="@+id/txtDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="5678"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/icVersion"
-            app:layout_constraintStart_toEndOf="@id/icVersion"
-            app:layout_constraintTop_toTopOf="@+id/icVersion" />
+            app:layout_constraintBottom_toBottomOf="@+id/icDate"
+            app:layout_constraintStart_toEndOf="@id/icDate"
+            app:layout_constraintTop_toTopOf="@+id/icDate" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/butEdit"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="31dp"
+            android:contentDescription="Back button"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="0dp"
+            app:icon="@drawable/ic_pen"
+            app:iconGravity="textStart"
+            app:iconSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

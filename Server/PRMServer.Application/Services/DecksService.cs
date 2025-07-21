@@ -22,11 +22,77 @@ namespace PRMServer.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<DeckDetailDTO?> GetDeck(int id)
+        public async Task<int> CreateDeck(int userId, DeckCreationDTO creation)
         {
+            var deck = new Deck
+            {
+                Name = creation.Name,
+                Description = creation.Description,
+                CreatedAt = DateOnly.FromDateTime(DateTime.Now),
+                CreatorId = userId,
+                IsPublic = false,
+                Version = 1
+            };
+            await _context.Decks.AddAsync(deck);
+            await _context.SaveChangesAsync();
+            return deck.Id;
+        }
+
+        public async Task EditDeck(int id, int userId, DeckEditDTO creation)
+        {
+            var entity = await _context.Decks
+                .Include(x => x.Cards)
+                .SingleOrDefaultAsync(x => x.Id == id);
+            if (entity is null)
+                throw new KeyNotFoundException();
+            if (entity.CreatorId != userId)
+                throw new UnauthorizedAccessException();
+            if (creation.Cards.GroupBy(x => x.Index).Any(x => x.Count() > 1))
+                throw new ArgumentException();
+
+            entity.UpdatedAt = DateOnly.FromDateTime(DateTime.Now);
+            entity.IsPublic = creation.IsPublic;
+            entity.Name = creation.Name;
+            entity.Description = creation.Description;
+            entity.Cards = creation.Cards
+                .Select(x => new Card
+                {
+                    Back = x.Back,
+                    Front = x.Front,
+                    DeckId = id,
+                    Index = x.Index,
+                })
+                .ToList();
+            entity.Version++;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteDeck(int deckId, int userId)
+        {
+            var entity = await _context.Decks
+                .Include(x => x.Cards)
+                .SingleOrDefaultAsync(x => x.Id == deckId);
+            if (entity is null)
+                throw new KeyNotFoundException();
+            if (entity.CreatorId != userId)
+                throw new UnauthorizedAccessException();
+
+            entity.Cards.Clear();
+            _context.Decks.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<DeckDetailDTO?> GetDeck(int id, int? userId)
+        {
+            var pre = await _context.Decks.FindAsync(id);
+            if (pre is null)
+                return null;
+            if ((!userId.HasValue || pre.CreatorId != userId) && !pre.IsPublic)
+                throw new UnauthorizedAccessException();
+
             await _context.Decks.Where(x => x.Id == id).ExecuteUpdateAsync
-            (x =>
-                x
+            (setter =>
+                setter
                     .SetProperty(y => y.ViewsTotal, y => y.ViewsTotal + 1)
                     .SetProperty(y => y.ViewsWeekly, y => y.ViewsWeekly + 1)
             );
@@ -78,7 +144,7 @@ namespace PRMServer.Application.Services
                 TotalCount = await decks.CountAsync(),
                 Decks = await decks
                     .ProjectTo<DeckSummaryDTO>(_mapper.ConfigurationProvider)
-                    .Take(50) // Limit to 100 for performance; adjust as needed
+                    //.Take(50) // Limit to 100 for performance; adjust as needed
                                //.ApplyPagination(arguments.PageIndex, arguments.PageSize)
                     .ToListAsync()
             };

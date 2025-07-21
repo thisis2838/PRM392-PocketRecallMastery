@@ -48,12 +48,14 @@ public class CardMainAdapter extends RecyclerView.Adapter<CardMainAdapter.CardVi
     {
         TextView question;
         TextView answer;
+        TextView index;
 
         public CardViewHolder(View itemView)
         {
             super(itemView);
             question = itemView.findViewById(R.id.question);
             answer = itemView.findViewById(R.id.answer);
+            index = itemView.findViewById(R.id.textIndex);
         }
     }
 
@@ -78,6 +80,8 @@ public class CardMainAdapter extends RecyclerView.Adapter<CardMainAdapter.CardVi
             holder.question.setVisibility(View.VISIBLE);
             holder.answer.setVisibility(View.GONE);
         }
+
+        holder.index.setText(Integer.toString(card.index));
     }
 
     @Override
