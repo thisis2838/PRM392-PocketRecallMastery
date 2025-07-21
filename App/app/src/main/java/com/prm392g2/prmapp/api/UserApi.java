@@ -1,5 +1,6 @@
 package com.prm392g2.prmapp.api;
 
+import com.prm392g2.prmapp.dtos.users.ChangePasswordDTO;
 import com.prm392g2.prmapp.dtos.users.EmailChangeDTO;
 import com.prm392g2.prmapp.dtos.users.LoginRequestDTO;
 import com.prm392g2.prmapp.dtos.users.LoginResponseDTO;
@@ -25,11 +26,11 @@ public interface UserApi {
     @POST("api/users/complete-registration")
     Call<Void> completeRegistration(@Body VerifyOtpRequestDTO request);
 
-    @POST("api/users/change-email-request")
-    Call<Void> requestEmailChange(@Header("Authorization") String auth, @Body EmailChangeDTO dto);
+    @POST("api/users/request-email-change")
+    Call<Void> requestEmailChange(@Header("Authorization") String token, @Body EmailChangeDTO dto);
 
     @POST("api/users/confirm-email-change")
-    Call<Void> confirmEmailChange(@Header("Authorization") String auth, @Body VerifyOtpRequestDTO dto);
+    Call<Void> confirmEmailChange(@Header("Authorization") String token, @Body VerifyOtpRequestDTO request);
 
     @GET("api/users/me")
     Call<UserSummaryDTO> getCurrentUser();
@@ -37,9 +38,12 @@ public interface UserApi {
     @POST("api/users/send-otp")
     Call<Void> sendOtp(@Body SendOtpRequestDTO request);
 
-    @POST("api/users/verify-otp")
-    Call<Void> verifyOtp(@Body VerifyOtpRequestDTO request);
+    @POST("api/users/confirm-reset-password")
+    Call<Void> confirmResetPassword(@Body VerifyOtpRequestDTO request);
 
-    @POST("api/users/reset-password")
-    Call<Void> resetPassword(@Body ResetPasswordDTO dto);
+    @POST("api/users/request-reset-password")
+    Call<Void> requestResetPassword(@Body ResetPasswordDTO dto);
+
+    @POST("api/users/change-password")
+    Call<Void> changePassword(@Header("Authorization") String token, @Body ChangePasswordDTO request);
 }

@@ -110,7 +110,7 @@ namespace PRMServer.Application.Controllers
         }
 
         [Authorize]
-        [HttpPost("change-email-request")]
+        [HttpPost("request-email-change")]
         public async Task<IActionResult> RequestEmailChange([FromBody] EmailChangeDTO model)
         {
             if (!Regex.IsMatch(model.NewEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
@@ -155,7 +155,7 @@ namespace PRMServer.Application.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            var userDto = _usersService.GetCurrentUserAsync(User);
+            var userDto = await _usersService.GetCurrentUserAsync(User);
 
             _cache.Remove($"change-email:{request.Email}");
 
@@ -195,8 +195,8 @@ namespace PRMServer.Application.Controllers
             }
         }
 
-        [HttpPost("verify-otp")]
-        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequestDTO request)
+        [HttpPost("confirm-reset-password")]
+        public async Task<IActionResult> ConfirmResetPassword([FromBody] VerifyOtpRequestDTO request)
         {
             if (string.IsNullOrWhiteSpace(request.Email) ||
                 string.IsNullOrWhiteSpace(request.Otp) ||
@@ -212,24 +212,12 @@ namespace PRMServer.Application.Controllers
             if (!isValid)
                 return BadRequest("Invalid or expired OTP.");
 
-            switch (request.Purpose)
-            {
-                case "register":
-                    user.EmailConfirmed = true;
-                    await _userManager.UpdateAsync(user);
-                    return Ok("Email confirmed.");
-
-                case "reset-password":
-                    var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    return Ok(new { ResetToken = resetToken });
-
-                default:
-                    return BadRequest("Unsupported OTP purpose: " + request.Purpose);
-            }
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return Ok(new { ResetToken = resetToken });
         }
 
-        [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
+        [HttpPost("request-reset-password")]
+        public async Task<IActionResult> RequestResetPassword([FromBody] ResetPasswordDTO dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Email) ||
                 string.IsNullOrWhiteSpace(dto.NewPassword))
@@ -247,6 +235,32 @@ namespace PRMServer.Application.Controllers
                 return BadRequest(result.Errors);
 
             return Ok("Password has been reset successfully.");
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO request)
+        {
+            if (string.IsNullOrWhiteSpace(request.CurrentPassword) || string.IsNullOrWhiteSpace(request.NewPassword))
+                return BadRequest("Current and new passwords are required.");
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(userId))
+                return Unauthorized("User not authenticated.");
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return Unauthorized("User not found.");
+
+            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+            if (!result.Succeeded)
+            {
+                var errorDescriptions = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest(errorDescriptions);
+            }
+            if (result.Succeeded)
+                return Ok("Password changed successfully.");
+
+            return BadRequest(result.Errors.Select(e => e.Description));
         }
     }
 }

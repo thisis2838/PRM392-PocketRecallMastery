@@ -3,7 +3,6 @@ package com.prm392g2.prmapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -77,10 +76,10 @@ public class VerifyOtpActivity extends AppCompatActivity {
                     completeRegistration(verifyRequest);
                     break;
                 case "reset-password":
-                    verifyForgotPassword(verifyRequest);
+                    confirmResetPassword(verifyRequest);
                     break;
                 case "change-email":
-                    verifyEmailChange(verifyRequest);
+                    confirmEmailChange(verifyRequest);
                     break;
                 default:
                     Toast.makeText(this, "Unknown purpose.", Toast.LENGTH_SHORT).show();
@@ -180,11 +179,11 @@ public class VerifyOtpActivity extends AppCompatActivity {
         });
     }
 
-    private void verifyForgotPassword(VerifyOtpRequestDTO request) {
+    private void confirmResetPassword(VerifyOtpRequestDTO request) {
         verifyOtpButton.setEnabled(false);
 
         UserApi api = ApiClient.getInstance().create(UserApi.class);
-        api.verifyOtp(request).enqueue(new Callback<Void>() {
+        api.confirmResetPassword(request).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 verifyOtpButton.setEnabled(true);
@@ -223,7 +222,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
         });
     }
 
-    private void verifyEmailChange(VerifyOtpRequestDTO request) {
+    private void confirmEmailChange(VerifyOtpRequestDTO request) {
         verifyOtpButton.setEnabled(false);
 
         String token = getSharedPreferences("auth", MODE_PRIVATE).getString("token", null);

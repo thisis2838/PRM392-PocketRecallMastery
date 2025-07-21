@@ -2,76 +2,100 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profileRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="24dp">
 
-    <TextView
-        android:id="@+id/tvUserInfo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="Loading login info..."
-        android:textColor="#000000"
-        android:textSize="16sp"
+    <!-- Circular Profile Picture -->
+
+    <!-- Greeting -->
+
+    <!-- Divider -->
+
+    <!-- Section: Account Actions -->
+
+    <ImageView
+        android:id="@+id/ivAndroidLogo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/ic_circle"
+        android:elevation="6dp"
+        android:padding="40dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_cat"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/etJwt"
+    <TextView
+        android:id="@+id/tvGreeting"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="JWT Token"
-        android:inputType="textMultiLine"
-        android:maxLines="10"
-        android:scrollbars="vertical"
-        android:textIsSelectable="true"
-        android:background="@android:drawable/edit_text"
-        android:padding="8dp"
-        android:textSize="12sp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvUserInfo"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="Welcome back!"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivAndroidLogo" />
+
+    <View
+        android:id="@+id/viewDivider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="348dp"
+        android:background="#CCCCCC"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ivAndroidLogo" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/accountCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/viewDivider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        android:padding="16dp">
 
-    <!-- Buttons -->
-    <Button
-        android:id="@+id/btnSettings"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Settings"
-        app:layout_constraintTop_toBottomOf="@+id/etJwt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnPersonalInfo"
-        app:layout_constraintWidth_percent="0.48"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="16dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/btnPersonalInfo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Personal Info"
-        app:layout_constraintTop_toBottomOf="@+id/etJwt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnSettings"
-        app:layout_constraintWidth_percent="0.48"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"/>
+            <Button
+                android:id="@+id/btnPersonalInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Personal Info"
+                android:layout_marginBottom="12dp" />
 
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Log In"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etJwt" />
+            <Button
+                android:id="@+id/btnSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:layout_marginBottom="12dp" />
 
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Log In"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

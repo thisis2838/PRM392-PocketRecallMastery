@@ -13,7 +13,6 @@
         android:hint="Search decks..."
         android:inputType="text"
         android:padding="12dp"
-        android:background="@android:drawable/edit_text"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/filterButton"

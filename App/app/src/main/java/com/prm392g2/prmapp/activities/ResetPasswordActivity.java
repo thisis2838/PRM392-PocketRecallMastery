@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.api.UserApi;
@@ -55,7 +52,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             ResetPasswordDTO dto = new ResetPasswordDTO(email, newPassword);
             UserApi api = ApiClient.getInstance().create(UserApi.class);
-            api.resetPassword(dto).enqueue(new Callback<Void>() {
+            api.requestResetPassword(dto).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {

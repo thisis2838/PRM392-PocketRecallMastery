@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.prm392g2.prmapp.api.UserApi;
@@ -26,37 +27,36 @@ import retrofit2.Response;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.activities.LoginActivity;
 
+import java.util.Random;
+
 public class ProfileFragment extends Fragment {
 
-    private TextView tvUserInfo;
-    private EditText etJwt;
+    private TextView tvGreeting;
+    private ImageView ivAndroidLogo;
     private Button btnSettings, btnPersonalInfo, btnLogin;
 
-    public ProfileFragment() {
-    }
+    public ProfileFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        tvUserInfo = view.findViewById(R.id.tvUserInfo);
-        etJwt = view.findViewById(R.id.etJwt);
+        tvGreeting = view.findViewById(R.id.tvGreeting);
+        ivAndroidLogo = view.findViewById(R.id.ivAndroidLogo);
         btnSettings = view.findViewById(R.id.btnSettings);
         btnPersonalInfo = view.findViewById(R.id.btnPersonalInfo);
         btnLogin = view.findViewById(R.id.btnLogin);
 
-        loadJwt();
-        loadUserInfo();
-        updateButtonVisibility();
-
-        btnSettings.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
+        btnSettings.setOnClickListener(v -> requireActivity()
+                .getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, new SettingsFragment())
                 .addToBackStack(null)
                 .commit());
 
-        btnPersonalInfo.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
+        btnPersonalInfo.setOnClickListener(v -> requireActivity()
+                .getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, new PersonalInfoFragment())
                 .addToBackStack(null)
@@ -69,60 +69,68 @@ public class ProfileFragment extends Fragment {
             requireActivity().finish();
         });
 
+        updateUI();
+
         return view;
     }
 
-    private void loadJwt() {
+    private void updateUI() {
         SharedPreferences prefs = requireContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
         String token = prefs.getString("token", null);
+
         if (token == null || token.isEmpty()) {
-            etJwt.setText("Not logged in");
+            showLoggedOutUI();
         } else {
-            etJwt.setText(token);
+            loadUserInfo();
         }
     }
 
-    private void updateButtonVisibility() {
-        SharedPreferences prefs = requireContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
-        String token = prefs.getString("token", null);
+    private void showLoggedOutUI() {
+        tvGreeting.setText("Oops! We don't seem to know you yet.\nHow about login first so we can start learning together?");
+        ivAndroidLogo.setImageResource(R.drawable.ic_expressionless);
 
-        boolean loggedIn = token != null && !token.isEmpty();
+        btnLogin.setVisibility(View.VISIBLE);
+        btnPersonalInfo.setVisibility(View.GONE);
+    }
 
-        btnSettings.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
-        btnPersonalInfo.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
-        btnLogin.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
+    private void showLoggedInUI(String username) {
+        String[] greetings = {
+                "Hello " + username + ", what are we up to today?",
+                "Now we're cooking, " + username + "!",
+                "Sometimes, it's better to relax a bit, " + username + ".",
+                username + ", it's a great day to study!",
+        };
+
+        int[] icons = {
+                R.drawable.ic_ghost_smile,
+                R.drawable.ic_flame,
+                R.drawable.ic_tea_cup,
+                R.drawable.ic_cat,
+        };
+        Random random = new Random();
+        int index = random.nextInt(greetings.length);
+        tvGreeting.setText(greetings[index]);
+        ivAndroidLogo.setImageResource(icons[index]);
+
+        btnLogin.setVisibility(View.GONE);
+        btnPersonalInfo.setVisibility(View.VISIBLE);
     }
 
     private void loadUserInfo() {
-        SharedPreferences prefs = requireContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
-        String token = prefs.getString("token", null);
-
-        if (token == null || token.isEmpty()) {
-            tvUserInfo.setText("User not logged in");
-            return;
-        }
-
         UserApi api = ApiClient.getInstance().create(UserApi.class);
-        Call<UserSummaryDTO> call = api.getCurrentUser();
-        call.enqueue(new Callback<UserSummaryDTO>() {
+        api.getCurrentUser().enqueue(new Callback<UserSummaryDTO>() {
             @Override
             public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    UserSummaryDTO user = response.body();
-
-                    String info = "ID: " + user.id + "\n"
-                            + "Username: " + user.username + "\n"
-                            + "Email: " + user.email + "\n";
-
-                    tvUserInfo.setText(info);
+                    showLoggedInUI(response.body().username);
                 } else {
-                    tvUserInfo.setText("Failed to load user info: " + response.code());
+                    showLoggedOutUI();
                 }
             }
 
             @Override
             public void onFailure(Call<UserSummaryDTO> call, Throwable t) {
-                tvUserInfo.setText("Error loading user info: " + t.getMessage());
+                showLoggedOutUI();
             }
         });
     }
@@ -130,6 +138,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadUserInfo();
+        updateUI();
     }
 }
+

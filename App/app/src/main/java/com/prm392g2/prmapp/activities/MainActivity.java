@@ -1,5 +1,6 @@
 package com.prm392g2.prmapp.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -12,6 +13,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
@@ -21,6 +24,7 @@ import com.prm392g2.prmapp.adapters.MainViewPager;
 import com.prm392g2.prmapp.fragments.DeckListFragment;
 import com.prm392g2.prmapp.fragments.HomeFragment;
 import com.prm392g2.prmapp.fragments.ProfileFragment;
+import com.prm392g2.prmapp.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setTitle("");
 
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.bottomNav);
@@ -103,6 +108,11 @@ public class MainActivity extends AppCompatActivity
         };
 
         getOnBackPressedDispatcher().addCallback(this, callback);
+
+        if (SettingsFragment.shouldRestore(this)) {
+            loadFragment(new SettingsFragment());
+            SettingsFragment.clearRestoreFlag(this);
+        }
     }
 
     public void loadFragment(Fragment fragment)
@@ -141,5 +151,11 @@ public class MainActivity extends AppCompatActivity
     {
         getOnBackPressedDispatcher().onBackPressed();
         return true;
+    }
+
+    public void setToolbarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
     }
 }

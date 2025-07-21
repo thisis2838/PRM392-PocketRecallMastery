@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.prm392g2.prmapp.R;
+import com.prm392g2.prmapp.activities.ChangePasswordActivity;
 import com.prm392g2.prmapp.activities.LoginActivity;
 import com.prm392g2.prmapp.activities.MainActivity;
 import com.prm392g2.prmapp.api.UserApi;
@@ -29,11 +30,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PersonalInfoFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PersonalInfoFragment extends Fragment {
 
     private TextView tvUsername, tvEmail;
@@ -84,7 +80,7 @@ public class PersonalInfoFragment extends Fragment {
         });
 
         btnChangePassword.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), MainActivity.class);
+            Intent intent = new Intent(requireContext(), ChangePasswordActivity.class);
             startActivity(intent);
         });
 
@@ -127,5 +123,6 @@ public class PersonalInfoFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadUserInfo();
+        ((MainActivity) requireActivity()).setToolbarTitle("Personal Info");
     }
 }
