@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PRMServer.Application.DTOs.Decks;
 using PRMServer.Application.Services.Contracts;
@@ -21,30 +22,38 @@ namespace PRMServer.Application.Services
             _mapper = mapper;
         }
 
-        public Task<DeckDetailDTO?> GetDeck(int id)
+        public async Task<DeckDetailDTO?> GetDeck(int id)
         {
-            return _context.Decks
+            await _context.Decks.Where(x => x.Id == id).ExecuteUpdateAsync
+            (x =>
+                x
+                    .SetProperty(y => y.ViewsTotal, y => y.ViewsTotal + 1)
+                    .SetProperty(y => y.ViewsWeekly, y => y.ViewsWeekly + 1)
+            );
+            return await _context.Decks
                 .ProjectTo<DeckDetailDTO>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync(d => d.Id == id);
         }
 
         public async Task<DeckListDTO> GetPublicDecks(DeckListArgumentsDTO arguments)
         {
-            var query = _context.Decks.Where(d => d.IsPublic).Take(30);
+            var query = _context.Decks.Where(d => d.IsPublic);
             return await GetList(query, arguments);
         }
 
-        public async Task<DeckListDTO> GetUserDecks(int userId, DeckListArgumentsDTO arguments)
+        public async Task<DeckListDTO> GetUserDecks(int userId, DeckListArgumentsDTO arguments, bool onlyPublic)
         {
             var query = _context.Decks.Where(d => d.CreatorId == userId);
+            if (onlyPublic)
+                query = query.Where(x => x.IsPublic);
             return await GetList(query, arguments);
         }
 
         private async Task<DeckListDTO> GetList(IQueryable<Deck> decks, DeckListArgumentsDTO arguments)
         {
-            if (arguments.Search != null)
+            if (!string.IsNullOrWhiteSpace(arguments.Search))
             {
-                decks = decks.Where(x => x.Name.Contains(arguments.Search));
+               decks = decks.Where(x => x.Name.Contains(arguments.Search));
             }
 
             if (arguments.MinCardCount != null)

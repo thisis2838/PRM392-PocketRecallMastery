@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/filterButton"
+        android:imeOptions="actionDone"
         />
 
     <com.google.android.material.button.MaterialButton

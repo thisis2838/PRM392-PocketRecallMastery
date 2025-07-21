@@ -11,10 +11,12 @@ import androidx.fragment.app.Fragment;
 
 import com.prm392g2.prmapp.R;
 
-public class SavedDeckFragment extends Fragment {
+public class SavedDecksFragment extends Fragment
+{
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_saved_deck, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.fragment_saved_decks, container, false);
     }
 }

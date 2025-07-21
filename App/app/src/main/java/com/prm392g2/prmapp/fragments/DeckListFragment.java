@@ -15,24 +15,29 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.adapters.DeckListViewPagerAdapter;
 
-public class DeckListFragment extends Fragment {
+public class DeckListFragment extends Fragment
+{
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_deck_list, container, false);
 
         ViewPager2 viewPager = view.findViewById(R.id.viewPager);
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
 
         DeckListViewPagerAdapter adapter = new DeckListViewPagerAdapter(requireActivity());
-        // Add PublicDeckFragment and SavedDeckFragment
-        adapter.addFragment(new PublicDeckFragment(), "Public Deck");
-        adapter.addFragment(new SavedDeckFragment(), "Saved Deck");
+        adapter.addFragment(new PublicDecksFragment(), "Public Decks");
+        adapter.addFragment(new SavedDecksFragment(), "Saved Decks");
+        adapter.addFragment(new MyDecksFragment(), "My Decks");
         viewPager.setAdapter(adapter);
 
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+        new TabLayoutMediator(
+            tabLayout, viewPager, (tab, position) ->
+        {
             tab.setText(adapter.getPageTitle(position));
-        }).attach();
+        }
+        ).attach();
 
         return view;
     }

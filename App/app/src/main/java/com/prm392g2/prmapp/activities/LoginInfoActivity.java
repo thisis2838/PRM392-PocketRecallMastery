@@ -56,8 +56,8 @@ public class LoginInfoActivity extends AppCompatActivity
         }
 
         // Call backend to get user info
-        UserApi api = ApiClient.getClient().create(UserApi.class);
-        Call<UserSummaryDTO> call = api.getCurrentUser("Bearer " + token);
+        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        Call<UserSummaryDTO> call = api.getCurrentUser();
 
         call.enqueue(new Callback<UserSummaryDTO>()
         {

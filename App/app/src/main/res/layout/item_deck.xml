@@ -1,115 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
-    android:layout_margin="8dp"
-    >
+    android:layout_margin="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/txtDeckName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Placeholder"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            />
-        <TextView
-            android:id="@+id/txtVersion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/txtDeckName"
-            app:layout_constraintBottom_toTopOf="@id/txtCardCount"
-            android:text="v1"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="4dp"
-            />
-        <TextView
-            android:id="@+id/txtCardCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="card count place holder"
-            app:layout_constraintTop_toBottomOf="@+id/txtDeckName"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textSize="16sp"
-            />
+        <!-- Row 1: Creator icon and username -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profile_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:scaleType="centerCrop"
             android:src="@drawable/profile_placeholder"
-            app:layout_constraintTop_toBottomOf="@+id/txtCardCount"
-            app:layout_constraintStart_toStartOf="parent"
             app:shapeAppearanceOverlay="@style/CircleImageShape"
-            android:layout_marginTop="8dp"
-            />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/txtUsername"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
             android:text="username placeholder"
             android:textStyle="bold"
+            android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/profile_image"
-            app:layout_constraintTop_toBottomOf="@id/txtCardCount" />
+            app:layout_constraintTop_toTopOf="@id/profile_image"
+            app:layout_constraintBottom_toBottomOf="@id/profile_image"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Row 2: Deck name and version -->
+        <TextView
+            android:id="@+id/txtDeckName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Deck Name"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_image" />
+
+        <!-- Row 3: Views and downloads -->
 
         <ImageView
             android:id="@+id/icView"
-            android:layout_width="33dp"
-            android:layout_height="25dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="16dp"
             android:src="@drawable/ic_view"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profile_image"
+            app:layout_constraintBottom_toBottomOf="@+id/txtCardCount"
+            app:layout_constraintStart_toEndOf="@+id/txtCardCount"
+            app:layout_constraintTop_toTopOf="@+id/txtCardCount" />
+
+        <ImageView
+            android:id="@+id/icCard"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_marginTop="8dp"
-            />
+            android:src="@drawable/ic_decks"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtDeckName" />
 
         <TextView
             android:id="@+id/txtViewCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:text="1234"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/icView"
-            app:layout_constraintTop_toBottomOf="@id/profile_image"
-            android:layout_marginTop="8dp"
-            />
+            app:layout_constraintBottom_toBottomOf="@+id/icView"
+            app:layout_constraintStart_toEndOf="@+id/icView"
+            app:layout_constraintTop_toTopOf="@+id/icView" />
+
+        <TextView
+            android:id="@+id/txtCardCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="1234"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/icCard"
+            app:layout_constraintStart_toEndOf="@+id/icCard"
+            app:layout_constraintTop_toTopOf="@+id/icCard" />
 
         <ImageView
             android:id="@+id/icDownload"
-            android:layout_width="33dp"
-            android:layout_height="25dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="16dp"
             android:src="@drawable/ic_download"
-            app:layout_constraintStart_toEndOf="@id/txtViewCount"
-            app:layout_constraintTop_toBottomOf="@id/profile_image"
-            android:layout_marginTop="8dp"
-            />
+            app:layout_constraintBottom_toBottomOf="@+id/txtViewCount"
+            app:layout_constraintStart_toEndOf="@+id/txtViewCount"
+            app:layout_constraintTop_toTopOf="@+id/txtViewCount" />
 
         <TextView
             android:id="@+id/txtDownloadCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1234"
+            android:layout_marginStart="8dp"
+            android:text="5678"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/icDownload"
             app:layout_constraintStart_toEndOf="@id/icDownload"
-            app:layout_constraintTop_toBottomOf="@id/profile_image"
-            android:layout_marginTop="8dp"/>
+            app:layout_constraintTop_toTopOf="@+id/icDownload" />
 
+        <ImageView
+            android:id="@+id/icVersion"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_pen"
+            app:layout_constraintBottom_toBottomOf="@+id/txtDownloadCount"
+            app:layout_constraintStart_toEndOf="@+id/txtDownloadCount"
+            app:layout_constraintTop_toTopOf="@+id/txtDownloadCount" />
+
+        <TextView
+            android:id="@+id/txtVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="5678"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/icVersion"
+            app:layout_constraintStart_toEndOf="@id/icVersion"
+            app:layout_constraintTop_toTopOf="@+id/icVersion" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

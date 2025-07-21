@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PRMServer.Application.DTOs.Decks;
 using PRMServer.Application.Services.Contracts;
+using PRMServer.Application.Utilities.Helpers;
 
 namespace PRMServer.Application.Controllers
 {
@@ -17,13 +20,19 @@ namespace PRMServer.Application.Controllers
         }
 
         [HttpGet("user")]
-        public async Task<ActionResult<DeckListDTO>> GetUserDecks([FromQuery] DeckListArgumentsDTO arguments)
+        public async Task<ActionResult<DeckListDTO>> GetUserDecks(int userId)
         {
-            throw new NotImplementedException();
-            /*
-            var result = await _decks.GetUserDecks(userId, arguments);
+            var result = await _decks.GetUserDecks(userId, new(), true);
             return Ok(result);
-            */
+        }
+
+        [HttpGet("my")]
+        [Authorize]
+        public async Task<ActionResult<DeckListDTO>> GetMyDecks()
+        {
+            var userId = HttpContext.GetUserId()!.Value;
+            var result = await _decks.GetUserDecks(userId, new(), false);
+            return Ok(result);
         }
 
         [HttpGet("public")]
@@ -33,14 +42,13 @@ namespace PRMServer.Application.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<DeckDetailDTO>> GetDeck(int id)
-        {
+        {   
             var result = await _decks.GetDeck(id);
             if (result == null)
                 return NotFound();
             return Ok(result);
         }
-
     }
 }

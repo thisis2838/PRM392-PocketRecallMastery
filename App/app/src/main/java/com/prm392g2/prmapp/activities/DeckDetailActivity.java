@@ -1,9 +1,9 @@
 package com.prm392g2.prmapp.activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -16,136 +16,126 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import com.prm392g2.prmapp.PRMApplication;
 import com.prm392g2.prmapp.R;
-import com.prm392g2.prmapp.adapters.CardDetailAdapter;
 import com.prm392g2.prmapp.adapters.CardMainAdapter;
-import com.prm392g2.prmapp.api.DeckApi;
-import com.prm392g2.prmapp.dtos.cards.CardDetailDTO;
 import com.prm392g2.prmapp.dtos.decks.DeckDetailDTO;
-import com.prm392g2.prmapp.entities.Card;
-import com.prm392g2.prmapp.network.ApiClient;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.prm392g2.prmapp.services.DecksService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DeckDetailActivity extends AppCompatActivity {
+public class DeckDetailActivity extends AppCompatActivity
+{
+    private int deckId;
+    private RecyclerView cardRecycler;
+    private CardMainAdapter adapter;
 
-    private DeckDetailDTO deck;
-    private CardMainAdapter cardMainAdapter;
-    private CardDetailAdapter cardDetailAdapter;
-    private RecyclerView cardListRecyclerView;
-    private RecyclerView cardDetailsRecyclerView;
-    private Button btnBeginLearning;
-    private Button btnBack;
+    // UI fields
+    private TextView txtDeckName, txtDeckDescription, txtDeckCreator, txtCardCount, txtDownloadCount, txtViewCount, txtDate, txtVersion;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_deck_detail);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        ViewCompat.setOnApplyWindowInsetsListener(
+            findViewById(R.id.main), (v, insets) ->
+            {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            }
+        );
 
-        // Initialize views
-        cardListRecyclerView = findViewById(R.id.card_list);
-        cardDetailsRecyclerView = findViewById(R.id.cardDetailsList);
-        btnBeginLearning = findViewById(R.id.btnBeginLearning);
-        btnBack = findViewById(R.id.btn_back);
-
-        // Initialize adapters with empty lists
-        cardMainAdapter = new CardMainAdapter(new ArrayList<>(), card -> {
-            // Handle item click for main card list
-        });
-        cardDetailAdapter = new CardDetailAdapter(new ArrayList<>(), card -> {
-            // Handle item click for card details list
-        });
-
-        // Setup RecyclerViews
-        setupRecyclerViews();
-
-        // Setup button listeners
-        setupButtonListeners();
-
-        // Fetch deck details
-        int deckId = getIntent().getIntExtra("deckId", -1);
-        if (deckId == -1) {
-            Toast.makeText(this, "Invalid Deck ID", Toast.LENGTH_LONG).show();
-            finish(); // Close activity if deckId is invalid
+        deckId = getIntent().getIntExtra("deckId", -1);
+        if (deckId == -1)
+        {
+            finish();
             return;
         }
-        fetchDeckDetails(deckId);
-    }
 
-    private void setupRecyclerViews() {
-        cardListRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        // Find UI fields
+        cardRecycler = findViewById(R.id.card_list);
+        cardRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(cardListRecyclerView);
-        cardListRecyclerView.setAdapter(cardMainAdapter);
+        snapHelper.attachToRecyclerView(cardRecycler);
 
-        cardDetailsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        cardDetailsRecyclerView.setAdapter(cardDetailAdapter);
-    }
+        txtDeckName = findViewById(R.id.txtDetailDeckName);
+        txtDeckDescription = findViewById(R.id.txtDetailDeckDescription);
+        txtDeckCreator = findViewById(R.id.txtDetailDeckCreator);
+        txtCardCount = findViewById(R.id.txtDetailCardCount);
+        txtDate = findViewById(R.id.txtDate);
+        txtDownloadCount = findViewById(R.id.txtDownloadCount);
+        txtViewCount = findViewById(R.id.txtViewCount);
+        txtVersion = findViewById(R.id.txtDetailVersion);
 
-    private void setupButtonListeners() {
-        btnBeginLearning.setOnClickListener(v -> {
-            if (deck != null && deck.cards != null && !deck.cards.isEmpty()) {
-                Intent intent = new Intent(DeckDetailActivity.this, DeckLearningActivity.class);
-                // Pass necessary data to DeckLearningActivity, for example, the deck or cards
-                // intent.putExtra("deckData", deck); // Make sure DeckDetailDTO is Parcelable or Serializable
-                startActivity(intent);
-            } else {
-                Toast.makeText(DeckDetailActivity.this, "No cards available to learn.", Toast.LENGTH_SHORT).show();
-            }
+        // Set up empty adapter for now
+        cardRecycler.setVisibility(RecyclerView.GONE);
+
+        Button btnBeginLearning = findViewById(R.id.btnBeginLearning);
+        btnBeginLearning.setOnClickListener(v ->
+        {
+            Intent intent = new Intent(DeckDetailActivity.this, DeckLearningActivity.class);
+            // intent.putExtra() as needed
+            startActivity(intent);
         });
 
-        btnBack.setOnClickListener(v -> finish());
+        Button backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(v -> finish());
+
+        // Fetch deck details
+        fetchDeckDetails();
     }
 
-    private void fetchDeckDetails(int deckId) {
-        DeckApi api = ApiClient.getClient().create(DeckApi.class);
-        Call<DeckDetailDTO> call = api.getDeckById(String.valueOf(deckId));
-        call.enqueue(new Callback<DeckDetailDTO>() {
-             @Override
-             public void onResponse(Call<DeckDetailDTO> call, Response<DeckDetailDTO> response) {
-                 if(response.isSuccessful() && response.body() != null){
-                     deck = response.body();
-                     updateUIWithDeckDetails();
-                    if (deck.cards == null || deck.cards.isEmpty()) {
-                        Toast.makeText(DeckDetailActivity.this, "No cards found in this deck.", Toast.LENGTH_LONG).show();
+    private void fetchDeckDetails()
+    {
+        DecksService.getInstance().getDeckById(
+            deckId, new Callback<DeckDetailDTO>()
+            {
+                @Override
+                public void onResponse(Call<DeckDetailDTO> call, Response<DeckDetailDTO> response)
+                {
+                    if (response.isSuccessful() && response.body() != null)
+                    {
+                        DeckDetailDTO deck = response.body();
+                        runOnUiThread(() -> showDeckDetails(deck));
                     }
-                 } else {
-                     String errorMessage = "Failed " + response.code();
-                     try {
-                         if (response.errorBody() != null) {
-                             errorMessage += " - " + response.errorBody().string();
-                         }
-                     } catch (Exception e) {
-                         e.printStackTrace();
-                        errorMessage += " (Error reading error body)";
-                     }
-                     Toast.makeText(DeckDetailActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                 }
-             }
+                    else
+                    {
+                        runOnUiThread(() -> Toast.makeText(DeckDetailActivity.this, "Failed to load deck details", Toast.LENGTH_SHORT).show());
+                    }
+                }
 
-             @Override
-             public void onFailure(Call<DeckDetailDTO> call, Throwable t) {
-                 Toast.makeText(DeckDetailActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-             }
-         });
+                @Override
+                public void onFailure(Call<DeckDetailDTO> call, Throwable t)
+                {
+                    runOnUiThread(() -> Toast.makeText(DeckDetailActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show());
+                }
+            }
+        );
     }
 
-    private void updateUIWithDeckDetails() {
-        if (deck != null && deck.cards != null) {
-            cardMainAdapter.updateData(deck.cards);
-            cardDetailAdapter.updateData(deck.cards);
-        } else {
-            Toast.makeText(this, "Deck data or cards are null, cannot update UI.", Toast.LENGTH_SHORT).show();
-        }
+    private void showDeckDetails(DeckDetailDTO deck)
+    {
+        txtDeckName.setText(deck.name);
+        txtDeckDescription.setText(deck.description != null ? deck.description : "");
+        txtDeckCreator.setText(deck.creator.username != null ? deck.creator.username : "");
+        txtCardCount.setText(Integer.toString(deck.cardsCount));
+
+        txtDownloadCount.setText(String.format("%d (%d this week)", deck.downloadsTotal, deck.downloadsWeekly));
+        txtViewCount.setText(String.format("%d (%d this week)", deck.viewsTotal, deck.viewsWeekly));
+
+        txtDate.setText(PRMApplication.GLOBAL_DATE_FORMAT.format(deck.getCreatedAt().getTime()));
+        txtVersion.setText("v" + deck.version);
+
+        cardRecycler.setVisibility(RecyclerView.VISIBLE);
+
+        adapter = new CardMainAdapter(deck.cards, card ->
+        {
+        });
+        cardRecycler.setAdapter(adapter);
     }
 }
