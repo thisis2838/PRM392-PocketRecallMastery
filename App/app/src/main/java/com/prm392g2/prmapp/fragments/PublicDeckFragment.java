@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,24 +36,36 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PublicDeckFragment extends Fragment {
+public class PublicDeckFragment extends Fragment
+{
 
     public RecyclerView recyclerView;
     public DeckListAdapter adapter;
     public List<DeckSummaryDTO> decks = new ArrayList<>();
-    public EditText search;
+    /*
+    {
+        decks.add(new Deck(1, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2023, 4, 1)));
+        decks.add(new Deck(2, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2022, 4, 1)));
+        decks.add(new Deck(3, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2021, 4, 1)));
+    }
+     */
+
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_public_deck, container, false);
         recyclerView = view.findViewById(R.id.deck_list);
         search = view.findViewById(R.id.search_bar);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new DeckListAdapter(decks,
-            new DeckListAdapter.OnItemClickListener() {
+        adapter = new DeckListAdapter(
+            decks,
+            new DeckListAdapter.OnItemClickListener()
+            {
                 @Override
-                public void onItemClick(DeckSummaryDTO deck) {
+                public void onItemClick(DeckSummaryDTO deck)
+                {
                     Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
                     intent.putExtra("deckId", deck.Id);
                     startActivity(intent);
@@ -64,9 +75,11 @@ public class PublicDeckFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         getDecks(new DeckListArgumentsDTO());
         MaterialButton filterButton = view.findViewById(R.id.filterButton);
-        filterButton.setOnClickListener(new View.OnClickListener() {
+        filterButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 showFilterDialog();
             }
         });
@@ -90,13 +103,15 @@ public class PublicDeckFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<DeckListDTO> call, Throwable t) {
+            public void onFailure(Call<DeckListDTO> call, Throwable t)
+            {
 
             }
         });
     }
 
-    private void showFilterDialog() {
+    private void showFilterDialog()
+    {
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_filter, null);
 
         // Get references to dialog widgets
@@ -109,8 +124,8 @@ public class PublicDeckFragment extends Fragment {
         Button buttonReset = dialogView.findViewById(R.id.buttonReset);
 
         AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setView(dialogView)
-                .create();
+            .setView(dialogView)
+            .create();
 
         buttonApply.setOnClickListener(v -> {
             //Get search
@@ -143,7 +158,8 @@ public class PublicDeckFragment extends Fragment {
 
         buttonCancel.setOnClickListener(v -> dialog.dismiss());
 
-        buttonReset.setOnClickListener(v -> {
+        buttonReset.setOnClickListener(v ->
+        {
             // Reset all fields
             radioGroupSortBy.check(R.id.radioButtonSortByName);
             radioGroupSortOrder.check(R.id.radioButtonAscending);

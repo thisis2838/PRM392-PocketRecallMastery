@@ -17,10 +17,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class CardViewModel extends AndroidViewModel {
+public class CardViewModel extends AndroidViewModel
+{
     private final CardDao cardDao;
     private final ExecutorService executorService;
-    
+
     private final MutableLiveData<List<Card>> cardsByDeck = new MutableLiveData<>();
     private final MutableLiveData<Card> selectedCard = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
@@ -28,166 +29,217 @@ public class CardViewModel extends AndroidViewModel {
     private final MutableLiveData<Integer> currentCardIndex = new MutableLiveData<>(0);
     private final MutableLiveData<Boolean> isCardFlipped = new MutableLiveData<>(false);
 
-    public CardViewModel(@NonNull Application application) {
+    public CardViewModel(@NonNull Application application)
+    {
         super(application);
         cardDao = PRMDatabase.getInstance().cardDao();
         executorService = Executors.newFixedThreadPool(4);
     }
 
     // LiveData getters
-    public LiveData<List<Card>> getCardsByDeck() {
+    public LiveData<List<Card>> getCardsByDeck()
+    {
         return cardsByDeck;
     }
 
-    public LiveData<Card> getSelectedCard() {
+    public LiveData<Card> getSelectedCard()
+    {
         return selectedCard;
     }
 
-    public LiveData<Boolean> getIsLoading() {
+    public LiveData<Boolean> getIsLoading()
+    {
         return isLoading;
     }
 
-    public LiveData<String> getErrorMessage() {
+    public LiveData<String> getErrorMessage()
+    {
         return errorMessage;
     }
 
-    public LiveData<Integer> getCurrentCardIndex() {
+    public LiveData<Integer> getCurrentCardIndex()
+    {
         return currentCardIndex;
     }
 
-    public LiveData<Boolean> getIsCardFlipped() {
+    public LiveData<Boolean> getIsCardFlipped()
+    {
         return isCardFlipped;
     }
 
     // Load cards by deck ID
-    public void loadCardsByDeck(int deckId) {
+    public void loadCardsByDeck(int deckId)
+    {
         isLoading.setValue(true);
-        executorService.execute(() -> {
-            try {
+        executorService.execute(() ->
+        {
+            try
+            {
                 List<Card> cards = cardDao.getByDeckId(deckId);
                 cardsByDeck.postValue(cards);
-                
+
                 // Reset card state
                 currentCardIndex.postValue(0);
                 isCardFlipped.postValue(false);
-                
+
                 // Set first card as selected if available
-                if (!cards.isEmpty()) {
+                if (!cards.isEmpty())
+                {
                     selectedCard.postValue(cards.get(0));
-                } else {
+                }
+                else
+                {
                     selectedCard.postValue(null);
                 }
-                
+
                 errorMessage.postValue(null);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 errorMessage.postValue("Failed to load cards: " + e.getMessage());
-            } finally {
+            }
+            finally
+            {
                 isLoading.postValue(false);
             }
         });
     }
 
     // Load card by ID
-    public void loadCardById(int cardId) {
+    public void loadCardById(int cardId)
+    {
         isLoading.setValue(true);
-        executorService.execute(() -> {
-            try {
+        executorService.execute(() ->
+        {
+            try
+            {
                 Card card = cardDao.getById(cardId);
                 selectedCard.postValue(card);
                 errorMessage.postValue(null);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 errorMessage.postValue("Failed to load card: " + e.getMessage());
-            } finally {
+            }
+            finally
+            {
                 isLoading.postValue(false);
             }
         });
     }
 
     // Create new card
-    public void createCard(String front, String back, int deckId) {
+    public void createCard(String front, String back, int deckId)
+    {
         isLoading.setValue(true);
-        executorService.execute(() -> {
-            try {
+        executorService.execute(() ->
+        {
+            try
+            {
                 List<Card> currentCards = cardDao.getByDeckId(deckId);
                 int nextIndex = currentCards.size();
-                
+
                 Card newCard = new Card();
                 newCard.front = front;
                 newCard.back = back;
                 newCard.deckId = deckId;
                 newCard.index = nextIndex;
-                
+
                 cardDao.insert(newCard);
                 loadCardsByDeck(deckId);
                 errorMessage.postValue(null);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 errorMessage.postValue("Failed to create card: " + e.getMessage());
-            } finally {
+            }
+            finally
+            {
                 isLoading.postValue(false);
             }
         });
     }
 
     // Update existing card
-    public void updateCard(Card card) {
+    public void updateCard(Card card)
+    {
         isLoading.setValue(true);
-        executorService.execute(() -> {
-            try {
+        executorService.execute(() ->
+        {
+            try
+            {
                 cardDao.update(card);
                 loadCardsByDeck(card.deckId);
                 errorMessage.postValue(null);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 errorMessage.postValue("Failed to update card: " + e.getMessage());
-            } finally {
+            }
+            finally
+            {
                 isLoading.postValue(false);
             }
         });
     }
 
     // Delete card
-    public void deleteCard(Card card) {
+    public void deleteCard(Card card)
+    {
         isLoading.setValue(true);
-        executorService.execute(() -> {
-            try {
+        executorService.execute(() ->
+        {
+            try
+            {
                 cardDao.delete(card);
                 loadCardsByDeck(card.deckId);
                 errorMessage.postValue(null);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 errorMessage.postValue("Failed to delete card: " + e.getMessage());
-            } finally {
+            }
+            finally
+            {
                 isLoading.postValue(false);
             }
         });
     }
 
     // Navigation methods for flashcard study
-    public void nextCard() {
+    public void nextCard()
+    {
         List<Card> cards = cardsByDeck.getValue();
-        if (cards != null && !cards.isEmpty()) {
+        if (cards != null && !cards.isEmpty())
+        {
             int currentIndex = currentCardIndex.getValue() != null ? currentCardIndex.getValue() : 0;
             int nextIndex = (currentIndex + 1) % cards.size();
-            
+
             currentCardIndex.setValue(nextIndex);
             selectedCard.setValue(cards.get(nextIndex));
             isCardFlipped.setValue(false);
         }
     }
 
-    public void previousCard() {
+    public void previousCard()
+    {
         List<Card> cards = cardsByDeck.getValue();
-        if (cards != null && !cards.isEmpty()) {
+        if (cards != null && !cards.isEmpty())
+        {
             int currentIndex = currentCardIndex.getValue() != null ? currentCardIndex.getValue() : 0;
             int prevIndex = (currentIndex - 1 + cards.size()) % cards.size();
-            
+
             currentCardIndex.setValue(prevIndex);
             selectedCard.setValue(cards.get(prevIndex));
             isCardFlipped.setValue(false);
         }
     }
 
-    public void goToCard(int index) {
+    public void goToCard(int index)
+    {
         List<Card> cards = cardsByDeck.getValue();
-        if (cards != null && index >= 0 && index < cards.size()) {
+        if (cards != null && index >= 0 && index < cards.size())
+        {
             currentCardIndex.setValue(index);
             selectedCard.setValue(cards.get(index));
             isCardFlipped.setValue(false);
@@ -195,24 +247,28 @@ public class CardViewModel extends AndroidViewModel {
     }
 
     // Flip card (show front/back)
-    public void flipCard() {
+    public void flipCard()
+    {
         Boolean isFlipped = isCardFlipped.getValue();
         isCardFlipped.setValue(isFlipped != null ? !isFlipped : true);
     }
 
     // Shuffle cards
-    public void shuffleCards() {
+    public void shuffleCards()
+    {
         List<Card> cards = cardsByDeck.getValue();
-        if (cards != null && !cards.isEmpty()) {
+        if (cards != null && !cards.isEmpty())
+        {
             // Create a copy and shuffle
             List<Card> shuffledCards = new java.util.ArrayList<>(cards);
             java.util.Collections.shuffle(shuffledCards);
-            
+
             // Update indices to maintain order
-            for (int i = 0; i < shuffledCards.size(); i++) {
+            for (int i = 0; i < shuffledCards.size(); i++)
+            {
                 shuffledCards.get(i).index = i;
             }
-            
+
             cardsByDeck.setValue(shuffledCards);
             currentCardIndex.setValue(0);
             selectedCard.setValue(shuffledCards.get(0));
@@ -221,70 +277,83 @@ public class CardViewModel extends AndroidViewModel {
     }
 
     // Get current card
-    public Card getCurrentCard() {
+    public Card getCurrentCard()
+    {
         List<Card> cards = cardsByDeck.getValue();
         Integer currentIndex = currentCardIndex.getValue();
-        
-        if (cards != null && currentIndex != null && currentIndex >= 0 && currentIndex < cards.size()) {
+
+        if (cards != null && currentIndex != null && currentIndex >= 0 && currentIndex < cards.size())
+        {
             return cards.get(currentIndex);
         }
         return null;
     }
 
     // Get total number of cards
-    public int getTotalCards() {
+    public int getTotalCards()
+    {
         List<Card> cards = cardsByDeck.getValue();
         return cards != null ? cards.size() : 0;
     }
 
     // Check if we're at the first card
-    public boolean isFirstCard() {
+    public boolean isFirstCard()
+    {
         Integer currentIndex = currentCardIndex.getValue();
         return currentIndex != null && currentIndex == 0;
     }
 
     // Check if we're at the last card
-    public boolean isLastCard() {
+    public boolean isLastCard()
+    {
         List<Card> cards = cardsByDeck.getValue();
         Integer currentIndex = currentCardIndex.getValue();
         return cards != null && currentIndex != null && currentIndex == cards.size() - 1;
     }
 
     // Clear error message
-    public void clearError() {
+    public void clearError()
+    {
         errorMessage.setValue(null);
     }
 
     // Reset card state
-    public void resetCardState() {
+    public void resetCardState()
+    {
         currentCardIndex.setValue(0);
         isCardFlipped.setValue(false);
-        
+
         List<Card> cards = cardsByDeck.getValue();
-        if (cards != null && !cards.isEmpty()) {
+        if (cards != null && !cards.isEmpty())
+        {
             selectedCard.setValue(cards.get(0));
         }
     }
 
     @Override
-    protected void onCleared() {
+    protected void onCleared()
+    {
         super.onCleared();
         executorService.shutdown();
     }
 
     // Factory for creating ViewModel with custom parameters if needed
-    public static class Factory extends ViewModelProvider.AndroidViewModelFactory {
+    public static class Factory extends ViewModelProvider.AndroidViewModelFactory
+    {
         private final Application application;
 
-        public Factory(@NonNull Application application) {
+        public Factory(@NonNull Application application)
+        {
             super(application);
             this.application = application;
         }
 
         @NonNull
         @Override
-        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            if (modelClass.isAssignableFrom(CardViewModel.class)) {
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass)
+        {
+            if (modelClass.isAssignableFrom(CardViewModel.class))
+            {
                 return (T) new CardViewModel(application);
             }
             throw new IllegalArgumentException("Unknown ViewModel class");

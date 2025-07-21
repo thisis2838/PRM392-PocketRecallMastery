@@ -5,15 +5,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.api.UserApi;
-import com.prm392g2.prmapp.dtos.users.RegisterDto;
+import com.prm392g2.prmapp.dtos.users.RegisterDTO;
 import com.prm392g2.prmapp.network.ApiClient;
 
 import retrofit2.Call;
@@ -63,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-            RegisterDto dto = new RegisterDto(username, email, password);
+            RegisterDTO dto = new RegisterDTO(username, email, password);
             UserApi userApi = ApiClient.getClient().create(UserApi.class);
             userApi.register(dto).enqueue(new Callback<Void>() {
                 @Override

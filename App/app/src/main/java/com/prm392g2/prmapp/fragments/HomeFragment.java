@@ -20,23 +20,38 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment
+{
     RecyclerView topDeckList;
 
     public List<DeckSummaryDTO> decks = new ArrayList<>();
+    /*
+    {
+        decks.add(new Deck(1, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2023, 4, 1)));
+        decks.add(new Deck(2, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2022, 4, 1)));
+        decks.add(new Deck(3, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2021, 4, 1)));
+    }
+    */
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         topDeckList = view.findViewById(R.id.topDecksList);
         topDeckList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        DeckListAdapter deckListAdapter = new DeckListAdapter(decks, new DeckListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(DeckSummaryDTO deck) {
+        DeckListAdapter deckListAdapter = new DeckListAdapter(
+            decks,
+            new DeckListAdapter.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(DeckSummaryDTO deck)
+                {
 
+                }
             }
-        });
+        );
         topDeckList.setAdapter(deckListAdapter);
         return view;
     }
