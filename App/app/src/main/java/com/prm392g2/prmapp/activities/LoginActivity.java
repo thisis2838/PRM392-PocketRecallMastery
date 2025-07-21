@@ -7,15 +7,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.api.UserApi;
-import com.prm392g2.prmapp.dtos.users.LoginRequest;
-import com.prm392g2.prmapp.dtos.users.LoginResponse;
+import com.prm392g2.prmapp.dtos.users.LoginRequestDTO;
+import com.prm392g2.prmapp.dtos.users.LoginResponseDTO;
 import com.prm392g2.prmapp.network.ApiClient;
 
 import retrofit2.Call;
@@ -63,15 +62,15 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        LoginRequest request = new LoginRequest(username, password);
+        LoginRequestDTO request = new LoginRequestDTO(username, password);
         UserApi api = ApiClient.getClient().create(UserApi.class);
-        Call<LoginResponse> call = api.login(request);
+        Call<LoginResponseDTO> call = api.login(request);
 
         loginButton.setEnabled(false);
 
-        call.enqueue(new Callback<LoginResponse>() {
+        call.enqueue(new Callback<LoginResponseDTO>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(Call<LoginResponseDTO> call, Response<LoginResponseDTO> response) {
                 loginButton.setEnabled(true);
                 if (response.isSuccessful() && response.body() != null) {
                     String token = response.body().getToken();
@@ -94,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(Call<LoginResponseDTO> call, Throwable t) {
                 loginButton.setEnabled(true);
                 Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Network error", t);

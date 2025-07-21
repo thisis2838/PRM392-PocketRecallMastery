@@ -8,15 +8,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.EditText;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.api.UserApi;
-import com.prm392g2.prmapp.dtos.users.UserDto;
+import com.prm392g2.prmapp.dtos.users.UserSummaryDTO;
 import com.prm392g2.prmapp.network.ApiClient;
 
 import retrofit2.Call;
@@ -57,13 +53,13 @@ public class LoginInfoActivity extends AppCompatActivity {
 
         // Call backend to get user info
         UserApi api = ApiClient.getClient().create(UserApi.class);
-        Call<UserDto> call = api.getCurrentUser("Bearer " + token);
+        Call<UserSummaryDTO> call = api.getCurrentUser("Bearer " + token);
 
-        call.enqueue(new Callback<UserDto>() {
+        call.enqueue(new Callback<UserSummaryDTO>() {
             @Override
-            public void onResponse(Call<UserDto> call, Response<UserDto> response) {
+            public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    UserDto user = response.body();
+                    UserSummaryDTO user = response.body();
 
                     String info = "ID: " + user.id + "\n"
                             + "Username: " + user.username + "\n"
@@ -79,7 +75,7 @@ public class LoginInfoActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<UserDto> call, Throwable t) {
+            public void onFailure(Call<UserSummaryDTO> call, Throwable t) {
                 loginInfoTextView.setText("Error: " + t.getMessage());
             }
         });

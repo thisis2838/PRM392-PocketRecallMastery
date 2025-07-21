@@ -31,6 +31,7 @@ public class Deck
     public String description;
     public int creatorId;
     public int version;
+    public int cardCount;
     public int dateYear, dateMonth, dateDay;
     public Integer learningId = null;
 
