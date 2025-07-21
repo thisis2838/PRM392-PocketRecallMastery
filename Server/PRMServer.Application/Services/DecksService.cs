@@ -44,9 +44,7 @@ namespace PRMServer.Application.Services
         {
             if (arguments.Search != null)
             {
-                var regex = arguments.Search;
-                regex = Regex.Replace(regex, " +", ".*");
-                decks = decks.Where(x => Regex.IsMatch(x.Name, regex, RegexOptions.IgnoreCase));
+                decks = decks.Where(x => x.Name.Contains(arguments.Search));
             }
 
             if (arguments.MinCardCount != null)

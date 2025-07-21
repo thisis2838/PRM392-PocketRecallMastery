@@ -8,20 +8,21 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.prm392g2.prmapp.R;
+import com.prm392g2.prmapp.dtos.cards.CardDetailDTO;
 import com.prm392g2.prmapp.entities.Card;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CardMainAdapter extends RecyclerView.Adapter<CardMainAdapter.CardViewHolder> {
-    private List<Card> cards;
+    private List<CardDetailDTO> cards;
     private List<Boolean> isFlipped = new ArrayList<>();
 
     public interface OnItemClickListener {
-        void onItemClick(Card card);
+        void onItemClick(CardDetailDTO card);
     }
     private OnItemClickListener listener;
-    public CardMainAdapter(List<Card> cards, OnItemClickListener listener) {
+    public CardMainAdapter(List<CardDetailDTO> cards, OnItemClickListener listener) {
         this.cards = cards;
         this.listener = listener;
         for (int i = 0; i < cards.size(); i++) {
@@ -46,7 +47,7 @@ public class CardMainAdapter extends RecyclerView.Adapter<CardMainAdapter.CardVi
     }
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
-        Card card = cards.get(position);
+        CardDetailDTO card = cards.get(position);
         holder.question.setText(card.front);
         holder.answer.setText(card.back);
         holder.itemView.setOnClickListener(v -> {
@@ -64,5 +65,15 @@ public class CardMainAdapter extends RecyclerView.Adapter<CardMainAdapter.CardVi
     @Override
     public int getItemCount() {
         return cards.size();
+    }
+
+    public void updateData(List<CardDetailDTO> newCards) {
+        cards.clear();
+        cards.addAll(newCards);
+        isFlipped.clear();
+        for (int i = 0; i < newCards.size(); i++) {
+            isFlipped.add(false);
+            notifyItemChanged(i);
+        }
     }
 }

@@ -36,6 +36,19 @@
         android:paddingEnd="16dp"
         />
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_list"
+        android:text="Begin learning"
+        android:visibility="invisible"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_margin="8dp"
+        />
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBeginLearning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,6 +56,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_list"
         android:text="Begin learning"
+        android:visibility="gone"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_margin="8dp"
+        />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_list"
+        android:text="Save to device"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_margin="8dp"
@@ -52,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Deck Name placeholder"
-        app:layout_constraintTop_toBottomOf="@id/btnBeginLearning"
+        app:layout_constraintTop_toBottomOf="@id/btnBlock"
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="24sp"
         android:textStyle="bold"

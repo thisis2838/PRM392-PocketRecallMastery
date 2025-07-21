@@ -33,7 +33,7 @@ namespace PRMServer.Application.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<DeckDetailDTO>> GetDeck(int id)
         {
             var result = await _decks.GetDeck(id);

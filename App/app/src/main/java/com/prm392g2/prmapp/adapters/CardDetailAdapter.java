@@ -9,18 +9,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.prm392g2.prmapp.R;
+import com.prm392g2.prmapp.dtos.cards.CardDetailDTO;
 import com.prm392g2.prmapp.entities.Card;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CardDetailAdapter extends RecyclerView.Adapter<CardDetailAdapter.CardDetailViewHolder> {
-    private List<Card> cards = new ArrayList<>();
+    private List<CardDetailDTO> cards = new ArrayList<>();
     private OnItemClickListener listener;
     public interface OnItemClickListener {
-        void onItemClick(Card card);
+        void onItemClick(CardDetailDTO card);
     }
-    public CardDetailAdapter(List<Card> cards, OnItemClickListener listener) {
+    public CardDetailAdapter(List<CardDetailDTO> cards, OnItemClickListener listener) {
         this.cards = cards;
         this.listener = listener;
     }
@@ -31,7 +32,7 @@ public class CardDetailAdapter extends RecyclerView.Adapter<CardDetailAdapter.Ca
     }
     @Override
     public void onBindViewHolder(CardDetailViewHolder holder, int position) {
-        Card card = cards.get(position);
+        CardDetailDTO card = cards.get(position);
         holder.txtDetailFront.setText(card.front);
         holder.txtDetailBack.setText(card.back);
         holder.itemView.setOnClickListener(v -> listener.onItemClick(card));
@@ -50,7 +51,11 @@ public class CardDetailAdapter extends RecyclerView.Adapter<CardDetailAdapter.Ca
             super(itemView);
             txtDetailFront = itemView.findViewById(R.id.txtDetailFront);
             txtDetailBack = itemView.findViewById(R.id.txtDetailBack);
-            btnDetailMark = itemView.findViewById(R.id.btnDetailMark);
         }
+    }
+    public void updateData(List<CardDetailDTO> newCards) {
+        cards.clear();
+        cards.addAll(newCards);
+        notifyDataSetChanged();
     }
 }

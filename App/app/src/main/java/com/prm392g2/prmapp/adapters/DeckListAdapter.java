@@ -44,9 +44,9 @@ public class DeckListAdapter extends RecyclerView.Adapter<DeckListAdapter.ViewHo
         DeckSummaryDTO deck = decks.get(position);
 
         holder.deckName.setText(deck.name);
-        holder.cardCount.setText(String.valueOf(deck.cardsCount));
+        holder.cardCount.setText(String.valueOf(deck.cardsCount) + " cards");
         holder.username.setText(deck.creator.username);
-        holder.version.setText(String.valueOf(deck.version));
+        holder.version.setText("Version " + String.valueOf(deck.version));
         holder.viewCount.setText(String.valueOf(deck.viewsTotal));
         holder.downloadCount.setText(String.valueOf(deck.downloadsTotal));
 
