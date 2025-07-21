@@ -1,10 +1,7 @@
 package com.prm392g2.prmapp.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -14,10 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.prm392g2.prmapp.R;
-import com.prm392g2.prmapp.api.UserApi;
-import com.prm392g2.prmapp.dtos.users.LoginRequestDTO;
 import com.prm392g2.prmapp.dtos.users.LoginResponseDTO;
-import com.prm392g2.prmapp.network.ApiClient;
 import com.prm392g2.prmapp.services.UsersService;
 
 import retrofit2.Call;
@@ -31,11 +25,6 @@ public class LoginActivity extends AppCompatActivity
     private TextView forgotPasswordTextView;
     private ImageButton backToMainButton;
     private Button loginButton, registerButton;
-    private SharedPreferences sharedPreferences;
-
-    private static final String TAG = "LoginActivity";
-    private static final String PREF_NAME = "user_prefs";
-    private static final String KEY_TOKEN = "jwt_token";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,8 +39,6 @@ public class LoginActivity extends AppCompatActivity
         loginButton = findViewById(R.id.loginButton);
         registerButton = findViewById(R.id.registerButton);
 
-        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-
         // Forgot Password text click
         forgotPasswordTextView.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
@@ -60,7 +47,8 @@ public class LoginActivity extends AppCompatActivity
 
         // Back to main button click
         backToMainButton.setOnClickListener(v -> {
-            finish();
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
         });
 
         // Login button click
@@ -91,7 +79,7 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onResponse(Call<LoginResponseDTO> call, Response<LoginResponseDTO> response)
             {
-                loginButton.setEnabled(true);
+
                 if (response.isSuccessful() && response.body() != null)
                 {
                     Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
@@ -102,7 +90,7 @@ public class LoginActivity extends AppCompatActivity
                 else
                 {
                     Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Login failed: " + response.code());
+                    loginButton.setEnabled(true);
                 }
             }
 
@@ -111,7 +99,6 @@ public class LoginActivity extends AppCompatActivity
             {
                 loginButton.setEnabled(true);
                 Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Network error", t);
             }
         });
     }

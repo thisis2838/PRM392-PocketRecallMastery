@@ -67,7 +67,6 @@ public class ProfileFragment extends Fragment
 
         btnLogin.setOnClickListener(v ->
         {
-            // Redirect to LoginActivity or your login flow
             Intent intent = new Intent(requireContext(), LoginActivity.class);
             startActivity(intent);
         });

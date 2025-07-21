@@ -1,8 +1,6 @@
 package com.prm392g2.prmapp.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -36,13 +34,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
     private String password;
     private String purpose;
 
-    private SharedPreferences sharedPreferences;
-
-    private static final String PREF_NAME = "user_prefs";
-    private static final String KEY_TOKEN = "jwt_token";
-
-    private static final String TAG = "VerifyOtpActivity";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +43,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
         otpEditText = findViewById(R.id.editTextOtp);
         verifyOtpButton = findViewById(R.id.buttonVerifyOtp);
         resendOtpButton = findViewById(R.id.buttonResendOtp);
-
-        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         // Get passed data from RegisterActivity
         Intent intent = getIntent();
@@ -104,14 +93,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
                         Toast.makeText(VerifyOtpActivity.this, "OTP resent successfully", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(VerifyOtpActivity.this, "Failed to resend OTP", Toast.LENGTH_SHORT).show();
-                        try {
-                            if (response.errorBody() != null) {
-                                String errorBody = response.errorBody().string();
-                                Log.e(TAG, "Resend OTP error body: " + errorBody);
-                            }
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error reading errorBody", e);
-                        }
                     }
 
                     new CountDownTimer(15000, 1000) {
@@ -130,7 +111,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
                 public void onFailure(Call<Void> call, Throwable t) {
                     Toast.makeText(VerifyOtpActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     resendOtpButton.setEnabled(true);
-                    Log.e(TAG, "Resend OTP failed", t);
                 }
             });
         });
@@ -156,14 +136,12 @@ public class VerifyOtpActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             } else {
-                                Log.e(TAG, "Login failed after registration: " + response.code());
                                 Toast.makeText(VerifyOtpActivity.this, "Login failed. Please try again or log in manually.", Toast.LENGTH_LONG).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<LoginResponseDTO> call, Throwable t) {
-                            Log.e(TAG, "Login failed after registration", t);
                             Toast.makeText(VerifyOtpActivity.this, "Unable to log in at the moment. Check your connection and try again.", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -171,7 +149,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
                     try {
                         if (response.errorBody() != null) {
                             String errorBody = response.errorBody().string();
-                            Log.e(TAG, "Complete registration error: " + errorBody);
 
                             if (errorBody.contains("expired") || errorBody.contains("invalid OTP")) {
                                 Toast.makeText(VerifyOtpActivity.this, "The OTP is invalid or has expired. Please try again.", Toast.LENGTH_LONG).show();
@@ -184,7 +161,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
                             Toast.makeText(VerifyOtpActivity.this, "An unknown error occurred. Please try again later.", Toast.LENGTH_LONG).show();
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, "Error reading errorBody", e);
                         Toast.makeText(VerifyOtpActivity.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -193,7 +169,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 verifyOtpButton.setEnabled(true);
-                Log.e(TAG, "Complete registration failed", t);
                 Toast.makeText(VerifyOtpActivity.this, "Network error. Please check your connection and try again.", Toast.LENGTH_LONG).show();
             }
         });
@@ -219,7 +194,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
                     try {
                         if (response.errorBody() != null) {
                             String errorBody = response.errorBody().string();
-                            Log.e(TAG, "OTP verification failed: " + errorBody);
 
                             if (errorBody.contains("expired") || errorBody.contains("invalid")) {
                                 Toast.makeText(VerifyOtpActivity.this, "The OTP is invalid or has expired.", Toast.LENGTH_LONG).show();
@@ -230,7 +204,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
                             Toast.makeText(VerifyOtpActivity.this, "Unknown server error during OTP verification.", Toast.LENGTH_LONG).show();
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, "Error reading errorBody", e);
                         Toast.makeText(VerifyOtpActivity.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -239,7 +212,6 @@ public class VerifyOtpActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 verifyOtpButton.setEnabled(true);
-                Log.e(TAG, "Network error during OTP verification", t);
                 Toast.makeText(VerifyOtpActivity.this, "Network error. Please try again.", Toast.LENGTH_LONG).show();
             }
         });

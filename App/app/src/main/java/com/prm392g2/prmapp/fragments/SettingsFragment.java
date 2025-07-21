@@ -42,12 +42,11 @@ public class SettingsFragment extends Fragment
         btnLogout.setOnClickListener(v ->
         {
             // Clear JWT token from SharedPreferences
-            SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-            prefs.edit().remove("jwt_token").apply();
+            SharedPreferences prefs = requireContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
+            prefs.edit().remove("token").apply();
 
             // Redirect to LoginActivity
             Intent intent = new Intent(requireContext(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
     }

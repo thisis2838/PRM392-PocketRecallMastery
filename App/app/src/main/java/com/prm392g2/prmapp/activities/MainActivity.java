@@ -1,6 +1,5 @@
 package com.prm392g2.prmapp.activities;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -25,10 +24,6 @@ import com.prm392g2.prmapp.fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity
 {
-    private SharedPreferences prefs;
-    private static final String PREF_NAME = "auth";
-    private static final String KEY_TOKEN = "token";
-
     public static ViewPager2 viewPager;
     public static TabLayout tabLayout;
     public static Toolbar toolbar;
@@ -61,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         MainViewPager adapter = new MainViewPager(this);
         adapter.addFragment(new HomeFragment(), "Home", R.drawable.ic_home);
         adapter.addFragment(new DeckListFragment(), "Decks", R.drawable.ic_decks);
-        adapter.addFragment(new ProfileFragment(), "Profile", R.drawable.ic_decks);
+        adapter.addFragment(new ProfileFragment(), "Profile", R.drawable.ic_user);
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(
