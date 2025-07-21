@@ -24,6 +24,7 @@ import com.prm392g2.prmapp.adapters.DeckListAdapter;
 import com.prm392g2.prmapp.api.DeckApi;
 import com.prm392g2.prmapp.dtos.decks.DeckListArgumentsDTO;
 import com.prm392g2.prmapp.dtos.decks.DeckListDTO;
+import com.prm392g2.prmapp.dtos.decks.DeckListMetric;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
 import com.prm392g2.prmapp.entities.Deck;
 import com.prm392g2.prmapp.network.ApiClient;
@@ -40,33 +41,28 @@ public class PublicDeckFragment extends Fragment {
 
     public RecyclerView recyclerView;
     public DeckListAdapter adapter;
-    public List<Deck> decks = new ArrayList<>();
-    {
-        decks.add(new Deck(1, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2023, 4, 1)));
-        decks.add(new Deck(2, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2022, 4, 1)));
-        decks.add(new Deck(3, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2021, 4, 1)));
-    }
-
+    public List<DeckSummaryDTO> decks = new ArrayList<>();
+    public EditText search;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_public_deck, container, false);
         recyclerView = view.findViewById(R.id.deck_list);
-
+        search = view.findViewById(R.id.search_bar);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new DeckListAdapter(decks,
             new DeckListAdapter.OnItemClickListener() {
                 @Override
-                public void onItemClick(Deck deck) {
+                public void onItemClick(DeckSummaryDTO deck) {
                     Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
-                    intent.putExtra("deckId", deck.id);
+                    intent.putExtra("deckId", deck.Id);
                     startActivity(intent);
                 }
             }
         );
         recyclerView.setAdapter(adapter);
-
+        getDecks(new DeckListArgumentsDTO());
         MaterialButton filterButton = view.findViewById(R.id.filterButton);
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,9 +113,12 @@ public class PublicDeckFragment extends Fragment {
                 .create();
 
         buttonApply.setOnClickListener(v -> {
+            //Get search
+            String query = search.getText().toString();
             // Get sort by
             int sortById = radioGroupSortBy.getCheckedRadioButtonId();
             boolean sortByName = sortById == R.id.radioButtonSortByName;
+            boolean sortByViews = sortById == R.id.radioButtonSortByView;
 
             // Get sort order
             int sortOrderId = radioGroupSortOrder.getCheckedRadioButtonId();
@@ -131,26 +130,14 @@ public class PublicDeckFragment extends Fragment {
             int min = minStr.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(minStr);
             int max = maxStr.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(maxStr);
 
-            // Filter and sort decks
-            List<Deck> filtered = new ArrayList<>();
-            for (Deck deck : decks) {
-                int cardCount = deck.cardCount; // Replace with your actual card count property if different
-                if (cardCount >= min && cardCount <= max) {
-                    filtered.add(deck);
-                }
-            }
-            // Sort
-            if (sortByName) {
-                filtered.sort((d1, d2) -> ascending ?
-                    d1.name.compareToIgnoreCase(d2.name) :
-                    d2.name.compareToIgnoreCase(d1.name));
-            } else {
-                filtered.sort((d1, d2) -> ascending ?
-                    Integer.compare(d1.cardCount, d2.cardCount) :
-                    Integer.compare(d2.cardCount, d1.cardCount));
-            }
+            DeckListArgumentsDTO argumentsDTO = new DeckListArgumentsDTO();
+            argumentsDTO.setMaxCardCount(max);
+            argumentsDTO.setMinCardCount(min);
+            argumentsDTO.setSortingAscending(ascending);
+            argumentsDTO.setSortingMetric(sortByName ? DeckListMetric.Name : DeckListMetric.View);
 
-            adapter.updateData(filtered); // You may need to implement updateData in your adapter
+            getDecks(argumentsDTO);
+
             dialog.dismiss();
         });
 

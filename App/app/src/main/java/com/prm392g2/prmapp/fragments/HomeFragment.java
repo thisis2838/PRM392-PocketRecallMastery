@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.adapters.DeckListAdapter;
+import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
 import com.prm392g2.prmapp.entities.Deck;
 
 import java.util.ArrayList;
@@ -22,12 +23,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     RecyclerView topDeckList;
 
-    public List<Deck> decks = new ArrayList<>();
-    {
-        decks.add(new Deck(1, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2023, 4, 1)));
-        decks.add(new Deck(2, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2022, 4, 1)));
-        decks.add(new Deck(3, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2021, 4, 1)));
-    }
+    public List<DeckSummaryDTO> decks = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,7 +33,7 @@ public class HomeFragment extends Fragment {
         topDeckList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         DeckListAdapter deckListAdapter = new DeckListAdapter(decks, new DeckListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Deck deck) {
+            public void onItemClick(DeckSummaryDTO deck) {
 
             }
         });
