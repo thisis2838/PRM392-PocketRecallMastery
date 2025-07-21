@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PRMServer.Data.Context;
@@ -18,15 +19,25 @@ namespace PRMServer.Data.Seeding
             builder.UseSqlServer(configuration["ConnectionString"]);
             _context = new PRMContext(builder.Options);
 
-            _adminUser = await _context.Users.SingleAsync(x => x.UserName == "admin");
-
             await Clean();
             await SeedDecks();
         }
 
         static async Task Clean()
         {
-            await _context.Decks.ExecuteDeleteAsync();
+            await _context.Database.EnsureDeletedAsync();
+            await _context.Database.EnsureCreatedAsync();
+
+            _adminUser  = new User
+            {
+                UserName = "admin",
+                PasswordHash = new PasswordHasher<User>().HashPassword(new User(), "admin"),
+                SecurityStamp = Random.Shared.Next().ToString("X"),
+                ConcurrencyStamp = Random.Shared.Next().ToString(),
+                NormalizedUserName = "ADMIN",
+            };
+            await _context.Users.AddAsync(_adminUser);
+            await _context.SaveChangesAsync();
         }
 
         static async Task SeedDecks()

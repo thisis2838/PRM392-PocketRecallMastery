@@ -15,15 +15,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.api.UserApi;
-import com.prm392g2.prmapp.dtos.users.LoginRequest;
-import com.prm392g2.prmapp.dtos.users.LoginResponse;
+import com.prm392g2.prmapp.dtos.users.LoginRequestDTO;
+import com.prm392g2.prmapp.dtos.users.LoginResponseDTO;
 import com.prm392g2.prmapp.network.ApiClient;
+import com.prm392g2.prmapp.services.UsersService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity
+{
 
     private EditText usernameEditText, passwordEditText;
     private TextView forgotPasswordTextView;
@@ -36,7 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final String KEY_TOKEN = "jwt_token";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -64,53 +67,48 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> attemptLogin());
 
         // Register link click
-        registerButton.setOnClickListener(v -> {
+        registerButton.setOnClickListener(v ->
+        {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
     }
 
-    private void attemptLogin() {
+    private void attemptLogin()
+    {
         String username = usernameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty())
+        {
             Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        LoginRequest request = new LoginRequest(username, password);
-        UserApi api = ApiClient.getClient().create(UserApi.class);
-        Call<LoginResponse> call = api.login(request);
-
         loginButton.setEnabled(false);
-
-        call.enqueue(new Callback<LoginResponse>() {
+        UsersService.getInstance().login(username, password, new Callback<LoginResponseDTO>()
+        {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(Call<LoginResponseDTO> call, Response<LoginResponseDTO> response)
+            {
                 loginButton.setEnabled(true);
-                if (response.isSuccessful() && response.body() != null) {
-                    String token = response.body().getToken();
-
-                    // Store token in SharedPreferences
-                    sharedPreferences.edit()
-                            .putString(KEY_TOKEN, token)
-                            .apply();
-
+                if (response.isSuccessful() && response.body() != null)
+                {
                     Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-
-                    // Go to main screen
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
-                } else {
+                }
+                else
+                {
                     Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Login failed: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(Call<LoginResponseDTO> call, Throwable t)
+            {
                 loginButton.setEnabled(true);
                 Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Network error", t);

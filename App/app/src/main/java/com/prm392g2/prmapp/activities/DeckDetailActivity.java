@@ -1,6 +1,8 @@
 package com.prm392g2.prmapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,16 +55,14 @@ public class DeckDetailActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adapter);
 
-        RecyclerView recyclerView2 = findViewById(R.id.cardDetailsList);
-        recyclerView2.setLayoutManager(new LinearLayoutManager(this));
-        CardDetailAdapter adapter2 = new CardDetailAdapter(cards,
-                new CardDetailAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Card card) {
+        Button btnBeginLearning = findViewById(R.id.btnBeginLearning);
+        btnBeginLearning.setOnClickListener(v -> {
+            Intent intent = new Intent(DeckDetailActivity.this, DeckLearningActivity.class);
+//            intent.putExtra()
+            startActivity(intent);
+        });
 
-                    }
-                }
-        );
-        recyclerView2.setAdapter(adapter2);
+        Button backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(v -> finish());
     }
 }

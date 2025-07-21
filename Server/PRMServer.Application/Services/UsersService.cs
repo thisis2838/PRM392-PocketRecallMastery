@@ -41,7 +41,7 @@ namespace PRMServer.Application.Services
             return await _userManager.CreateAsync(user, dto.Password);
         }
 
-        public async Task<string?> LoginAsync(LoginDTO dto)
+        public async Task<string?> LoginAsync(LoginRequestDTO dto)
         {
             var user = await _userManager.FindByNameAsync(dto.UserName);
             if (user == null) return null;
@@ -80,7 +80,7 @@ namespace PRMServer.Application.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<UserDTO?> GetCurrentUserAsync(ClaimsPrincipal user)
+        public async Task<UserSummaryDTO?> GetCurrentUserAsync(ClaimsPrincipal user)
         {
             var userIdString = user.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
@@ -90,11 +90,12 @@ namespace PRMServer.Application.Services
             if (userEntity == null)
                 return null;
 
-            return new UserDTO
+            return new UserSummaryDTO
             {
                 Id = userEntity.Id,
-                Username = userEntity.UserName,
-                Email = userEntity.Email
+                Username = userEntity.UserName ?? "null",
+                Email = userEntity.Email ?? "null",
+                DecksCount = await _context.Decks.CountAsync(d => d.CreatorId == userEntity.Id)
             };
         }
 

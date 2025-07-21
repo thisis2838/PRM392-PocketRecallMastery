@@ -15,7 +15,8 @@ import com.prm392g2.prmapp.R;
  * Use the {@link PersonalInfoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PersonalInfoFragment extends Fragment {
+public class PersonalInfoFragment extends Fragment
+{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +27,8 @@ public class PersonalInfoFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public PersonalInfoFragment() {
+    public PersonalInfoFragment()
+    {
         // Required empty public constructor
     }
 
@@ -39,7 +41,8 @@ public class PersonalInfoFragment extends Fragment {
      * @return A new instance of fragment PersonalInfoFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PersonalInfoFragment newInstance(String param1, String param2) {
+    public static PersonalInfoFragment newInstance(String param1, String param2)
+    {
         PersonalInfoFragment fragment = new PersonalInfoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -49,9 +52,11 @@ public class PersonalInfoFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null)
+        {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
@@ -59,7 +64,8 @@ public class PersonalInfoFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_personal_info, container, false);
     }

@@ -14,12 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.api.UserApi;
-import com.prm392g2.prmapp.dtos.users.LoginRequest;
-import com.prm392g2.prmapp.dtos.users.LoginResponse;
-import com.prm392g2.prmapp.dtos.users.RegisterDto;
+import com.prm392g2.prmapp.dtos.users.LoginRequestDTO;
+import com.prm392g2.prmapp.dtos.users.LoginResponseDTO;
 import com.prm392g2.prmapp.dtos.users.SendOtpRequestDTO;
 import com.prm392g2.prmapp.dtos.users.VerifyOtpRequestDTO;
 import com.prm392g2.prmapp.network.ApiClient;
+import com.prm392g2.prmapp.services.UsersService;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -95,7 +96,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
             resendOtpButton.setEnabled(false);
 
             SendOtpRequestDTO resendRequest = new SendOtpRequestDTO(email, purpose);
-            UserApi api = ApiClient.getClient().create(UserApi.class);
+            UserApi api = ApiClient.getInstance().create(UserApi.class);
             api.sendOtp(resendRequest).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
@@ -138,23 +139,19 @@ public class VerifyOtpActivity extends AppCompatActivity {
     private void completeRegistration(VerifyOtpRequestDTO request) {
         verifyOtpButton.setEnabled(false);
 
-        UserApi api = ApiClient.getClient().create(UserApi.class);
+        UserApi api = ApiClient.getInstance().create(UserApi.class);
         api.completeRegistration(request).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 verifyOtpButton.setEnabled(true);
                 if (response.isSuccessful()) {
                     // Now perform login after successful registration
-                    LoginRequest loginRequest = new LoginRequest(username, password);
-                    api.login(loginRequest).enqueue(new Callback<LoginResponse>() {
+                    LoginRequestDTO loginRequest = new LoginRequestDTO(username, password);
+                    UsersService.getInstance().login(username, password, new Callback<LoginResponseDTO>() {
                         @Override
-                        public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                            if (response.isSuccessful() && response.body() != null) {
-                                String token = response.body().getToken();
-                                sharedPreferences.edit().putString(KEY_TOKEN, token).apply();
-
+                        public void onResponse(Call<LoginResponseDTO> call, Response<LoginResponseDTO> response) {
+                            if (response.isSuccessful() && response.body() != null && response.body().getToken() != null) {
                                 Toast.makeText(VerifyOtpActivity.this, "Registration successful! Logging you in...", Toast.LENGTH_SHORT).show();
-
                                 Intent intent = new Intent(VerifyOtpActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -165,7 +162,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        public void onFailure(Call<LoginResponseDTO> call, Throwable t) {
                             Log.e(TAG, "Login failed after registration", t);
                             Toast.makeText(VerifyOtpActivity.this, "Unable to log in at the moment. Check your connection and try again.", Toast.LENGTH_LONG).show();
                         }
@@ -205,7 +202,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
     private void verifyForgotPassword(VerifyOtpRequestDTO request) {
         verifyOtpButton.setEnabled(false);
 
-        UserApi api = ApiClient.getClient().create(UserApi.class);
+        UserApi api = ApiClient.getInstance().create(UserApi.class);
         api.verifyOtp(request).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

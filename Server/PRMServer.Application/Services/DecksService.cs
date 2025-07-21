@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PRMServer.Application.DTOs.Decks;
 using PRMServer.Application.Services.Contracts;
@@ -58,10 +59,10 @@ namespace PRMServer.Application.Services
             {
                 case DeckListMetric.Name:
                     decks = decks.OrderBy(x => x.Name.ToLower()); break;
-                case DeckListMetric.PopularityWeekly:
-                    decks = decks.OrderBy(x => x.ViewsWeekly + x.DownloadsWeekly); break;
-                case DeckListMetric.PopularityTotal:
-                    decks = decks.OrderBy(x => x.ViewsTotal + x.DownloadsTotal); break;
+                case DeckListMetric.View:
+                    decks = decks.OrderBy(x => x.ViewsTotal); break;
+                case DeckListMetric.Download:
+                    decks = decks.OrderBy(x => x.DownloadsTotal); break;
             }
             if (!arguments.SortingAscending)
                 decks = decks.Reverse();
@@ -71,7 +72,8 @@ namespace PRMServer.Application.Services
                 TotalCount = await decks.CountAsync(),
                 Decks = await decks
                     .ProjectTo<DeckSummaryDTO>(_mapper.ConfigurationProvider)
-                    .ApplyPagination(arguments.PageIndex, arguments.PageSize)
+                    .Take(50) // Limit to 100 for performance; adjust as needed
+                               //.ApplyPagination(arguments.PageIndex, arguments.PageSize)
                     .ToListAsync()
             };
         }

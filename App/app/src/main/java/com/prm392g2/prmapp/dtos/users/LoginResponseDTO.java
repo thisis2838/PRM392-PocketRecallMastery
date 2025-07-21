@@ -1,6 +1,7 @@
 package com.prm392g2.prmapp.dtos.users;
 
-public class LoginResponse {
+public class LoginResponseDTO
+{
     private String token;
 
     public String getToken() {

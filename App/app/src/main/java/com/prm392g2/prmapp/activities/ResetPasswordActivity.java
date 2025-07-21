@@ -54,7 +54,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
             }
 
             ResetPasswordDTO dto = new ResetPasswordDTO(email, newPassword);
-            UserApi api = ApiClient.getClient().create(UserApi.class);
+            UserApi api = ApiClient.getInstance().create(UserApi.class);
             api.resetPassword(dto).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {

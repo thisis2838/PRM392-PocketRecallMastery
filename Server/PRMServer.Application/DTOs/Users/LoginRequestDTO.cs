@@ -2,7 +2,7 @@
 
 namespace PRMServer.Application.DTOs.Users
 {
-    public class LoginDTO
+    public class LoginRequestDTO
     {
         [Required]
         public string UserName { get; set; } = null!;

@@ -80,7 +80,7 @@ namespace PRMServer.Application.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDTO model)
+        public async Task<IActionResult> Login(LoginRequestDTO model)
         {
             var token = await _usersService.LoginAsync(model);
             if (token == null)
@@ -93,11 +93,11 @@ namespace PRMServer.Application.Controllers
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
         {
-            var userDto = await _usersService.GetCurrentUserAsync(User);
-            if (userDto == null)
+            var userSummaryDto = await _usersService.GetCurrentUserAsync(User);
+            if (userSummaryDto == null)
                 return Unauthorized();
 
-            return Ok(userDto);
+            return Ok(userSummaryDto);
         }
 
         [HttpGet("{userId}")]

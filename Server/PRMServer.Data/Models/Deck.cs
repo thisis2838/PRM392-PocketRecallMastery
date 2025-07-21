@@ -28,6 +28,7 @@ namespace PRMServer.Data.Models
         public int DownloadsWeekly { get; set; } = 0;
 
         public required DateOnly CreatedAt { get; set; }
+        public DateOnly? UpdatedAt { get; set; }
 
         public virtual ICollection<Card> Cards { get; set; } = null!;
 
