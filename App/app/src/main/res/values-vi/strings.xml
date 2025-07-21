@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PocketRecallMastery</string>
+    <string name="hello_blank_fragment">Xin chào blank fragment</string>
+    <string name="setting_language">Ngôn ngữ</string>
+    <string name="setting_dark_mode">Chế độ tối</string>
+    <string name="setting_dark_mode_summary">Bật giao diện tối cho ứng dụng</string>
+
+    <!-- Profile -->
+    <string name="username">Tên người dùng</string>
+    <string name="email">Email</string>
+    <string name="options">Tùy chọn</string>
+    <string name="change_password">Đổi mật khẩu</string>
+    <string name="edit_email">Chỉnh sửa Email</string>
+    <string name="logout">Đăng xuất</string>
+
+    <!-- ProfileFragment -->
+    <string name="personal_info">Thông tin cá nhân</string>
+    <string name="settings">Cài đặt</string>
+    <string name="log_in">Đăng nhập</string>
+    <string name="loading">Đang tải&#8230;</string>
+
+    <string name="back">Quay lại</string>
+    <string name="change_password_title">Đổi mật khẩu của bạn</string>
+    <string name="current_password_hint">Mật khẩu hiện tại</string>
+    <string name="new_password_hint">Mật khẩu mới</string>
+    <string name="confirm_new_password_hint">Nhập lại mật khẩu mới</string>
+    <string name="password_rules">Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.</string>
+    <string name="change_password_button">Đổi mật khẩu</string>
+
+    <string name="forgot_password_title">Quên mật khẩu</string>
+    <string name="forgot_password_info">Vui lòng nhập email đã đăng ký để nhận OTP đặt lại mật khẩu.</string>
+    <string name="forgot_password_email_hint">Nhập email của bạn</string>
+    <string name="forgot_password_send_otp">Gửi OTP</string>
+
+    <string name="register">Đăng ký</string>
+    <string name="dont_have_account">Chưa có tài khoản?</string>
+    <string name="password">Mật khẩu</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="login">Đăng nhập</string>
+
+    <string name="success_icon">Biểu tượng thành công</string>
+    <string name="password_reset_success">Đặt lại mật khẩu thành công</string>
+    <string name="password_reset_success_message">Bạn có thể sử dụng mật khẩu mới để đăng nhập.</string>
+    <string name="back_to_login">Quay lại đăng nhập</string>
+
+    <string name="reenter_password">Nhập lại mật khẩu</string>
+    <string name="already_have_account">Đã có tài khoản?</string>
+
+    <string name="reset_password_title">Đặt lại mật khẩu</string>
+    <string name="reset_password_info">Vui lòng nhập mật khẩu mới của bạn.</string>
+    <string name="confirm_password_hint">Xác nhận mật khẩu</string>
+    <string name="reset_password_button">Đặt lại mật khẩu</string>
+
+    <string name="verify_otp_title">Nhập OTP</string>
+    <string name="verify_otp_info">OTP đã được gửi đến email đã đăng ký của bạn.</string>
+    <string name="otp_hint">OTP 6 chữ số</string>
+    <string name="resend_otp">Gửi lại OTP</string>
+    <string name="didnt_receive_code">Không nhận được mã?</string>
+    <string name="verify_otp">Xác minh OTP</string>
+
+    <string name="enter_new_email">Nhập email mới</string>
+    <string name="submit">Gửi</string>
+
+    <string name="general_information">Thông tin chung</string>
+
+    <string name="welcome_back">Chào mừng trở lại!</string>
+
+    <string name="greeting_hello">Chào %1$s, hôm nay bạn muốn làm gì nào?</string>
+    <string name="greeting_cooking">Từ giờ ông không được vào bếp nữa, %1$s!</string>
+    <string name="greeting_relax">Đôi khi, thư giãn một chút cũng tốt mà, %1$s.</string>
+    <string name="greeting_study">%1$s, hôm nay là một ngày tuyệt vời để học!</string>
+    <string name="greeting_logged_out">Ôi! Có vẻ chúng tôi chưa biết bạn.\nHãy đăng nhập trước để cùng nhau học nhé?</string>
+
+    <string name="otp_sent_register">Mã OTP đã được gửi đến email của bạn, vui lòng xác nhận email để hoàn tất đăng ký.</string>
+    <string name="otp_sent_reset_password">Nếu email của bạn đã đăng ký, mã OTP đã được gửi.</string>
+    <string name="otp_sent_change_email">Mã OTP đã được gửi đến email mới của bạn. Vui lòng xác nhận để hoàn tất thay đổi.</string>
+    <string name="otp_empty">OTP không được để trống.</string>
+    <string name="unknown_purpose">Mục đích không xác định.</string>
+    <string name="otp_resent_success">Gửi lại OTP thành công</string>
+    <string name="otp_resent_failed">Gửi lại OTP thất bại</string>
+    <string name="resend_otp_with_seconds">Gửi lại OTP (%1$ds)</string>
+    <string name="registration_success">Đăng ký thành công! Đang đăng nhập...</string>
+    <string name="login_failed">Đăng nhập thất bại. Vui lòng thử lại hoặc đăng nhập thủ công.</string>
+    <string name="login_unable">Không thể đăng nhập lúc này. Kiểm tra kết nối và thử lại.</string>
+    <string name="otp_invalid_expired">OTP không hợp lệ hoặc đã hết hạn. Vui lòng thử lại.</string>
+    <string name="registration_session_expired">Phiên đăng ký của bạn đã hết hạn. Vui lòng đăng ký lại.</string>
+    <string name="registration_failed">Không thể hoàn tất đăng ký. Vui lòng thử lại.</string>
+    <string name="unknown_error">Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.</string>
+    <string name="something_wrong">Đã xảy ra lỗi. Vui lòng thử lại.</string>
+    <string name="network_error_retry">Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.</string>
+    <string name="otp_verified_reset_password">OTP hợp lệ. Bạn có thể đặt lại mật khẩu.</string>
+    <string name="otp_verification_failed">Xác minh OTP thất bại. Vui lòng thử lại.</string>
+    <string name="unknown_server_error_otp">Lỗi máy chủ không xác định khi xác minh OTP.</string>
+    <string name="network_error_try_again">Lỗi mạng. Vui lòng thử lại.</string>
+    <string name="not_logged_in">Bạn chưa đăng nhập.</string>
+    <string name="email_changed_success">Thay đổi email thành công!</string>
+    <string name="failed_change_email">Thay đổi email thất bại: %1$s</string>
+    <string name="network_error_with_message">Lỗi mạng: %1$s</string>
+</resources>

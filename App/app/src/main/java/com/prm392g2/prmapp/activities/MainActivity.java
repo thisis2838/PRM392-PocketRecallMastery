@@ -1,5 +1,6 @@
 package com.prm392g2.prmapp.activities;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.prm392g2.prmapp.fragments.DeckListFragment;
 import com.prm392g2.prmapp.fragments.HomeFragment;
 import com.prm392g2.prmapp.fragments.ProfileFragment;
 import com.prm392g2.prmapp.fragments.SettingsFragment;
+import com.prm392g2.prmapp.helpers.LocaleHelper;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -157,5 +159,12 @@ public class MainActivity extends AppCompatActivity
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(newBase);
+        String lang = prefs.getString("language", "en");
+        super.attachBaseContext(LocaleHelper.setLocale(newBase, lang));
     }
 }

@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="Welcome back!"
+        android:text="@string/welcome_back"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,21 +78,21 @@
                 android:id="@+id/btnPersonalInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Personal Info"
+                android:text="@string/personal_info"
                 android:layout_marginBottom="12dp" />
 
             <Button
                 android:id="@+id/btnSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:layout_marginBottom="12dp" />
 
             <Button
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Log In"
+                android:text="@string/log_in"
                 android:visibility="gone" />
 
         </LinearLayout>

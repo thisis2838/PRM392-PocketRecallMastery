@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,18 +6,16 @@
     android:layout_height="match_parent"
     android:padding="24dp">
 
-    <!-- General Info Label -->
     <TextView
         android:id="@+id/tvGeneralInfoLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="General Information"
+        android:text="@string/general_information"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Divider -->
     <View
         android:id="@+id/viewDivider1"
         android:layout_width="0dp"
@@ -29,13 +26,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Username Label -->
     <TextView
         android:id="@+id/tvUsernameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Username"
+        android:text="@string/username"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/viewDivider1"
@@ -52,13 +48,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Email Label -->
     <TextView
         android:id="@+id/tvEmailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Email"
+        android:text="@string/email"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/tvUsername"
@@ -75,7 +70,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Divider -->
     <View
         android:id="@+id/viewDivider2"
         android:layout_width="0dp"
@@ -86,25 +80,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Options Label -->
     <TextView
         android:id="@+id/tvOptionsLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Options"
+        android:text="@string/options"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/viewDivider2"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Buttons Row -->
     <Button
         android:id="@+id/btnEditEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Edit Email"
+        android:text="@string/edit_email"
         app:layout_constraintTop_toBottomOf="@id/tvOptionsLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnChangePassword"
@@ -116,7 +108,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Change Password"
+        android:text="@string/change_password"
         app:layout_constraintTop_toBottomOf="@id/tvOptionsLabel"
         app:layout_constraintStart_toEndOf="@id/btnEditEmail"
         app:layout_constraintEnd_toEndOf="parent"
@@ -128,7 +120,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Logout"
+        android:text="@string/logout"
         app:layout_constraintTop_toBottomOf="@id/btnChangePassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

@@ -86,7 +86,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showLoggedOutUI() {
-        tvGreeting.setText("Oops! We don't seem to know you yet.\nHow about login first so we can start learning together?");
+        tvGreeting.setText(getString(R.string.greeting_logged_out));
         ivAndroidLogo.setImageResource(R.drawable.ic_expressionless);
 
         btnLogin.setVisibility(View.VISIBLE);
@@ -95,10 +95,10 @@ public class ProfileFragment extends Fragment {
 
     private void showLoggedInUI(String username) {
         String[] greetings = {
-                "Hello " + username + ", what are we up to today?",
-                "Now we're cooking, " + username + "!",
-                "Sometimes, it's better to relax a bit, " + username + ".",
-                username + ", it's a great day to study!",
+                getString(R.string.greeting_hello, username),
+                getString(R.string.greeting_cooking, username),
+                getString(R.string.greeting_relax, username),
+                getString(R.string.greeting_study, username),
         };
 
         int[] icons = {
