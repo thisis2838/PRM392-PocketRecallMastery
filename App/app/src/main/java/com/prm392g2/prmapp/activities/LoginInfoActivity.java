@@ -19,7 +19,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginInfoActivity extends AppCompatActivity {
+public class LoginInfoActivity extends AppCompatActivity
+{
 
     private TextView loginInfoTextView;
     private EditText tokenEditText;
@@ -28,7 +29,8 @@ public class LoginInfoActivity extends AppCompatActivity {
     private static final String KEY_TOKEN = "jwt_token";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_info);
 
@@ -36,7 +38,8 @@ public class LoginInfoActivity extends AppCompatActivity {
         tokenEditText = findViewById(R.id.tokenEditText);
         btnGoToHome = findViewById(R.id.btnGoToHome);
 
-        btnGoToHome.setOnClickListener(v -> {
+        btnGoToHome.setOnClickListener(v ->
+        {
             Intent intent = new Intent(LoginInfoActivity.this, MainActivity.class);
             startActivity(intent);
         });
@@ -46,7 +49,8 @@ public class LoginInfoActivity extends AppCompatActivity {
         String token = prefs.getString(KEY_TOKEN, null);
         tokenEditText.setText(token != null ? token : "No token saved.");
 
-        if (token == null) {
+        if (token == null)
+        {
             loginInfoTextView.setText("No login token found.");
             return;
         }
@@ -55,27 +59,29 @@ public class LoginInfoActivity extends AppCompatActivity {
         UserApi api = ApiClient.getClient().create(UserApi.class);
         Call<UserSummaryDTO> call = api.getCurrentUser("Bearer " + token);
 
-        call.enqueue(new Callback<UserSummaryDTO>() {
+        call.enqueue(new Callback<UserSummaryDTO>()
+        {
             @Override
-            public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response) {
-                if (response.isSuccessful() && response.body() != null) {
+            public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response)
+            {
+                if (response.isSuccessful() && response.body() != null)
+                {
                     UserSummaryDTO user = response.body();
 
                     String info = "ID: " + user.id + "\n"
-                            + "Username: " + user.username + "\n"
-                            + "Email: " + user.email + "\n"
-                            + "Language: " + user.language + "\n"
-                            + "Theme: " + user.themeName + "\n"
-                            + "Notifications: " + user.isNotificationOn;
+                        + "Username: " + user.username + "\n";
 
                     loginInfoTextView.setText(info);
-                } else {
+                }
+                else
+                {
                     loginInfoTextView.setText("Failed to load user info: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<UserSummaryDTO> call, Throwable t) {
+            public void onFailure(Call<UserSummaryDTO> call, Throwable t)
+            {
                 loginInfoTextView.setText("Error: " + t.getMessage());
             }
         });

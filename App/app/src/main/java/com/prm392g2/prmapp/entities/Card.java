@@ -1,6 +1,7 @@
 package com.prm392g2.prmapp.entities;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(
@@ -22,6 +23,7 @@ public class Card
     public int index;
     public int deckId;
 
+    @Ignore
     public Card(int id, String front, String back, int index, int deckId)
     {
         this.id = id;
@@ -30,5 +32,8 @@ public class Card
         this.index = index;
         this.deckId = deckId;
     }
-    public Card() {}
+
+    public Card()
+    {
+    }
 }

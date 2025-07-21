@@ -26,17 +26,21 @@ import retrofit2.Response;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.activities.LoginActivity;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment
+{
 
     private TextView tvUserInfo;
     private EditText etJwt;
     private Button btnSettings, btnPersonalInfo, btnLogin;
 
-    public ProfileFragment() {}
+    public ProfileFragment()
+    {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         tvUserInfo = view.findViewById(R.id.tvUserInfo);
@@ -50,18 +54,19 @@ public class ProfileFragment extends Fragment {
         updateButtonVisibility();
 
         btnSettings.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, new SettingsFragment())
-                .addToBackStack(null)
-                .commit());
+            .beginTransaction()
+            .replace(R.id.fragment_container, new SettingsFragment())
+            .addToBackStack(null)
+            .commit());
 
         btnPersonalInfo.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, new PersonalInfoFragment())
-                .addToBackStack(null)
-                .commit());
+            .beginTransaction()
+            .replace(R.id.fragment_container, new PersonalInfoFragment())
+            .addToBackStack(null)
+            .commit());
 
-        btnLogin.setOnClickListener(v -> {
+        btnLogin.setOnClickListener(v ->
+        {
             // Redirect to LoginActivity or your login flow
             Intent intent = new Intent(requireContext(), LoginActivity.class);
             startActivity(intent);
@@ -70,17 +75,22 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    private void loadJwt() {
+    private void loadJwt()
+    {
         SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         String token = prefs.getString("jwt_token", null);
-        if (token == null || token.isEmpty()) {
+        if (token == null || token.isEmpty())
+        {
             etJwt.setText("Not logged in");
-        } else {
+        }
+        else
+        {
             etJwt.setText(token);
         }
     }
 
-    private void updateButtonVisibility() {
+    private void updateButtonVisibility()
+    {
         SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         String token = prefs.getString("jwt_token", null);
 
@@ -91,11 +101,13 @@ public class ProfileFragment extends Fragment {
         btnLogin.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
     }
 
-    private void loadUserInfo() {
+    private void loadUserInfo()
+    {
         SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         String token = prefs.getString("jwt_token", null);
 
-        if (token == null || token.isEmpty()) {
+        if (token == null || token.isEmpty())
+        {
             tvUserInfo.setText("User not logged in");
             return;
         }
@@ -103,27 +115,29 @@ public class ProfileFragment extends Fragment {
         UserApi api = ApiClient.getClient().create(UserApi.class);
         Call<UserSummaryDTO> call = api.getCurrentUser("Bearer " + token);
 
-        call.enqueue(new Callback<UserSummaryDTO>() {
+        call.enqueue(new Callback<UserSummaryDTO>()
+        {
             @Override
-            public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response) {
-                if (response.isSuccessful() && response.body() != null) {
+            public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response)
+            {
+                if (response.isSuccessful() && response.body() != null)
+                {
                     UserSummaryDTO user = response.body();
 
                     String info = "ID: " + user.id + "\n"
-                            + "Username: " + user.username + "\n"
-                            + "Email: " + user.email + "\n"
-                            + "Language: " + user.language + "\n"
-                            + "Theme: " + user.themeName + "\n"
-                            + "Notifications: " + (user.isNotificationOn ? "On" : "Off");
+                        + "Username: " + user.username + "\n";
 
                     tvUserInfo.setText(info);
-                } else {
+                }
+                else
+                {
                     tvUserInfo.setText("Failed to load user info: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<UserSummaryDTO> call, Throwable t) {
+            public void onFailure(Call<UserSummaryDTO> call, Throwable t)
+            {
                 tvUserInfo.setText("Error loading user info: " + t.getMessage());
             }
         });

@@ -11,55 +11,64 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
-import com.prm392g2.prmapp.entities.Deck;
 
 import java.util.List;
 
-public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewHolder>{
+public class DeckListAdapter extends RecyclerView.Adapter<DeckListAdapter.ViewHolder>
+{
     private final List<DeckSummaryDTO> decks;
     private OnItemClickListener listener;
 
-    public interface OnItemClickListener {
+    public interface OnItemClickListener
+    {
         void onItemClick(DeckSummaryDTO deck);
     }
 
-    public DeckListAdapter(List<DeckSummaryDTO> decks, OnItemClickListener listener) {
+    public DeckListAdapter(List<DeckSummaryDTO> decks, OnItemClickListener listener)
+    {
         this.decks = decks;
         this.listener = listener;
     }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_deck, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position)
+    {
         DeckSummaryDTO deck = decks.get(position);
 
-        holder.deckName.setText(deck.getName());
-        holder.cardCount.setText(String.valueOf(deck.getCardsCount()));
-        holder.username.setText(deck.getCreator().Username);
-        holder.version.setText(String.valueOf(deck.Version));
-        holder.viewCount.setText(String.valueOf(deck.getViewsTotal()));
-        holder.downloadCount.setText(String.valueOf(deck.getDownloadsTotal()));
+        holder.deckName.setText(deck.name);
+        holder.cardCount.setText(String.valueOf(deck.cardsCount));
+        holder.username.setText(deck.creator.username);
+        holder.version.setText(String.valueOf(deck.version));
+        holder.viewCount.setText(String.valueOf(deck.viewsTotal));
+        holder.downloadCount.setText(String.valueOf(deck.downloadsTotal));
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 listener.onItemClick(deck);
             }
         });
     }
 
-    public void updateData(List<DeckSummaryDTO> newDecks) {
+    public void updateData(List<DeckSummaryDTO> newDecks)
+    {
         decks.clear();
         decks.addAll(newDecks);
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder
+    {
         public TextView deckName;
         public TextView cardCount;
         public TextView username;
@@ -67,7 +76,9 @@ public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewH
         public TextView viewCount;
         public TextView downloadCount;
         public ShapeableImageView profileImage;
-        public ViewHolder(@NonNull View itemView) {
+
+        public ViewHolder(@NonNull View itemView)
+        {
             super(itemView);
             deckName = itemView.findViewById(R.id.txtDeckName);
             cardCount = itemView.findViewById(R.id.txtCardCount);
@@ -80,7 +91,8 @@ public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewH
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
         return decks.size();
     }
 }
