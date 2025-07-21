@@ -10,19 +10,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
 import com.prm392g2.prmapp.R;
+import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
 import com.prm392g2.prmapp.entities.Deck;
 
 import java.util.List;
 
 public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewHolder>{
-    private final List<Deck> decks;
+    private final List<DeckSummaryDTO> decks;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(Deck deck);
+        void onItemClick(DeckSummaryDTO deck);
     }
 
-    public DeckListAdapter(List<Deck> decks, OnItemClickListener listener) {
+    public DeckListAdapter(List<DeckSummaryDTO> decks, OnItemClickListener listener) {
         this.decks = decks;
         this.listener = listener;
     }
@@ -35,9 +36,15 @@ public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewH
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Deck deck = decks.get(position);
+        DeckSummaryDTO deck = decks.get(position);
 
-        holder.deckName.setText(deck.name);
+        holder.deckName.setText(deck.getName());
+        holder.cardCount.setText(String.valueOf(deck.getCardsCount()));
+        holder.username.setText(deck.getCreator().Username);
+        holder.version.setText(String.valueOf(deck.Version));
+        holder.viewCount.setText(String.valueOf(deck.getViewsTotal()));
+        holder.downloadCount.setText(String.valueOf(deck.getDownloadsTotal()));
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,7 +53,7 @@ public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewH
         });
     }
 
-    public void updateData(List<Deck> newDecks) {
+    public void updateData(List<DeckSummaryDTO> newDecks) {
         decks.clear();
         decks.addAll(newDecks);
         notifyDataSetChanged();
@@ -56,6 +63,9 @@ public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewH
         public TextView deckName;
         public TextView cardCount;
         public TextView username;
+        public TextView version;
+        public TextView viewCount;
+        public TextView downloadCount;
         public ShapeableImageView profileImage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +73,9 @@ public class DeckListAdapter extends  RecyclerView.Adapter<DeckListAdapter.ViewH
             cardCount = itemView.findViewById(R.id.txtCardCount);
             username = itemView.findViewById(R.id.txtUsername);
             profileImage = itemView.findViewById(R.id.profile_image);
+            version = itemView.findViewById(R.id.txtVersion);
+            viewCount = itemView.findViewById(R.id.txtViewCount);
+            downloadCount = itemView.findViewById(R.id.txtDownloadCount);
         }
     }
 

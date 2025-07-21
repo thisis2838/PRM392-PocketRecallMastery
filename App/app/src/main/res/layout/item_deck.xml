@@ -24,6 +24,15 @@
             android:textStyle="bold"
             />
         <TextView
+            android:id="@+id/txtVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/txtDeckName"
+            app:layout_constraintBottom_toTopOf="@id/txtCardCount"
+            android:text="v1"
+            android:layout_marginStart="8dp"
+            />
+        <TextView
             android:id="@+id/txtCardCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,6 +61,46 @@
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/profile_image"
             app:layout_constraintTop_toBottomOf="@id/txtCardCount" />
+
+        <ImageView
+            android:id="@+id/icView"
+            android:layout_width="33dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_image"
+            />
+
+        <TextView
+            android:id="@+id/txtViewCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1234"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/icView"
+            app:layout_constraintTop_toBottomOf="@id/profile_image" />
+
+        <ImageView
+            android:id="@+id/icDownload"
+            android:layout_width="33dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_download"
+            app:layout_constraintStart_toEndOf="@id/txtViewCount"
+            app:layout_constraintTop_toBottomOf="@id/profile_image"
+            />
+
+        <TextView
+            android:id="@+id/txtDownloadCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1234"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/icDownload"
+            app:layout_constraintTop_toBottomOf="@id/profile_image" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

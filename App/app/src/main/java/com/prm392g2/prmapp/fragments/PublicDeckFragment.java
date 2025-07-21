@@ -21,11 +21,20 @@ import com.google.android.material.button.MaterialButton;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.activities.DeckDetailActivity;
 import com.prm392g2.prmapp.adapters.DeckListAdapter;
+import com.prm392g2.prmapp.api.DeckApi;
+import com.prm392g2.prmapp.dtos.decks.DeckListArgumentsDTO;
+import com.prm392g2.prmapp.dtos.decks.DeckListDTO;
+import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
 import com.prm392g2.prmapp.entities.Deck;
+import com.prm392g2.prmapp.network.ApiClient;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PublicDeckFragment extends Fragment {
 
@@ -44,6 +53,7 @@ public class PublicDeckFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_public_deck, container, false);
         recyclerView = view.findViewById(R.id.deck_list);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new DeckListAdapter(decks,
             new DeckListAdapter.OnItemClickListener() {
@@ -65,6 +75,29 @@ public class PublicDeckFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void getDecks(DeckListArgumentsDTO arguments) {
+        DeckApi api = ApiClient.getClient().create(DeckApi.class);
+        Call<DeckListDTO> call = api.getPublicDecks(arguments);
+
+        call.enqueue(new Callback<DeckListDTO>() {
+            @Override
+            public void onResponse(Call<DeckListDTO> call, Response<DeckListDTO> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    DeckListDTO deckListDTO = response.body();
+                    decks.clear();
+                    adapter.updateData(deckListDTO.Decks);
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeckListDTO> call, Throwable t) {
+
+            }
+        });
     }
 
     private void showFilterDialog() {
