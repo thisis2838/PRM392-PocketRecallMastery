@@ -30,7 +30,7 @@ namespace PRMServer.Application.Services
 
         public async Task<DeckListDTO> GetPublicDecks(DeckListArgumentsDTO arguments)
         {
-            var query = _context.Decks.Where(d => d.IsPublic);
+            var query = _context.Decks.Where(d => d.IsPublic).Take(30);
             return await GetList(query, arguments);
         }
 

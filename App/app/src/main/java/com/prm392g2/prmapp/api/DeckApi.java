@@ -9,5 +9,11 @@ import retrofit2.http.Query;
 
 public interface DeckApi {
     @GET("api/Decks/public")
-    Call<DeckListDTO> getPublicDecks(@Query("DeckListArgumentsDTO") DeckListArgumentsDTO deckListArgumentsDTO);
+    Call<DeckListDTO> getPublicDecks(
+            @Query("Search") String search,
+            @Query("MinCardCount") Integer minCardCount,
+            @Query("MaxCardCount") Integer maxCardCount,
+            @Query("SortingMetric") String sortingMetric,
+            @Query("SortingAscending") boolean sortingAscending
+    );
 }

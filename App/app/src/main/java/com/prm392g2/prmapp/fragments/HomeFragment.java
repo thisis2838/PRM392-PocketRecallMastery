@@ -25,13 +25,6 @@ public class HomeFragment extends Fragment
     RecyclerView topDeckList;
 
     public List<DeckSummaryDTO> decks = new ArrayList<>();
-    /*
-    {
-        decks.add(new Deck(1, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2023, 4, 1)));
-        decks.add(new Deck(2, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2022, 4, 1)));
-        decks.add(new Deck(3, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2021, 4, 1)));
-    }
-    */
 
     @Nullable
     @Override

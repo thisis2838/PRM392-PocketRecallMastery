@@ -38,7 +38,7 @@ namespace PRMServer.Application.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequestDTO model)
+        public async Task<IActionResult> Login(LoginDTO model)
         {
             var token = await _usersService.LoginAsync(model);
             if (token == null)

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.activities.DeckDetailActivity;
+import com.prm392g2.prmapp.activities.RegisterActivity;
 import com.prm392g2.prmapp.adapters.DeckListAdapter;
 import com.prm392g2.prmapp.api.DeckApi;
 import com.prm392g2.prmapp.dtos.decks.DeckListArgumentsDTO;
@@ -49,6 +51,7 @@ public class PublicDeckFragment extends Fragment
         decks.add(new Deck(3, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2021, 4, 1)));
     }
      */
+    EditText searchtxt;
 
 
     @Nullable
@@ -57,7 +60,7 @@ public class PublicDeckFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_public_deck, container, false);
         recyclerView = view.findViewById(R.id.deck_list);
-        search = view.findViewById(R.id.search_bar);
+        searchtxt = view.findViewById(R.id.search_bar);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new DeckListAdapter(
             decks,
@@ -67,13 +70,13 @@ public class PublicDeckFragment extends Fragment
                 public void onItemClick(DeckSummaryDTO deck)
                 {
                     Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
-                    intent.putExtra("deckId", deck.Id);
+                    intent.putExtra("deckId", deck.id);
                     startActivity(intent);
                 }
             }
         );
         recyclerView.setAdapter(adapter);
-        getDecks(new DeckListArgumentsDTO());
+        getDecks(null, null, null, DeckListMetric.Name, true);
         MaterialButton filterButton = view.findViewById(R.id.filterButton);
         filterButton.setOnClickListener(new View.OnClickListener()
         {
@@ -86,9 +89,9 @@ public class PublicDeckFragment extends Fragment
         return view;
     }
 
-    private void getDecks(DeckListArgumentsDTO arguments) {
+    private void getDecks(String search, Integer minCardCount, Integer maxCardCount, DeckListMetric sortingMetric, boolean sortingAscending) {
         DeckApi api = ApiClient.getClient().create(DeckApi.class);
-        Call<DeckListDTO> call = api.getPublicDecks(arguments);
+        Call<DeckListDTO> call = api.getPublicDecks(search, minCardCount, maxCardCount, sortingMetric.toString(), sortingAscending);
 
         call.enqueue(new Callback<DeckListDTO>() {
             @Override
@@ -96,16 +99,26 @@ public class PublicDeckFragment extends Fragment
                 if(response.isSuccessful() && response.body() != null){
                     DeckListDTO deckListDTO = response.body();
                     decks.clear();
-                    adapter.updateData(deckListDTO.Decks);
+                    adapter.updateData(deckListDTO.decks);
                 }else{
-
+                    String errorMessage = "Registration failed: " + response.code();
+                    try {
+                        if (response.errorBody() != null) {
+                            errorMessage = response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    searchtxt.setText(errorMessage);
+                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<DeckListDTO> call, Throwable t)
             {
-
+                searchtxt.setText(t.getMessage());
+                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -129,11 +142,20 @@ public class PublicDeckFragment extends Fragment
 
         buttonApply.setOnClickListener(v -> {
             //Get search
-            String query = search.getText().toString();
+            String query = searchtxt.getText().toString();
             // Get sort by
             int sortById = radioGroupSortBy.getCheckedRadioButtonId();
-            boolean sortByName = sortById == R.id.radioButtonSortByName;
-            boolean sortByViews = sortById == R.id.radioButtonSortByView;
+            DeckListMetric sortingMetric;
+            if (sortById == R.id.radioButtonSortByName) {
+                sortingMetric = DeckListMetric.Name;
+            } else if (sortById == R.id.radioButtonSortByView) {
+                sortingMetric = DeckListMetric.View;
+            } else if (sortById == R.id.radioButtonSortByDownload) {
+                sortingMetric = DeckListMetric.Download;
+            }
+            else {
+                sortingMetric = DeckListMetric.Name;
+            }
 
             // Get sort order
             int sortOrderId = radioGroupSortOrder.getCheckedRadioButtonId();
@@ -145,13 +167,7 @@ public class PublicDeckFragment extends Fragment
             int min = minStr.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(minStr);
             int max = maxStr.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(maxStr);
 
-            DeckListArgumentsDTO argumentsDTO = new DeckListArgumentsDTO();
-            argumentsDTO.setMaxCardCount(max);
-            argumentsDTO.setMinCardCount(min);
-            argumentsDTO.setSortingAscending(ascending);
-            argumentsDTO.setSortingMetric(sortByName ? DeckListMetric.Name : DeckListMetric.View);
-
-            getDecks(argumentsDTO);
+            getDecks(query, min, max, sortingMetric, ascending);
 
             dialog.dismiss();
         });

@@ -15,7 +15,7 @@ public class DeckSummaryDTO
     public int viewsWeekly;
     public int downloadsWeekly;
     public int downloadsTotal;
-    public GregorianCalendar createdAt;
+    public String createdAt;
     public int cardsCount;
     public UserSummaryDTO creator;
 }
