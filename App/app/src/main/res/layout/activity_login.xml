@@ -6,8 +6,7 @@
     android:id="@+id/loginConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:background="@color/white">
+    android:padding="24dp">
 
     <ImageButton
         android:id="@+id/backToMainButton"
@@ -28,8 +27,6 @@
         android:padding="12dp"
         android:text="Register"
         android:textAllCaps="false"
-        android:backgroundTint="@color/button_background_color"
-        android:textColor="@color/button_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +88,6 @@
         android:clickable="true"
         android:focusable="true"
         android:text="Forgot Password?"
-        android:textColor="@color/black"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,8 +100,6 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:textAllCaps="false"
-        android:backgroundTint="@color/button_background_color"
-        android:textColor="@color/button_text_color"
         android:padding="12dp"
         app:layout_constraintTop_toBottomOf="@id/passwordEditText"
         app:layout_constraintStart_toStartOf="parent"

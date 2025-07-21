@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:background="@android:color/white">
+    android:padding="24dp">
 
     <TextView
         android:id="@+id/textViewTitle"
@@ -13,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="68dp"
         android:text="Enter the OTP"
-        android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +38,6 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="140dp"
-        android:backgroundTint="@color/black"
         android:hint="6-digit OTP"
         android:inputType="number"
         android:maxLength="6"
@@ -58,8 +55,6 @@
         android:layout_marginTop="12dp"
         android:enabled="true"
         android:text="Resend OTP"
-        android:backgroundTint="@color/button_background_color"
-        android:textColor="@color/button_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewResend" />
@@ -70,7 +65,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Didn't receive the code?"
-        android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,8 +76,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:text="Verify OTP"
-        android:backgroundTint="@color/button_background_color"
-        android:textColor="@color/button_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
