@@ -8,14 +8,14 @@
         public DeckListMetric SortingMetric { get; set; } = DeckListMetric.Name;
         public bool SortingAscending { get; set; } = true;
         
-        public int PageIndex { get; set; } = 0;
-        public int PageSize { get; set; } = 10;
+        //public int PageIndex { get; set; } = 0;
+        //public int PageSize { get; set; } = 10;
     }
 
     public enum DeckListMetric
     { 
         Name,
-        PopularityTotal,
-        PopularityWeekly,
+        View,
+        Download,
     }
 }
