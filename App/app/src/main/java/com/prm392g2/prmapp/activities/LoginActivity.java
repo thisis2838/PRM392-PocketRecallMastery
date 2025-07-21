@@ -20,7 +20,7 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity
 {
-
+    public static boolean isActive = false;
     private EditText usernameEditText, passwordEditText;
     private TextView forgotPasswordTextView;
     private ImageButton backToMainButton;
@@ -101,5 +101,17 @@ public class LoginActivity extends AppCompatActivity
                 Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        isActive = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isActive = false;
     }
 }

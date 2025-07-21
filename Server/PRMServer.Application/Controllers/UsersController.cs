@@ -109,6 +109,59 @@ namespace PRMServer.Application.Controllers
             return Ok(user);
         }
 
+        [Authorize]
+        [HttpPost("change-email-request")]
+        public async Task<IActionResult> RequestEmailChange([FromBody] EmailChangeDTO model)
+        {
+            if (!Regex.IsMatch(model.NewEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                return BadRequest("Invalid email format.");
+
+            if (await _usersService.DoesEmailExist(model.NewEmail))
+                return BadRequest("Email already exists.");
+
+            _cache.Set($"change-email:{model.NewEmail}", model.NewEmail, TimeSpan.FromMinutes(10));
+
+            await _otpService.GenerateAndSendOtp(model.NewEmail, "change-email");
+
+            return Ok("OTP sent to new email.");
+        }
+
+        [Authorize]
+        [HttpPost("confirm-email-change")]
+        public async Task<IActionResult> ConfirmEmailChange([FromBody] VerifyOtpRequestDTO request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Otp))
+                return BadRequest("Email and OTP are required.");
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            var isValid = await _otpService.VerifyOtp(request.Email, request.Otp, "change-email");
+            if (!isValid)
+                return BadRequest("Invalid or expired OTP.");
+
+            if (!_cache.TryGetValue($"change-email:{request.Email}", out string? cachedEmail) ||
+                cachedEmail != request.Email)
+            {
+                return BadRequest("Email change session expired or invalid.");
+            }
+
+            user.Email = request.Email;
+            user.UserName = user.UserName;
+            user.EmailConfirmed = true;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            var userDto = _usersService.GetCurrentUserAsync(User);
+
+            _cache.Remove($"change-email:{request.Email}");
+
+            return Ok(userDto);
+        }
+
         [HttpPost("send-otp")]
         public async Task<IActionResult> SendOtp([FromBody] SendOtpRequestDTO request)
         {
@@ -118,19 +171,28 @@ namespace PRMServer.Application.Controllers
                 return BadRequest("Email and purpose are required.");
             }
 
-            if (request.Purpose != "register")
+            switch (request.Purpose)
             {
-                var user = await _userManager.FindByEmailAsync(request.Email);
-                if (user != null)
-                {
+                case "register":
                     await _otpService.GenerateAndSendOtp(request.Email, request.Purpose);
-                }
+                    return Ok("OTP sent to email.");
 
-                return Ok("If your email is registered, an OTP has been sent.");
+                case "change-email":
+                    // Allow sending OTP even if the email is not registered
+                    if (await _usersService.DoesEmailExist(request.Email))
+                        return BadRequest("This email is already in use.");
+
+                    await _otpService.GenerateAndSendOtp(request.Email, request.Purpose);
+                    return Ok("OTP sent to new email.");
+
+                default:
+                    var user = await _userManager.FindByEmailAsync(request.Email);
+                    if (user != null)
+                    {
+                        await _otpService.GenerateAndSendOtp(request.Email, request.Purpose);
+                    }
+                    return Ok("If your email is registered, an OTP has been sent.");
             }
-
-            await _otpService.GenerateAndSendOtp(request.Email, request.Purpose);
-            return Ok("OTP sent to email.");
         }
 
         [HttpPost("verify-otp")]

@@ -58,6 +58,9 @@ public class VerifyOtpActivity extends AppCompatActivity {
             case "reset-password":
                 infoMessageTextView.setText("If your email is registered, an OTP has been sent.");
                 break;
+            case "change-email":
+                infoMessageTextView.setText("An OTP has been sent to your new email. Please confirm to complete the change.");
+                break;
             default:
         }
 
@@ -75,6 +78,9 @@ public class VerifyOtpActivity extends AppCompatActivity {
                     break;
                 case "reset-password":
                     verifyForgotPassword(verifyRequest);
+                    break;
+                case "change-email":
+                    verifyEmailChange(verifyRequest);
                     break;
                 default:
                     Toast.makeText(this, "Unknown purpose.", Toast.LENGTH_SHORT).show();
@@ -213,6 +219,42 @@ public class VerifyOtpActivity extends AppCompatActivity {
             public void onFailure(Call<Void> call, Throwable t) {
                 verifyOtpButton.setEnabled(true);
                 Toast.makeText(VerifyOtpActivity.this, "Network error. Please try again.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void verifyEmailChange(VerifyOtpRequestDTO request) {
+        verifyOtpButton.setEnabled(false);
+
+        String token = getSharedPreferences("auth", MODE_PRIVATE).getString("token", null);
+        if (token == null) {
+            Toast.makeText(this, "You are not logged in.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        api.confirmEmailChange("Bearer " + token, request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                verifyOtpButton.setEnabled(true);
+                if (response.isSuccessful()) {
+                    Toast.makeText(VerifyOtpActivity.this, "Email changed successfully!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    try {
+                        String error = response.errorBody() != null ? response.errorBody().string() : "Unknown error.";
+                        Toast.makeText(VerifyOtpActivity.this, "Failed to change email: " + error, Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(VerifyOtpActivity.this, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                verifyOtpButton.setEnabled(true);
+                Toast.makeText(VerifyOtpActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -39,15 +39,14 @@ public class SettingsFragment extends Fragment
 
         btnLogout = view.findViewById(R.id.btn_logout);
 
-        btnLogout.setOnClickListener(v ->
-        {
-            // Clear JWT token from SharedPreferences
+        btnLogout.setOnClickListener(v -> {
             SharedPreferences prefs = requireContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
             prefs.edit().remove("token").apply();
 
-            // Redirect to LoginActivity
             Intent intent = new Intent(requireContext(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            requireActivity().finish();
         });
     }
 

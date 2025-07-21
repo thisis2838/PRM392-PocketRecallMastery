@@ -1,11 +1,14 @@
 package com.prm392g2.prmapp.services;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.prm392g2.prmapp.PRMApplication;
 import com.prm392g2.prmapp.api.UserApi;
+import com.prm392g2.prmapp.dtos.users.EmailChangeDTO;
 import com.prm392g2.prmapp.dtos.users.LoginRequestDTO;
 import com.prm392g2.prmapp.dtos.users.LoginResponseDTO;
+import com.prm392g2.prmapp.dtos.users.VerifyOtpRequestDTO;
 import com.prm392g2.prmapp.network.ApiClient;
 
 import java.util.concurrent.ExecutorService;
@@ -19,10 +22,13 @@ public class UsersService
 {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private Context context;
+    private SharedPreferences prefs;
     public UsersService(Context context)
     {
         this.context = context;
+        this.prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE);
     }
+
 
     public void login(String username, String password, Callback<LoginResponseDTO> callback)
     {
@@ -39,9 +45,7 @@ public class UsersService
                     LoginResponseDTO loginResponse = response.body();
                     if (loginResponse != null && loginResponse.getToken() != null)
                     {
-                        PRMApplication.getContext()
-                            .getSharedPreferences("auth", Context.MODE_PRIVATE)
-                            .edit()
+                        prefs.edit()
                             .putString("token", loginResponse.getToken())
                             .apply();
                     }
@@ -62,6 +66,41 @@ public class UsersService
                 }
             }
         });
+    }
+
+    public void requestEmailChange(String newEmail, Callback<Void> callback) {
+        String token = prefs.getString("token", null);
+        if (token == null) {
+            if (callback != null) {
+                callback.onFailure(null, new Exception("Not authenticated"));
+            }
+            return;
+        }
+
+        EmailChangeDTO dto = new EmailChangeDTO(newEmail);
+        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        Call<Void> call = api.requestEmailChange("Bearer " + token, dto);
+        call.enqueue(callback);
+    }
+
+    public void confirmEmailChange(String email, String otp, Callback<Void> callback) {
+        String token = prefs.getString("token", null);
+        if (token == null) {
+            if (callback != null) {
+                callback.onFailure(null, new Exception("Not authenticated"));
+            }
+            return;
+        }
+
+        VerifyOtpRequestDTO dto = new VerifyOtpRequestDTO(email, otp, "change-email");
+        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        Call<Void> call = api.confirmEmailChange("Bearer " + token, dto);
+        call.enqueue(callback);
+    }
+
+    private String getToken()
+    {
+        return prefs.getString("token", "");
     }
 
     private static UsersService instance;
