@@ -19,5 +19,5 @@ public interface UserApi {
     Call<Void> register(@Body RegisterDTO dto);
 
     @GET("api/Users/me")
-    Call<UserSummaryDTO> getCurrentUser(@Header("Authorization") String bearerToken);
+    Call<UserSummaryDTO> getCurrentUser();
 }

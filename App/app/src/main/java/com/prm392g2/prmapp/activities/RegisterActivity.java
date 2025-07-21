@@ -16,13 +16,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity
+{
 
     EditText editUsername, editEmail, editPassword, editConfirmPassword;
     Button btnRegister, btnBackToLogin;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
@@ -33,47 +35,61 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         btnBackToLogin = findViewById(R.id.btnBackToLogin);
 
-        btnRegister.setOnClickListener(v -> {
+        btnRegister.setOnClickListener(v ->
+        {
             String username = editUsername.getText().toString().trim();
             String email = editEmail.getText().toString().trim();
             String password = editPassword.getText().toString();
             String confirmPassword = editConfirmPassword.getText().toString();
 
-            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty())
+            {
                 Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!isValidEmail(email)) {
+            if (!isValidEmail(email))
+            {
                 Toast.makeText(this, "Invalid email format", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!password.equals(confirmPassword)) {
+            if (!password.equals(confirmPassword))
+            {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!isValidPassword(password)) {
+            if (!isValidPassword(password))
+            {
                 Toast.makeText(this, "Password must be at least 6 characters and include uppercase, lowercase, digit, and symbol", Toast.LENGTH_LONG).show();
                 return;
             }
 
             RegisterDTO dto = new RegisterDTO(username, email, password);
-            UserApi userApi = ApiClient.getClient().create(UserApi.class);
-            userApi.register(dto).enqueue(new Callback<Void>() {
+            UserApi userApi = ApiClient.getInstance().create(UserApi.class);
+            userApi.register(dto).enqueue(new Callback<Void>()
+            {
                 @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
+                public void onResponse(Call<Void> call, Response<Void> response)
+                {
+                    if (response.isSuccessful())
+                    {
                         Toast.makeText(RegisterActivity.this, "Registered successfully", Toast.LENGTH_SHORT).show();
                         finish(); // go back to login screen
-                    } else {
+                    }
+                    else
+                    {
                         String errorMessage = "Registration failed: " + response.code();
-                        try {
-                            if (response.errorBody() != null) {
+                        try
+                        {
+                            if (response.errorBody() != null)
+                            {
                                 errorMessage = response.errorBody().string();
                             }
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e)
+                        {
                             e.printStackTrace();
                         }
                         Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
@@ -81,22 +97,26 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<Void> call, Throwable t) {
+                public void onFailure(Call<Void> call, Throwable t)
+                {
                     Toast.makeText(RegisterActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
 
-        btnBackToLogin.setOnClickListener(v -> {
+        btnBackToLogin.setOnClickListener(v ->
+        {
             finish();
         });
     }
 
-    private boolean isValidEmail(String email) {
+    private boolean isValidEmail(String email)
+    {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private boolean isValidPassword(String password) {
+    private boolean isValidPassword(String password)
+    {
         // At least 6 characters, 1 upper, 1 lower, 1 digit, 1 special character
         String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d]).{6,}$";
         return password.matches(passwordPattern);

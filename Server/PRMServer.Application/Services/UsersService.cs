@@ -45,7 +45,7 @@ namespace PRMServer.Application.Services
             return await _userManager.CreateAsync(user, dto.Password);
         }
 
-        public async Task<string?> LoginAsync(LoginDTO dto)
+        public async Task<string?> LoginAsync(LoginRequestDTO dto)
         {
             var user = await _userManager.FindByNameAsync(dto.UserName);
             if (user == null) return null;

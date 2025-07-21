@@ -23,8 +23,8 @@ import com.prm392g2.prmapp.fragments.DeckListFragment;
 import com.prm392g2.prmapp.fragments.HomeFragment;
 import com.prm392g2.prmapp.fragments.ProfileFragment;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity
+{
     private SharedPreferences prefs;
     private static final String PREF_NAME = "user_prefs";
     private static final String KEY_TOKEN = "jwt_token";
@@ -35,16 +35,20 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout fragmentContainer;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        ViewCompat.setOnApplyWindowInsetsListener(
+            findViewById(R.id.main), (v, insets) ->
+            {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            }
+        );
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -60,33 +64,43 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new ProfileFragment(), "Profile", R.drawable.ic_decks);
         viewPager.setAdapter(adapter);
 
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+        new TabLayoutMediator(
+            tabLayout, viewPager, (tab, position) ->
+        {
             tab.setText(adapter.getPageTitle(position));
             tab.setIcon(adapter.getIcon(position));
-        }).attach();
+        }
+        ).attach();
 
-        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+        getSupportFragmentManager().addOnBackStackChangedListener(() ->
+        {
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (currentFragment != null) {
+            if (currentFragment != null)
+            {
                 hideMainContent();
-            } else {
+            }
+            else
+            {
                 showMainContent();
             }
         });
 
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true)
+        {
             @Override
-            public void handleOnBackPressed() {
+            public void handleOnBackPressed()
+            {
                 if (fragmentContainer.getVisibility() == View.VISIBLE &&
-                        getSupportFragmentManager().getBackStackEntryCount() > 0) {
-
+                    getSupportFragmentManager().getBackStackEntryCount() > 0)
+                {
                     getSupportFragmentManager().popBackStack();
-
-                    if (getSupportFragmentManager().getBackStackEntryCount() <= 1) {
+                    if (getSupportFragmentManager().getBackStackEntryCount() <= 1)
+                    {
                         showMainContent();
                     }
-
-                } else {
+                }
+                else
+                {
                     finish();
                 }
             }
@@ -96,17 +110,19 @@ public class MainActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
-    public void loadFragment(Fragment fragment) {
+    public void loadFragment(Fragment fragment)
+    {
         getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit();
 
         hideMainContent();
     }
 
-    public void hideMainContent() {
+    public void hideMainContent()
+    {
         viewPager.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
         fragmentContainer.setVisibility(View.VISIBLE);
@@ -115,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    public void showMainContent() {
+    public void showMainContent()
+    {
         viewPager.setVisibility(View.VISIBLE);
         tabLayout.setVisibility(View.VISIBLE);
         fragmentContainer.setVisibility(View.GONE);
@@ -125,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
+    public boolean onSupportNavigateUp()
+    {
         getOnBackPressedDispatcher().onBackPressed();
         return true;
     }

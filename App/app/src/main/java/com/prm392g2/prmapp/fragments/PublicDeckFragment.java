@@ -24,11 +24,9 @@ import com.prm392g2.prmapp.api.DeckApi;
 import com.prm392g2.prmapp.dtos.decks.DeckListArgumentsDTO;
 import com.prm392g2.prmapp.dtos.decks.DeckListDTO;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
-import com.prm392g2.prmapp.entities.Deck;
 import com.prm392g2.prmapp.network.ApiClient;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -37,7 +35,6 @@ import retrofit2.Response;
 
 public class PublicDeckFragment extends Fragment
 {
-
     public RecyclerView recyclerView;
     public DeckListAdapter adapter;
     public List<DeckSummaryDTO> decks = new ArrayList<>();
@@ -48,7 +45,6 @@ public class PublicDeckFragment extends Fragment
         decks.add(new Deck(3, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2021, 4, 1)));
     }
      */
-
 
     @Nullable
     @Override
@@ -87,7 +83,7 @@ public class PublicDeckFragment extends Fragment
 
     private void getDecks(DeckListArgumentsDTO arguments)
     {
-        DeckApi api = ApiClient.getClient().create(DeckApi.class);
+        DeckApi api = ApiClient.getInstance().create(DeckApi.class);
         Call<DeckListDTO> call = api.getPublicDecks(arguments);
 
         call.enqueue(new Callback<DeckListDTO>()

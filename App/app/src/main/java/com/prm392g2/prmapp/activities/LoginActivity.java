@@ -16,6 +16,7 @@ import com.prm392g2.prmapp.api.UserApi;
 import com.prm392g2.prmapp.dtos.users.LoginRequestDTO;
 import com.prm392g2.prmapp.dtos.users.LoginResponseDTO;
 import com.prm392g2.prmapp.network.ApiClient;
+import com.prm392g2.prmapp.services.UsersService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,13 +68,8 @@ public class LoginActivity extends AppCompatActivity
             return;
         }
 
-        LoginRequestDTO request = new LoginRequestDTO(username, password);
-        UserApi api = ApiClient.getClient().create(UserApi.class);
-        Call<LoginResponseDTO> call = api.login(request);
-
         loginButton.setEnabled(false);
-
-        call.enqueue(new Callback<LoginResponseDTO>()
+        UsersService.getInstance().login(username, password, new Callback<LoginResponseDTO>()
         {
             @Override
             public void onResponse(Call<LoginResponseDTO> call, Response<LoginResponseDTO> response)
@@ -81,16 +77,7 @@ public class LoginActivity extends AppCompatActivity
                 loginButton.setEnabled(true);
                 if (response.isSuccessful() && response.body() != null)
                 {
-                    String token = response.body().token;
-
-                    // Store token in SharedPreferences
-                    sharedPreferences.edit()
-                        .putString(KEY_TOKEN, token)
-                        .apply();
-
                     Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-
-                    // Go to main screen
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();

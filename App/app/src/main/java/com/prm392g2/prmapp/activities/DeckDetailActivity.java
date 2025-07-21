@@ -55,18 +55,6 @@ public class DeckDetailActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adapter);
 
-        RecyclerView recyclerView2 = findViewById(R.id.cardDetailsList);
-        recyclerView2.setLayoutManager(new LinearLayoutManager(this));
-        CardDetailAdapter adapter2 = new CardDetailAdapter(cards,
-                new CardDetailAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Card card) {
-
-                    }
-                }
-        );
-        recyclerView2.setAdapter(adapter2);
-
         Button btnBeginLearning = findViewById(R.id.btnBeginLearning);
         btnBeginLearning.setOnClickListener(v -> {
             Intent intent = new Intent(DeckDetailActivity.this, DeckLearningActivity.class);

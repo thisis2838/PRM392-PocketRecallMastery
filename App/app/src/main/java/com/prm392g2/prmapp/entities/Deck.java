@@ -33,7 +33,9 @@ public class Deck
     public String description;
     public int creatorId;
     public int version;
+    public boolean isSaved = false;
     public GregorianCalendar createdAt;
+    public GregorianCalendar updatedAt = null;
     public Integer learningId = null;
 
     public Deck(int id, String name, String description, int creatorId, int version, GregorianCalendar createdAt)
