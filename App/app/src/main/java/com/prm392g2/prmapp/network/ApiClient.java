@@ -2,6 +2,9 @@ package com.prm392g2.prmapp.network;
 
 import android.content.Context;
 
+import com.prm392g2.prmapp.api.DeckApi;
+import com.prm392g2.prmapp.api.HomeApi;
+import com.prm392g2.prmapp.api.UserApi;
 import com.prm392g2.prmapp.network.interceptors.AuthInterceptor;
 import com.prm392g2.prmapp.network.interceptors.UnauthorizedInterceptor;
 
@@ -11,28 +14,71 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient
 {
-    private static final String BASE_URL = "http://10.0.2.2:5047/";
-    private static Retrofit retrofit;
+    private DeckApi deckApi;
+    private HomeApi homeApi;
+    private UserApi userApi;
+    private Retrofit retrofit;
 
-    public static void initialize(Context context)
+    public ApiClient(Context context, String baseUrl)
     {
         OkHttpClient client = new OkHttpClient.Builder()
             .addInterceptor(new AuthInterceptor(context))
             .addInterceptor(new UnauthorizedInterceptor(context))
             .build();
-        retrofit = new Retrofit.Builder()
-            .baseUrl(BASE_URL)
+
+        this.retrofit = new Retrofit.Builder()
+            .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     }
 
-    public static Retrofit getInstance()
+    public DeckApi getDeckApi()
     {
-        if (retrofit == null)
+        if (deckApi == null)
+        {
+            deckApi = retrofit.create(DeckApi.class);
+        }
+        return deckApi;
+    }
+    public HomeApi getHomeApi()
+    {
+        if (homeApi == null)
+        {
+            homeApi = retrofit.create(HomeApi.class);
+        }
+        return homeApi;
+    }
+    public UserApi getUserApi()
+    {
+        if (userApi == null)
+        {
+            userApi = retrofit.create(UserApi.class);
+        }
+        return userApi;
+    }
+    public Retrofit getRetrofit()
+    {
+        return retrofit;
+    }
+
+    private static ApiClient instance;
+    public static void initialize(Context context, String url)
+    {
+        OkHttpClient client = new OkHttpClient.Builder()
+            .addInterceptor(new AuthInterceptor(context))
+            .addInterceptor(new UnauthorizedInterceptor(context))
+            .build();
+
+        instance = new ApiClient(context, url);
+    }
+
+    public static ApiClient getInstance()
+    {
+        if (instance == null)
         {
             throw new RuntimeException();
         }
-        return retrofit;
+        return instance;
     }
 }

@@ -112,7 +112,7 @@ public class ProfileFragment extends Fragment
             return;
         }
 
-        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        UserApi api = ApiClient.getInstance().getUserApi();
         Call<UserSummaryDTO> call = api.getCurrentUser();
         call.enqueue(new Callback<UserSummaryDTO>()
         {

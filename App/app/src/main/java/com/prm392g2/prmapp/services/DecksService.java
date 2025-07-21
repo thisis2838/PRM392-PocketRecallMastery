@@ -27,7 +27,7 @@ public class DecksService
 
     public void getPublic(DeckListArgumentsDTO args, Callback<DeckListDTO> callback)
     {
-        DeckApi api = ApiClient.getInstance().create(DeckApi.class);
+        DeckApi api = ApiClient.getInstance().getDeckApi();
         Call<DeckListDTO> call = api.getPublic(
             args.search,
             args.minCardCount,
@@ -40,35 +40,35 @@ public class DecksService
 
     public void getById(int id, Callback<DeckDetailDTO> callback)
     {
-        DeckApi api = ApiClient.getInstance().create(DeckApi.class);
+        DeckApi api = ApiClient.getInstance().getDeckApi();
         var call = api.getById(id);
         call.enqueue(callback);
     }
 
     public void getMine(Callback<DeckListDTO> callback)
     {
-        DeckApi api = ApiClient.getInstance().create(DeckApi.class);
+        DeckApi api = ApiClient.getInstance().getDeckApi();
         Call<DeckListDTO> call = api.getMine();
         call.enqueue(callback);
     }
 
     public void create(DeckCreationDTO deck, Callback<Integer> callback)
     {
-        DeckApi api = ApiClient.getInstance().create(DeckApi.class);
+        DeckApi api = ApiClient.getInstance().getDeckApi();
         var call = api.create(deck);
         call.enqueue(callback);
     }
 
     public void edit(int id, DeckEditDTO deck, Callback<Void> callback)
     {
-        DeckApi api = ApiClient.getInstance().create(DeckApi.class);
+        DeckApi api = ApiClient.getInstance().getDeckApi();
         var call = api.update(id, deck);
         call.enqueue(callback);
     }
 
     public void delete(int id, Callback<Void> callback)
     {
-        DeckApi api = ApiClient.getInstance().create(DeckApi.class);
+        DeckApi api = ApiClient.getInstance().getDeckApi();
         var call = api.delete(id);
         call.enqueue(callback);
     }

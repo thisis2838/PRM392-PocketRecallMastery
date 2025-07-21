@@ -17,24 +17,17 @@ import com.prm392g2.prmapp.activities.DeckDetailActivity;
 import com.prm392g2.prmapp.activities.DeckEditingActivity;
 import com.prm392g2.prmapp.adapters.DeckListAdapter;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
-import com.prm392g2.prmapp.entities.Deck;
+import com.prm392g2.prmapp.services.HomeService;
 
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment
 {
-    RecyclerView topDeckList;
-
-    public List<DeckSummaryDTO> decks = new ArrayList<>();
-    /*
-    {
-        decks.add(new Deck(1, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2023, 4, 1)));
-        decks.add(new Deck(2, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2022, 4, 1)));
-        decks.add(new Deck(3, "English Vocabulary", "Learn common English words", 1, 1, new GregorianCalendar(2021, 4, 1)));
-    }
-    */
+    private RecyclerView recTopDecks, recRecentDecks;
 
     @Nullable
     @Override
@@ -42,30 +35,77 @@ public class HomeFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        topDeckList = view.findViewById(R.id.topDecksList);
-        topDeckList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        DeckListAdapter deckListAdapter = new DeckListAdapter(
-            decks,
-            new DeckListAdapter.OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(DeckSummaryDTO deck)
-                {
-                    Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
-                    intent.putExtra("deckId", deck.id);
-                    startActivity(intent);
-                }
+        recTopDecks = view.findViewById(R.id.recTopDecks);
+        recTopDecks.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recTopDecks.setVisibility(View.INVISIBLE);
 
-                @Override
-                public void onEditClick(DeckSummaryDTO deck)
+        recRecentDecks = view.findViewById(R.id.recRecentDecks);
+        recRecentDecks.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recRecentDecks.setVisibility(View.INVISIBLE);
+
+        final var clickListener = new DeckListAdapter.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(DeckSummaryDTO deck)
+            {
+                Intent intent = new Intent(getActivity(), DeckDetailActivity.class);
+                intent.putExtra("deckId", deck.id);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onEditClick(DeckSummaryDTO deck)
+            {
+                Intent intent = new Intent(getActivity(), DeckEditingActivity.class);
+                intent.putExtra("deckId", deck.id);
+                startActivity(intent);
+            }
+        };
+
+        HomeService.getInstance().getWeeklyPopularDecks(new Callback<List<DeckSummaryDTO>>()
+        {
+            @Override
+            public void onResponse(Call<List<DeckSummaryDTO>> call, Response<List<DeckSummaryDTO>> response)
+            {
+                if (response.isSuccessful() && response.body() != null)
                 {
-                    Intent intent = new Intent(getActivity(), DeckEditingActivity.class);
-                    intent.putExtra("deckId", deck.id);
-                    startActivity(intent);
+                    requireActivity().runOnUiThread(() ->
+                    {
+                        recTopDecks.setVisibility(View.VISIBLE);
+                        var adapter = new DeckListAdapter(response.body(), clickListener);
+                        recTopDecks.setAdapter(adapter);
+                    });
                 }
             }
-        );
-        topDeckList.setAdapter(deckListAdapter);
+
+            @Override
+            public void onFailure(Call<List<DeckSummaryDTO>> call, Throwable t)
+            {
+            }
+        });
+
+        HomeService.getInstance().getRecentDecks(new Callback<List<DeckSummaryDTO>>()
+        {
+            @Override
+            public void onResponse(Call<List<DeckSummaryDTO>> call, Response<List<DeckSummaryDTO>> response)
+            {
+                if (response.isSuccessful() && response.body() != null)
+                {
+                    requireActivity().runOnUiThread(() ->
+                    {
+                        recRecentDecks.setVisibility(View.VISIBLE);
+                        var adapter = new DeckListAdapter(response.body(), clickListener);
+                        recRecentDecks.setAdapter(adapter);
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DeckSummaryDTO>> call, Throwable t)
+            {
+            }
+        });
+
         return view;
     }
 }

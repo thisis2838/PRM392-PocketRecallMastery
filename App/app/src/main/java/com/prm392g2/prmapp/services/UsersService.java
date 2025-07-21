@@ -19,6 +19,7 @@ public class UsersService
 {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private Context context;
+
     public UsersService(Context context)
     {
         this.context = context;
@@ -27,7 +28,7 @@ public class UsersService
     public void login(String username, String password, Callback<LoginResponseDTO> callback)
     {
         LoginRequestDTO request = new LoginRequestDTO(username, password);
-        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        UserApi api = ApiClient.getInstance().getUserApi();
         Call<LoginResponseDTO> call = api.login(request);
         call.enqueue(new Callback<LoginResponseDTO>()
         {
@@ -65,10 +66,12 @@ public class UsersService
     }
 
     private static UsersService instance;
+
     public static void initialize(Context context)
     {
         instance = new UsersService(context);
     }
+
     public static UsersService getInstance()
     {
         if (instance == null)
