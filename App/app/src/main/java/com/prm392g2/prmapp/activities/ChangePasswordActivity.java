@@ -15,19 +15,22 @@ import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.api.UserApi;
 import com.prm392g2.prmapp.dtos.users.ChangePasswordDTO;
 import com.prm392g2.prmapp.network.ApiClient;
+import com.prm392g2.prmapp.services.UsersService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChangePasswordActivity extends AppCompatActivity {
+public class ChangePasswordActivity extends AppCompatActivity
+{
 
     private EditText editTextCurrentPassword, editTextNewPassword, editTextConfirmNewPassword;
     private Button buttonChangePassword;
     private ImageButton backButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
@@ -37,26 +40,31 @@ public class ChangePasswordActivity extends AppCompatActivity {
         buttonChangePassword = findViewById(R.id.buttonChangePassword);
         backButton = findViewById(R.id.backButton);
 
-        backButton.setOnClickListener(v -> {
+        backButton.setOnClickListener(v ->
+        {
             finish();
         });
 
-        buttonChangePassword.setOnClickListener(v -> {
+        buttonChangePassword.setOnClickListener(v ->
+        {
             String currentPassword = editTextCurrentPassword.getText().toString().trim();
             String newPassword = editTextNewPassword.getText().toString().trim();
             String confirmPassword = editTextConfirmNewPassword.getText().toString().trim();
 
-            if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
+            if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty())
+            {
                 Toast.makeText(this, getString(R.string.change_password_fill_all_fields), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!newPassword.equals(confirmPassword)) {
+            if (!newPassword.equals(confirmPassword))
+            {
                 editTextConfirmNewPassword.setError(getString(R.string.change_password_no_match));
                 return;
             }
 
-            if (!isValidPassword(newPassword)) {
+            if (!isValidPassword(newPassword))
+            {
                 editTextNewPassword.setError(getString(R.string.change_password_weak));
                 return;
             }
@@ -72,30 +80,38 @@ public class ChangePasswordActivity extends AppCompatActivity {
         return password.matches(passwordPattern);
     }
 
-    private void changePassword(String currentPassword, String newPassword) {
-        String token = getSharedPreferences("auth", MODE_PRIVATE).getString("token", null);
-        if (token == null) {
+    private void changePassword(String currentPassword, String newPassword)
+    {
+        if (!UsersService.getInstance().isLoggedIn())
+        {
             Toast.makeText(this, getString(R.string.not_logged_in), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        UserApi api = ApiClient.getInstance().getUserApi();
         ChangePasswordDTO dto = new ChangePasswordDTO(currentPassword, newPassword);
 
-        api.changePassword("Bearer " + token, dto).enqueue(new Callback<Void>() {
+        api.changePassword(dto).enqueue(new Callback<Void>()
+        {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
+            public void onResponse(Call<Void> call, Response<Void> response)
+            {
+                if (response.isSuccessful())
+                {
                     Toast.makeText(ChangePasswordActivity.this, getString(R.string.change_password_success), Toast.LENGTH_SHORT).show();
                     finish();
-                } else {
+                }
+                else
+                {
                     Toast.makeText(ChangePasswordActivity.this, getString(R.string.change_password_failed), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(ChangePasswordActivity.this, getString(R.string.network_error_with_message, t.getMessage()), Toast.LENGTH_SHORT).show();            }
+            public void onFailure(Call<Void> call, Throwable t)
+            {
+                Toast.makeText(ChangePasswordActivity.this, getString(R.string.network_error_with_message, t.getMessage()), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

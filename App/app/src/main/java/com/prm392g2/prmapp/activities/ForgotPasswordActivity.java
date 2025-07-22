@@ -44,7 +44,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             sendOtpButton.setEnabled(false);
 
             SendOtpRequestDTO request = new SendOtpRequestDTO(email, "reset-password");
-            UserApi api = ApiClient.getInstance().create(UserApi.class);
+            UserApi api = ApiClient.getInstance().getUserApi();
             api.sendOtp(request).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {

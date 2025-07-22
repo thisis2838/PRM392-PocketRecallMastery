@@ -117,7 +117,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadUserInfo() {
-        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        UserApi api = ApiClient.getInstance().getUserApi();
         api.getCurrentUser().enqueue(new Callback<UserSummaryDTO>() {
             @Override
             public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response) {

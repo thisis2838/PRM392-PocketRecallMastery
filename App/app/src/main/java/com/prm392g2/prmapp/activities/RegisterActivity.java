@@ -69,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity
 
             RegisterDTO dto = new RegisterDTO(username, email, password);
 
-            UserApi userApi = ApiClient.getInstance().create(UserApi.class);
+            UserApi userApi = ApiClient.getInstance().getUserApi();
             btnRegister.setEnabled(false);
             userApi.preRegister(dto).enqueue(new Callback<Void>() {
                 @Override

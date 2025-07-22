@@ -20,6 +20,7 @@ import com.prm392g2.prmapp.activities.VerifyOtpActivity;
 import com.prm392g2.prmapp.api.UserApi;
 import com.prm392g2.prmapp.dtos.users.EmailChangeDTO;
 import com.prm392g2.prmapp.network.ApiClient;
+import com.prm392g2.prmapp.services.UsersService;
 
 import java.util.function.Consumer;
 
@@ -27,13 +28,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EmailChangeDialog extends DialogFragment {
+public class EmailChangeDialog extends DialogFragment
+{
 
     private EditText etNewEmail;
     private Button btnSubmit;
     private final Consumer<String> onSubmitCallback;
 
-    public EmailChangeDialog(Consumer<String> onSubmitCallback) {
+    public EmailChangeDialog(Consumer<String> onSubmitCallback)
+    {
         this.onSubmitCallback = onSubmitCallback;
     }
 
@@ -41,15 +44,18 @@ public class EmailChangeDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.dialog_change_email, container, false);
 
         etNewEmail = view.findViewById(R.id.etNewEmail);
         btnSubmit = view.findViewById(R.id.btnSubmit);
 
-        btnSubmit.setOnClickListener(v -> {
+        btnSubmit.setOnClickListener(v ->
+        {
             String newEmail = etNewEmail.getText().toString().trim();
-            if (!Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
+            if (!Patterns.EMAIL_ADDRESS.matcher(newEmail).matches())
+            {
                 etNewEmail.setError("Invalid email format");
                 return;
             }
@@ -62,47 +68,54 @@ public class EmailChangeDialog extends DialogFragment {
     }
 
     @Override
-    public void onStart() {
+    public void onStart()
+    {
         super.onStart();
-        if (getDialog() != null && getDialog().getWindow() != null) {
+        if (getDialog() != null && getDialog().getWindow() != null)
+        {
             getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
-    private void sendEmailChangeRequest(String email) {
-        String token = getContext()
-                .getSharedPreferences("auth", Context.MODE_PRIVATE)
-                .getString("token", null);
-
-        if (token == null) {
+    private void sendEmailChangeRequest(String email)
+    {
+        if (!UsersService.getInstance().isLoggedIn())
+        {
             Toast.makeText(getContext(), "You must be logged in", Toast.LENGTH_SHORT).show();
             dismiss();
             return;
         }
 
         EmailChangeDTO dto = new EmailChangeDTO(email);
-        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        UserApi api = ApiClient.getInstance().getUserApi();
 
-        Call<Void> call = api.requestEmailChange("Bearer " + token, dto);
-        call.enqueue(new Callback<Void>() {
+        Call<Void> call = api.requestEmailChange(dto);
+        call.enqueue(new Callback<Void>()
+        {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<Void> call, Response<Void> response)
+            {
                 btnSubmit.setEnabled(true);
-                if (response.isSuccessful()) {
+                if (response.isSuccessful())
+                {
                     dismiss();
-                    if (getContext() != null) {
+                    if (getContext() != null)
+                    {
                         Intent intent = new Intent(getContext(), VerifyOtpActivity.class);
                         intent.putExtra("email", email);
                         intent.putExtra("purpose", "change-email");
                         getContext().startActivity(intent);
                     }
-                } else {
+                }
+                else
+                {
                     etNewEmail.setError("Email already in use or invalid");
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t)
+            {
                 btnSubmit.setEnabled(true);
                 Toast.makeText(getContext(), "Request failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }

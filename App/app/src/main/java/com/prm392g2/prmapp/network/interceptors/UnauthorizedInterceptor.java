@@ -17,6 +17,7 @@ import okhttp3.Response;
 public class UnauthorizedInterceptor implements Interceptor
 {
     private Context context;
+
     public UnauthorizedInterceptor(Context context)
     {
         this.context = context;
@@ -31,7 +32,8 @@ public class UnauthorizedInterceptor implements Interceptor
         {
             new Handler(Looper.getMainLooper()).post(() ->
             {
-                if (!LoginActivity.isActive) {
+                if (!LoginActivity.isActive)
+                {
                     Intent intent = new Intent(context, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(intent);

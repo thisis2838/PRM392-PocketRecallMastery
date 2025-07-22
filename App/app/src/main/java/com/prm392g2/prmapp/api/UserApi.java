@@ -16,7 +16,8 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.GET;
 
-public interface UserApi {
+public interface UserApi
+{
     @POST("api/users/login")
     Call<LoginResponseDTO> login(@Body LoginRequestDTO request);
 
@@ -27,10 +28,10 @@ public interface UserApi {
     Call<Void> completeRegistration(@Body VerifyOtpRequestDTO request);
 
     @POST("api/users/request-email-change")
-    Call<Void> requestEmailChange(@Header("Authorization") String token, @Body EmailChangeDTO dto);
+    Call<Void> requestEmailChange(@Body EmailChangeDTO dto);
 
     @POST("api/users/confirm-email-change")
-    Call<Void> confirmEmailChange(@Header("Authorization") String token, @Body VerifyOtpRequestDTO request);
+    Call<Void> confirmEmailChange(@Body VerifyOtpRequestDTO request);
 
     @GET("api/users/me")
     Call<UserSummaryDTO> getCurrentUser();
@@ -45,5 +46,5 @@ public interface UserApi {
     Call<Void> requestResetPassword(@Body ResetPasswordDTO dto);
 
     @POST("api/users/change-password")
-    Call<Void> changePassword(@Header("Authorization") String token, @Body ChangePasswordDTO request);
+    Call<Void> changePassword(@Body ChangePasswordDTO request);
 }

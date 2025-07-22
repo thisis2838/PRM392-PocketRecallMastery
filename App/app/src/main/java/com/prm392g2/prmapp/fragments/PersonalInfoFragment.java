@@ -30,16 +30,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PersonalInfoFragment extends Fragment {
+public class PersonalInfoFragment extends Fragment
+{
 
     private TextView tvUsername, tvEmail;
     private Button btnEditEmail, btnLogout, btnChangePassword;
 
-    public PersonalInfoFragment() { }
+    public PersonalInfoFragment()
+    {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_personal_info, container, false);
 
         tvUsername = view.findViewById(R.id.tvUsername);
@@ -50,41 +54,58 @@ public class PersonalInfoFragment extends Fragment {
 
         loadUserInfo();
 
-        btnEditEmail.setOnClickListener(v -> {
-            new EmailChangeDialog(newEmail -> {
+        btnEditEmail.setOnClickListener(v ->
+        {
+            new EmailChangeDialog(newEmail ->
+            {
                 // Call API to request email change with OTP
-                UsersService.getInstance().requestEmailChange(newEmail, new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            Toast.makeText(getContext(), getString(R.string.otp_sent_new_email), Toast.LENGTH_SHORT).show();
-                            // Navigate to OTP dialog/activity
-                        } else if (response.code() == 400) {
-                            try {
-                                String error = response.errorBody().string();
-                                Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                UsersService.getInstance().requestEmailChange(
+                    newEmail, new Callback<Void>()
+                    {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response)
+                        {
+                            if (response.isSuccessful())
+                            {
+                                Toast.makeText(getContext(), getString(R.string.otp_sent_new_email), Toast.LENGTH_SHORT).show();
+                                // Navigate to OTP dialog/activity
                             }
-                        } else {
-                            Toast.makeText(getContext(), getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show();
+                            else if (response.code() == 400)
+                            {
+                                try
+                                {
+                                    String error = response.errorBody().string();
+                                    Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+                                }
+                                catch (IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else
+                            {
+                                Toast.makeText(getContext(), getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t)
+                        {
+                            Toast.makeText(getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
                         }
                     }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                );
             }).show(getParentFragmentManager(), "ChangeEmailDialog");
         });
 
-        btnChangePassword.setOnClickListener(v -> {
+        btnChangePassword.setOnClickListener(v ->
+        {
             Intent intent = new Intent(requireContext(), ChangePasswordActivity.class);
             startActivity(intent);
         });
 
-        btnLogout.setOnClickListener(v -> {
+        btnLogout.setOnClickListener(v ->
+        {
             SharedPreferences prefs = requireContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
             prefs.edit().remove("token").apply();
             prefs.edit().remove("userId").apply();
@@ -100,29 +121,38 @@ public class PersonalInfoFragment extends Fragment {
         return view;
     }
 
-    private void loadUserInfo() {
-        UserApi api = ApiClient.getInstance().create(UserApi.class);
-        api.getCurrentUser().enqueue(new Callback<UserSummaryDTO>() {
+    private void loadUserInfo()
+    {
+        UserApi api = ApiClient.getInstance().getUserApi();
+        api.getCurrentUser().enqueue(new Callback<UserSummaryDTO>()
+        {
             @Override
-            public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response) {
-                if (response.isSuccessful() && response.body() != null) {
+            public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response)
+            {
+                if (response.isSuccessful() && response.body() != null)
+                {
                     tvUsername.setText(response.body().username);
                     tvEmail.setText(response.body().email);
-                } else {
+                }
+                else
+                {
                     Toast.makeText(requireContext(), getString(R.string.failed_load_user_info), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<UserSummaryDTO> call, Throwable t) {
+            public void onFailure(Call<UserSummaryDTO> call, Throwable t)
+            {
                 Toast.makeText(requireContext(), getString(R.string.error_with_message, t.getMessage()), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
         loadUserInfo();
-        ((MainActivity) requireActivity()).setToolbarTitle(getString(R.string.personal_info_title));    }
+        ((MainActivity) requireActivity()).setToolbarTitle(getString(R.string.personal_info_title));
+    }
 }

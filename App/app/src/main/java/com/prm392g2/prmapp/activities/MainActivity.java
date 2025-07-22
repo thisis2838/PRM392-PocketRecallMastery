@@ -141,6 +141,14 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
+    public void setToolbarTitle(String title)
+    {
+        if (getSupportActionBar() != null)
+        {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
     @Override
     public boolean onSupportNavigateUp()
     {

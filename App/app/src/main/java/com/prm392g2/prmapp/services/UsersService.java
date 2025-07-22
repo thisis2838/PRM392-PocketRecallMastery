@@ -23,17 +23,23 @@ public class UsersService
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private Context context;
     private SharedPreferences prefs;
+
     public UsersService(Context context)
     {
         this.context = context;
         this.prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE);
     }
 
+    public boolean isLoggedIn()
+    {
+        String token = prefs.getString("token", null);
+        return token != null && !token.isEmpty();
+    }
 
     public void login(String username, String password, Callback<LoginResponseDTO> callback)
     {
         LoginRequestDTO request = new LoginRequestDTO(username, password);
-        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        UserApi api = ApiClient.getInstance().getUserApi();
         Call<LoginResponseDTO> call = api.login(request);
         call.enqueue(new Callback<LoginResponseDTO>()
         {
@@ -69,26 +75,30 @@ public class UsersService
         });
     }
 
-    public void requestEmailChange(String newEmail, Callback<Void> callback) {
-        String token = prefs.getString("token", null);
-        if (token == null) {
-            if (callback != null) {
+    public void requestEmailChange(String newEmail, Callback<Void> callback)
+    {
+        if (!isLoggedIn())
+        {
+            if (callback != null)
+            {
                 callback.onFailure(null, new Exception("Not authenticated"));
             }
             return;
         }
 
         EmailChangeDTO dto = new EmailChangeDTO(newEmail);
-        UserApi api = ApiClient.getInstance().create(UserApi.class);
-        Call<Void> call = api.requestEmailChange("Bearer " + token, dto);
+        UserApi api = ApiClient.getInstance().getUserApi();
+        Call<Void> call = api.requestEmailChange(dto);
         call.enqueue(callback);
     }
 
     private static UsersService instance;
+
     public static void initialize(Context context)
     {
         instance = new UsersService(context);
     }
+
     public static UsersService getInstance()
     {
         if (instance == null)

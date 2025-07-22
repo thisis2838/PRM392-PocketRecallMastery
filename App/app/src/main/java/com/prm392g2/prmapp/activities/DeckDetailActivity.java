@@ -1,6 +1,5 @@
 package com.prm392g2.prmapp.activities;
 
-import static com.prm392g2.prmapp.services.SavedDecksService.SavedDeckStatus.NOT_SAVED;
 import static com.prm392g2.prmapp.services.SavedDecksService.SavedDeckStatus.SAVED_LATER;
 import static com.prm392g2.prmapp.services.SavedDecksService.SavedDeckStatus.SAVED_OUTDATED;
 
@@ -31,8 +30,6 @@ import com.prm392g2.prmapp.dtos.decks.DeckDetailDTO;
 import com.prm392g2.prmapp.services.DecksService;
 import com.prm392g2.prmapp.services.SavedDecksService;
 import com.prm392g2.prmapp.services.UserWeeklyStatsService;
-
-import org.w3c.dom.Text;
 
 public class DeckDetailActivity extends AppCompatActivity
 {
