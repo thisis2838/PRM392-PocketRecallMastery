@@ -3,53 +3,72 @@ package com.prm392g2.prmapp.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.prm392g2.prmapp.R;
-import com.prm392g2.prmapp.activities.LoginActivity;
+import com.prm392g2.prmapp.activities.MainActivity;
+import com.prm392g2.prmapp.helpers.LocaleHelper;
 
-public class SettingsFragment extends Fragment
-{
+public class SettingsFragment extends PreferenceFragmentCompat
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    Button btnLogout;
+    private static final String PREF_KEY_LAST_FRAGMENT = "last_fragment";
 
-    public SettingsFragment()
-    {
-        // Required empty public constructor
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.preferences, rootKey);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+    public void onResume() {
+        super.onResume();
+        getPreferenceManager().getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(this);
+        ((MainActivity) requireActivity()).setToolbarTitle(getString(R.string.settings_title));
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-
-        btnLogout = view.findViewById(R.id.btn_logout);
-
-        btnLogout.setOnClickListener(v ->
-        {
-            // Clear JWT token from SharedPreferences
-            SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-            prefs.edit().remove("jwt_token").apply();
-
-            // Redirect to LoginActivity
-            Intent intent = new Intent(requireContext(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        });
+    public void onPause() {
+        getPreferenceManager().getSharedPreferences()
+                .unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPrefs, String key) {
+        if ("language".equals(key)) {
+            String lang = sharedPrefs.getString("language", "en");
+            LocaleHelper.setLocale(requireContext(), lang);
+            persistLastFragment();
+            requireActivity().recreate();
+        } else if ("dark_mode".equals(key)) {
+            boolean isDark = sharedPrefs.getBoolean("dark_mode", false);
+            AppCompatDelegate.setDefaultNightMode(
+                    isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+            );
+            persistLastFragment();
+            requireActivity().recreate();
+        }
+    }
+
+    private void persistLastFragment() {
+        SharedPreferences.Editor editor = requireContext()
+                .getSharedPreferences("prefs", Context.MODE_PRIVATE).edit();
+        editor.putString(PREF_KEY_LAST_FRAGMENT, "SettingsFragment");
+        editor.apply();
+    }
+
+    public static boolean shouldRestore(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        return "SettingsFragment".equals(prefs.getString(PREF_KEY_LAST_FRAGMENT, null));
+    }
+
+    public static void clearRestoreFlag(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        prefs.edit().remove(PREF_KEY_LAST_FRAGMENT).apply();
+    }
 }

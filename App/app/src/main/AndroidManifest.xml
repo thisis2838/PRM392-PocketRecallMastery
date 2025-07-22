@@ -23,13 +23,28 @@
             android:name=".activities.DeckEditingActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PasswordResetSuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.VerifyOtpActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.LoginInfoActivity"
+            android:name=".activities.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activities.DeckLearningActivity"
             android:exported="false" />
         <activity
             android:name=".activities.DeckLearningActivity"

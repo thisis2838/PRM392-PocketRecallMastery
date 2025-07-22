@@ -35,17 +35,13 @@ namespace PRMServer.Application.Services
             var user = new User
             {
                 UserName = dto.UserName,
-                Email = dto.Email,
-                Language = "English",
-                ThemeName = "Light",
-                IsNotificationOn = true,
-
+                Email = dto.Email
             };
 
             return await _userManager.CreateAsync(user, dto.Password);
         }
 
-        public async Task<string?> LoginAsync(LoginRequestDTO dto)
+        public async Task<LoginResponseDTO?> LoginAsync(LoginRequestDTO dto)
         {
             var user = await _userManager.FindByNameAsync(dto.UserName);
             if (user == null) return null;
@@ -53,7 +49,13 @@ namespace PRMServer.Application.Services
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
             if (!result.Succeeded) return null;
 
-            return GenerateJwtToken(user);
+            var response = new LoginResponseDTO
+            {
+                Token = GenerateJwtToken(user),
+                UserId = user.Id
+            };
+
+            return response;
         }
 
         public async Task LogoutAsync()
@@ -84,7 +86,7 @@ namespace PRMServer.Application.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<UserDTO?> GetCurrentUserAsync(ClaimsPrincipal user)
+        public async Task<UserSummaryDTO?> GetCurrentUserAsync(ClaimsPrincipal user)
         {
             var userIdString = user.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
@@ -94,14 +96,12 @@ namespace PRMServer.Application.Services
             if (userEntity == null)
                 return null;
 
-            return new UserDTO
+            return new UserSummaryDTO
             {
                 Id = userEntity.Id,
-                Username = userEntity.UserName,
-                Email = userEntity.Email,
-                Language = userEntity.Language,
-                ThemeName = userEntity.ThemeName,
-                IsNotificationOn = userEntity.IsNotificationOn
+                Username = userEntity.UserName ?? "null",
+                Email = userEntity.Email ?? "null",
+                DecksCount = await _context.Decks.CountAsync(d => d.CreatorId == userEntity.Id)
             };
         }
 

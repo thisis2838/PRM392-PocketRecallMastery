@@ -11,6 +11,18 @@ import com.prm392g2.prmapp.services.SavedDecksService;
 import com.prm392g2.prmapp.services.UserWeeklyStatsService;
 import com.prm392g2.prmapp.services.UsersService;
 
+import android.content.SharedPreferences;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
+
+import com.prm392g2.prmapp.database.PRMDatabase;
+import com.prm392g2.prmapp.helpers.LocaleHelper;
+import com.prm392g2.prmapp.network.ApiClient;
+import com.prm392g2.prmapp.services.DecksService;
+import com.prm392g2.prmapp.services.UsersService;
+
+
 import java.text.SimpleDateFormat;
 
 public class PRMApplication extends Application
@@ -20,9 +32,24 @@ public class PRMApplication extends Application
     private static Context context;
 
     @Override
+    protected void attachBaseContext(Context base) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(base);
+        String lang = prefs.getString("language", "en");
+        Context localizedContext = LocaleHelper.setLocale(base, lang);
+        super.attachBaseContext(localizedContext);
+    }
+
+    @Override
     public void onCreate()
     {
         super.onCreate();
+        context = this;
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isDark = prefs.getBoolean("dark_mode", false);
+        AppCompatDelegate.setDefaultNightMode(
+                isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+        );
 
         context = this;
         try

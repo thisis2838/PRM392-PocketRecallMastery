@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="language"
+        android:title="@string/setting_language"
+        android:entries="@array/language_names"
+        android:entryValues="@array/language_codes"
+        android:defaultValue="en"
+        android:summary="%s" />
+
+    <SwitchPreferenceCompat
+        android:key="dark_mode"
+        android:title="@string/setting_dark_mode"
+        android:summary="@string/setting_dark_mode_summary"
+        android:defaultValue="false" />
+</PreferenceScreen>

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.prm392g2.prmapp.api.UserApi;
@@ -26,120 +27,118 @@ import retrofit2.Response;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.activities.LoginActivity;
 
-public class ProfileFragment extends Fragment
-{
+import java.util.Random;
 
-    private TextView tvUserInfo;
-    private EditText etJwt;
+public class ProfileFragment extends Fragment {
+
+    private TextView tvGreeting;
+    private ImageView ivAndroidLogo;
     private Button btnSettings, btnPersonalInfo, btnLogin;
 
-    public ProfileFragment()
-    {
-    }
+    public ProfileFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        tvUserInfo = view.findViewById(R.id.tvUserInfo);
-        etJwt = view.findViewById(R.id.etJwt);
+        tvGreeting = view.findViewById(R.id.tvGreeting);
+        ivAndroidLogo = view.findViewById(R.id.ivAndroidLogo);
         btnSettings = view.findViewById(R.id.btnSettings);
         btnPersonalInfo = view.findViewById(R.id.btnPersonalInfo);
         btnLogin = view.findViewById(R.id.btnLogin);
 
-        loadJwt();
-        loadUserInfo();
-        updateButtonVisibility();
+        btnSettings.setOnClickListener(v -> requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new SettingsFragment())
+                .addToBackStack(null)
+                .commit());
 
-        btnSettings.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
-            .beginTransaction()
-            .replace(R.id.fragment_container, new SettingsFragment())
-            .addToBackStack(null)
-            .commit());
+        btnPersonalInfo.setOnClickListener(v -> requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new PersonalInfoFragment())
+                .addToBackStack(null)
+                .commit());
 
-        btnPersonalInfo.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
-            .beginTransaction()
-            .replace(R.id.fragment_container, new PersonalInfoFragment())
-            .addToBackStack(null)
-            .commit());
-
-        btnLogin.setOnClickListener(v ->
-        {
-            // Redirect to LoginActivity or your login flow
+        btnLogin.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            requireActivity().finish();
         });
+
+        updateUI();
 
         return view;
     }
 
-    private void loadJwt()
-    {
-        SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String token = prefs.getString("jwt_token", null);
-        if (token == null || token.isEmpty())
-        {
-            etJwt.setText("Not logged in");
-        }
-        else
-        {
-            etJwt.setText(token);
+    private void updateUI() {
+        SharedPreferences prefs = requireContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
+        String token = prefs.getString("token", null);
+
+        if (token == null || token.isEmpty()) {
+            showLoggedOutUI();
+        } else {
+            loadUserInfo();
         }
     }
 
-    private void updateButtonVisibility()
-    {
-        SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String token = prefs.getString("jwt_token", null);
+    private void showLoggedOutUI() {
+        tvGreeting.setText(getString(R.string.greeting_logged_out));
+        ivAndroidLogo.setImageResource(R.drawable.ic_expressionless);
 
-        boolean loggedIn = token != null && !token.isEmpty();
-
-        btnSettings.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
-        btnPersonalInfo.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
-        btnLogin.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
+        btnLogin.setVisibility(View.VISIBLE);
+        btnPersonalInfo.setVisibility(View.GONE);
     }
 
-    private void loadUserInfo()
-    {
-        SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String token = prefs.getString("jwt_token", null);
+    private void showLoggedInUI(String username) {
+        String[] greetings = {
+                getString(R.string.greeting_hello, username),
+                getString(R.string.greeting_cooking, username),
+                getString(R.string.greeting_relax, username),
+                getString(R.string.greeting_study, username),
+        };
 
-        if (token == null || token.isEmpty())
-        {
-            tvUserInfo.setText("User not logged in");
-            return;
-        }
+        int[] icons = {
+                R.drawable.ic_ghost_smile,
+                R.drawable.ic_flame,
+                R.drawable.ic_tea_cup,
+                R.drawable.ic_cat,
+        };
+        Random random = new Random();
+        int index = random.nextInt(greetings.length);
+        tvGreeting.setText(greetings[index]);
+        ivAndroidLogo.setImageResource(icons[index]);
 
-        UserApi api = ApiClient.getInstance().getUserApi();
-        Call<UserSummaryDTO> call = api.getCurrentUser();
-        call.enqueue(new Callback<UserSummaryDTO>()
-        {
+        btnLogin.setVisibility(View.GONE);
+        btnPersonalInfo.setVisibility(View.VISIBLE);
+    }
+
+    private void loadUserInfo() {
+        UserApi api = ApiClient.getInstance().create(UserApi.class);
+        api.getCurrentUser().enqueue(new Callback<UserSummaryDTO>() {
             @Override
-            public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response)
-            {
-                if (response.isSuccessful() && response.body() != null)
-                {
-                    UserSummaryDTO user = response.body();
-
-                    String info = "ID: " + user.id + "\n"
-                        + "Username: " + user.username + "\n";
-
-                    tvUserInfo.setText(info);
-                }
-                else
-                {
-                    tvUserInfo.setText("Failed to load user info: " + response.code());
+            public void onResponse(Call<UserSummaryDTO> call, Response<UserSummaryDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    showLoggedInUI(response.body().username);
+                } else {
+                    showLoggedOutUI();
                 }
             }
 
             @Override
-            public void onFailure(Call<UserSummaryDTO> call, Throwable t)
-            {
-                tvUserInfo.setText("Error loading user info: " + t.getMessage());
+            public void onFailure(Call<UserSummaryDTO> call, Throwable t) {
+                showLoggedOutUI();
             }
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
 }
+
