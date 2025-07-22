@@ -25,6 +25,14 @@ public class Card
     @ColumnInfo(index = true)
     public int deckId;
 
+    public Card(int id, String front, String back, int index, int deckId)
+    {
+        this.id = id;
+        this.front = front;
+        this.back = back;
+        this.index = index;
+        this.deckId = deckId;
+    }
 
     public Card()
     {

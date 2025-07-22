@@ -50,14 +50,12 @@ public class DeckLearningActivity extends AppCompatActivity
         snapHelper.attachToRecyclerView(recyclerView);
 
         List<Card> cards = new ArrayList<>();
-        /*
         cards.add(new Card(1, "Front 1", "Back 1", 1, 1));
         ;
         cards.add(new Card(2, "Front 2", "Back 2", 2, 1));
         cards.add(new Card(3, "Front 3", "Back 3", 3, 1));
         cards.add(new Card(4, "Front 4 Front 5 lorem iptsum dolor", "Back 14", 4, 1));
         cards.add(new Card(4, "Front 5 lorem iptsum dolor Front 5 lorem iptsum dolorFront 5 lorem iptsum dolor", "Back 5", 5, 1));
-        */
 
         progressBar.setProgress((int) ((1.0f / cards.size()) * 100));
 
