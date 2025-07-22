@@ -19,7 +19,7 @@ public interface LearningDao
     @Query("SELECT * FROM Learning WHERE id = :id")
     Learning getById(int id);
 
-    @Query("SELECT * FROM Learning WHERE deckId = :deckId")
+    @Query("SELECT * FROM Learning WHERE deckId = :deckId ORDER BY lastLearnt DESC")
     List<Learning> getByDeckId(int deckId);
 
     @Insert
@@ -32,7 +32,7 @@ public interface LearningDao
     void updateCurrentLearningIndex(int learningId, int currentLearningIndex);
 
     @Query("UPDATE Learning SET hardCardIndexes = :hardIndexes WHERE id = :learningId")
-    void updateHardIndexes(int learningId, String hardIndexes);
+    void updateHardIndexes(int learningId, List<Integer> hardIndexes);
 
     @Delete
     void delete(Learning learning);

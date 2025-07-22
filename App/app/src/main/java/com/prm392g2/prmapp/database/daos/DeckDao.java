@@ -31,4 +31,10 @@ public interface DeckDao
 
     @Delete
     void delete(Deck deck);
+
+    @Query("UPDATE Deck SET isSaved = :isSaved WHERE id = :deckId")
+    void updateIsSaved(int deckId, boolean isSaved);
+
+    @Query("SELECT * FROM Deck WHERE isSaved = 1")
+    List<Deck> getSavedDecks();
 }

@@ -6,6 +6,7 @@ import android.content.Context;
 import com.prm392g2.prmapp.database.PRMDatabase;
 import com.prm392g2.prmapp.network.ApiClient;
 import com.prm392g2.prmapp.services.DecksService;
+import com.prm392g2.prmapp.services.LearningService;
 import com.prm392g2.prmapp.services.UsersService;
 
 import java.text.SimpleDateFormat;
@@ -28,6 +29,7 @@ public class PRMApplication extends Application
             ApiClient.initialize(this);
             UsersService.initialize(this);
             DecksService.initialize(this);
+            LearningService.initialize(this);
         }
         catch (Throwable e)
         {

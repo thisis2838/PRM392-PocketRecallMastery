@@ -49,6 +49,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtDate" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSaveDeck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Save Deck"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnBeginLearning" />
+
     <TextView
         android:id="@+id/txtDetailDeckName"
         android:layout_width="wrap_content"

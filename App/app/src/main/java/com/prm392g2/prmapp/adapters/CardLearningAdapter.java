@@ -17,7 +17,7 @@ import java.util.List;
 public class CardLearningAdapter extends RecyclerView.Adapter<CardLearningAdapter.CardLearningViewHolder> {
     private List<Card> cards;
     private List<Boolean> isFlipped = new ArrayList<>();
-
+    private List<Boolean> isMarked = new ArrayList<>();
     public interface OnItemClickListener {
         void onItemClick(Card card);
     }
@@ -27,12 +27,19 @@ public class CardLearningAdapter extends RecyclerView.Adapter<CardLearningAdapte
         void onMarkClick(Card card);
     }
     private OnMarkClickListener markClickListener;
-    public CardLearningAdapter(List<Card> cards, OnItemClickListener listener, OnMarkClickListener markClickListener) {
+    private boolean buttonsEnabled = true;
+    public CardLearningAdapter(List<Card> cards, OnItemClickListener listener, OnMarkClickListener markClickListener, List<Integer> markIndexes) {
         this.cards = cards;
         this.listener = listener;
         this.markClickListener = markClickListener;
         for (int i = 0; i < cards.size(); i++) {
             isFlipped.add(false);
+        }
+        for (int i = 0; i < cards.size(); i++) {
+            isMarked.add(false);
+        }
+        for (int i : markIndexes) {
+            isMarked.set(i, true);
         }
     }
 
@@ -60,7 +67,7 @@ public class CardLearningAdapter extends RecyclerView.Adapter<CardLearningAdapte
         holder.answer.setText(card.back);
         holder.itemView.setOnClickListener(v -> {
             isFlipped.set(position, !isFlipped.get(position));
-            notifyItemChanged(position);
+            notifyItemChanged(holder.getAdapterPosition());
         });
         if (isFlipped.get(position)) {
             holder.question.setVisibility(View.GONE);
@@ -69,12 +76,40 @@ public class CardLearningAdapter extends RecyclerView.Adapter<CardLearningAdapte
             holder.question.setVisibility(View.VISIBLE);
             holder.answer.setVisibility(View.GONE);
         }
+        if (isMarked.get(position)) {
+            holder.btnBeginLearningMark.setIconResource(R.drawable.ic_star_filled);
+        } else {
+            holder.btnBeginLearningMark.setIconResource(R.drawable.ic_star);
+        }
         holder.btnBeginLearningMark.setOnClickListener(v -> {
-            markClickListener.onMarkClick(card);
+            markClickListener.onMarkClick(card); // You might want to pass the position as well
+            isMarked.set(holder.getAdapterPosition(), !isMarked.get(holder.getAdapterPosition()));
+            if (isMarked.get(holder.getAdapterPosition())) {
+                holder.btnBeginLearningMark.setIconResource(R.drawable.ic_star_filled);
+            } else {
+                holder.btnBeginLearningMark.setIconResource(R.drawable.ic_star);
+            }
         });
+        if (!buttonsEnabled) {
+            holder.btnBeginLearningMark.setEnabled(false);
+        } else {
+            holder.btnBeginLearningMark.setEnabled(true);
+        }
     }
     @Override
     public int getItemCount() {
         return cards.size();
+    }
+
+    public void updateData(List<Card> newCards) {
+        cards = newCards;
+        isFlipped = new ArrayList<>();
+        isMarked = new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
+    public void disableAllMarkButton(){
+        this.buttonsEnabled = !buttonsEnabled;
+        notifyDataSetChanged();
     }
 }

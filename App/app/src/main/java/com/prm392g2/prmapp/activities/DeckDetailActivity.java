@@ -79,12 +79,19 @@ public class DeckDetailActivity extends AppCompatActivity
         btnBeginLearning.setOnClickListener(v ->
         {
             Intent intent = new Intent(DeckDetailActivity.this, DeckLearningActivity.class);
-            // intent.putExtra() as needed
+            intent.putExtra("deckId", deckId);
             startActivity(intent);
         });
 
         Button backButton = findViewById(R.id.btn_back);
         backButton.setOnClickListener(v -> finish());
+
+        Button btnSaveDeck = findViewById(R.id.btnSaveDeck);
+        btnSaveDeck.setOnClickListener(v -> {
+            DecksService.getInstance().saveDeck(deckId, () -> runOnUiThread(() ->
+                Toast.makeText(DeckDetailActivity.this, "Deck saved!", Toast.LENGTH_SHORT).show()
+            ));
+        });
 
         // Fetch deck details
         fetchDeckDetails();

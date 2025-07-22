@@ -21,7 +21,6 @@ public class DeckViewModel extends AndroidViewModel
 {
     private final DeckDao deckDao;
     private final ExecutorService executorService;
-
     private final MutableLiveData<List<Deck>> allDecks = new MutableLiveData<>();
     private final MutableLiveData<DeckWithAll> selectedDeck = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
