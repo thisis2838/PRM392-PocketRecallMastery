@@ -50,12 +50,12 @@ public class DeckLearningActivity extends AppCompatActivity
         snapHelper.attachToRecyclerView(recyclerView);
 
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(1, "Front 1", "Back 1", 1, 1));
+        cards.add(new Card(1, "front 1", "back 1", 1, 1));
         ;
-        cards.add(new Card(2, "Front 2", "Back 2", 2, 1));
-        cards.add(new Card(3, "Front 3", "Back 3", 3, 1));
-        cards.add(new Card(4, "Front 4 Front 5 lorem iptsum dolor", "Back 14", 4, 1));
-        cards.add(new Card(4, "Front 5 lorem iptsum dolor Front 5 lorem iptsum dolorFront 5 lorem iptsum dolor", "Back 5", 5, 1));
+        cards.add(new Card(2, "front 2", "back 2", 2, 1));
+        cards.add(new Card(3, "front 3", "back 3", 3, 1));
+        cards.add(new Card(4, "front 4", "back 4", 4, 1));
+        cards.add(new Card(5, "front 5", "back 5", 5, 1));
 
         progressBar.setProgress((int) ((1.0f / cards.size()) * 100));
 
@@ -108,6 +108,9 @@ public class DeckLearningActivity extends AppCompatActivity
 
     private void ShowConfirmRelearn()
     {
+        this.finish();
+        return;
+        /*
         new MaterialAlertDialogBuilder(this)
             .setTitle("Finish learning")
             .setMessage("Do you want to relearn marked cards?")
@@ -124,5 +127,7 @@ public class DeckLearningActivity extends AppCompatActivity
                 }
             )
             .show();
+
+         */
     }
 }

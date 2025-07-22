@@ -14,67 +14,90 @@ import com.prm392g2.prmapp.database.entities.Card;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CardLearningAdapter extends RecyclerView.Adapter<CardLearningAdapter.CardLearningViewHolder> {
+public class CardLearningAdapter extends RecyclerView.Adapter<CardLearningAdapter.CardLearningViewHolder>
+{
     private List<Card> cards;
     private List<Boolean> isFlipped = new ArrayList<>();
 
-    public interface OnItemClickListener {
+    public interface OnItemClickListener
+    {
         void onItemClick(Card card);
     }
+
     private OnItemClickListener listener;
 
-    public interface OnMarkClickListener {
+    public interface OnMarkClickListener
+    {
         void onMarkClick(Card card);
     }
+
     private OnMarkClickListener markClickListener;
-    public CardLearningAdapter(List<Card> cards, OnItemClickListener listener, OnMarkClickListener markClickListener) {
+
+    public CardLearningAdapter(List<Card> cards, OnItemClickListener listener, OnMarkClickListener markClickListener)
+    {
         this.cards = cards;
         this.listener = listener;
         this.markClickListener = markClickListener;
-        for (int i = 0; i < cards.size(); i++) {
+        for (int i = 0; i < cards.size(); i++)
+        {
             isFlipped.add(false);
         }
     }
 
     @Override
-    public CardLearningViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CardLearningViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_card_learning, parent, false);
+            .inflate(R.layout.item_card_learning, parent, false);
         return new CardLearningViewHolder(view);
     }
-    static class CardLearningViewHolder extends RecyclerView.ViewHolder {
+
+    static class CardLearningViewHolder extends RecyclerView.ViewHolder
+    {
         TextView question;
         TextView answer;
         MaterialButton btnBeginLearningMark;
-        public CardLearningViewHolder(View itemView) {
+
+        public CardLearningViewHolder(View itemView)
+        {
             super(itemView);
             question = itemView.findViewById(R.id.question);
             answer = itemView.findViewById(R.id.answer);
             btnBeginLearningMark = itemView.findViewById(R.id.btnBeginLearningMark);
         }
     }
+
     @Override
-    public void onBindViewHolder(CardLearningViewHolder holder, int position) {
+    public void onBindViewHolder(CardLearningViewHolder holder, int position)
+    {
         Card card = cards.get(position);
         holder.question.setText(card.front);
         holder.answer.setText(card.back);
-        holder.itemView.setOnClickListener(v -> {
+        holder.itemView.setOnClickListener(v ->
+        {
             isFlipped.set(position, !isFlipped.get(position));
             notifyItemChanged(position);
         });
-        if (isFlipped.get(position)) {
+        if (isFlipped.get(position))
+        {
             holder.question.setVisibility(View.GONE);
             holder.answer.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else
+        {
             holder.question.setVisibility(View.VISIBLE);
             holder.answer.setVisibility(View.GONE);
         }
-        holder.btnBeginLearningMark.setOnClickListener(v -> {
+        holder.btnBeginLearningMark.setOnClickListener(v ->
+        {
             markClickListener.onMarkClick(card);
+            holder.btnBeginLearningMark.setIconResource(R.drawable.ic_star_filled);
         });
     }
+
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
         return cards.size();
     }
 }
