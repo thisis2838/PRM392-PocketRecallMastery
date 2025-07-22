@@ -22,6 +22,7 @@ namespace PRMServer.Application.Services
         {
             return await _context.Decks
                 .OrderByDescending(x => x.CreatedAt)
+                .Where(x => x.IsPublic)
                 .Take(10)
                 .ProjectTo<DeckSummaryDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
@@ -31,6 +32,7 @@ namespace PRMServer.Application.Services
         {
             return await _context.Decks
                 .OrderByDescending(x => x.ViewsWeekly + x.DownloadsWeekly)
+                .Where(x => x.IsPublic)
                 .Take(10)
                 .ProjectTo<DeckSummaryDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.activities.DeckCreationActivity;
 import com.prm392g2.prmapp.activities.DeckDetailActivity;
@@ -32,6 +33,7 @@ public class MyDecksFragment extends Fragment
 {
     private RecyclerView recyclerView;
     private DeckListAdapter adapter;
+    private FloatingActionButton fabAdd;
 
     @Nullable
     @Override
@@ -63,7 +65,8 @@ public class MyDecksFragment extends Fragment
         );
         recyclerView.setAdapter(adapter);
 
-        view.findViewById(R.id.fabAdd).setOnClickListener(new View.OnClickListener()
+        fabAdd = view.findViewById(R.id.fabAdd);
+        fabAdd.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -72,6 +75,7 @@ public class MyDecksFragment extends Fragment
                 startActivity(intent);
             }
         });
+        fabAdd.setVisibility(View.GONE);
 
         loadMyDecks();
 
@@ -89,6 +93,15 @@ public class MyDecksFragment extends Fragment
 
     private void loadMyDecks()
     {
+        if (getView() == null || getActivity() == null)
+        {
+            return; // Avoid NullPointerException if activity is not available
+        }
+
+        var textListError = getView().findViewById(R.id.textListError);
+        textListError.setVisibility(View.GONE);
+        fabAdd.setVisibility(View.GONE);
+
         DecksService.getInstance().getMine(new Callback<DeckListDTO>()
         {
             @Override
@@ -96,13 +109,18 @@ public class MyDecksFragment extends Fragment
             {
                 if (response.isSuccessful() && response.body() != null)
                 {
-                    requireActivity().runOnUiThread(() -> adapter.updateData(response.body().decks));
+                    requireActivity().runOnUiThread(() -> {
+                        fabAdd.setVisibility(View.VISIBLE);
+                        adapter.updateData(response.body().decks);
+                    });
                 }
                 else
                 {
                     requireActivity().runOnUiThread(() ->
-                        Toast.makeText(getContext(), "No decks found.", Toast.LENGTH_SHORT).show()
-                    );
+                    {
+                        textListError.setVisibility(View.VISIBLE);
+                        fabAdd.setVisibility(View.GONE);
+                    });
                 }
             }
 
@@ -110,8 +128,10 @@ public class MyDecksFragment extends Fragment
             public void onFailure(Call<DeckListDTO> call, Throwable t)
             {
                 requireActivity().runOnUiThread(() ->
-                    Toast.makeText(getContext(), "Failed to load decks.", Toast.LENGTH_SHORT).show()
-                );
+                {
+                    textListError.setVisibility(View.VISIBLE);
+                    fabAdd.setVisibility(View.GONE);
+                });
             }
         });
     }

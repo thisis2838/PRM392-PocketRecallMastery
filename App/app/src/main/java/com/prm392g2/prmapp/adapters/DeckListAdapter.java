@@ -13,6 +13,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.prm392g2.prmapp.PRMApplication;
 import com.prm392g2.prmapp.R;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
+import com.prm392g2.prmapp.services.UsersService;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class DeckListAdapter extends RecyclerView.Adapter<DeckListAdapter.ViewHo
     public interface OnItemClickListener
     {
         void onItemClick(DeckSummaryDTO deck);
+
         void onEditClick(DeckSummaryDTO deck);
     }
 
@@ -53,14 +55,24 @@ public class DeckListAdapter extends RecyclerView.Adapter<DeckListAdapter.ViewHo
         holder.viewCount.setText(String.valueOf(deck.viewsTotal));
         holder.downloadCount.setText(String.valueOf(deck.downloadsTotal));
 
-        holder.butEdit.setOnClickListener(new View.OnClickListener()
+        if (UsersService.getInstance().isLoggedIn() && deck.creator.id == UsersService.getInstance().getUserId())
         {
-            @Override
-            public void onClick(View v)
+            holder.butEdit.setVisibility(View.VISIBLE);
+            holder.butEdit.setOnClickListener(new View.OnClickListener()
             {
-                listener.onEditClick(deck);
-            }
-        });
+                @Override
+                public void onClick(View v)
+                {
+                    listener.onEditClick(deck);
+                }
+            });
+
+        }
+        else
+        {
+            holder.butEdit.setVisibility(View.INVISIBLE);
+            holder.butEdit.setOnClickListener(null);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {

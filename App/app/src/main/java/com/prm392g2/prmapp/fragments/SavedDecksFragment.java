@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,9 @@ import com.prm392g2.prmapp.activities.DeckDetailActivity;
 import com.prm392g2.prmapp.adapters.DeckSavedAdapter;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
 import com.prm392g2.prmapp.services.SavedDecksService;
+import com.prm392g2.prmapp.services.UsersService;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +71,18 @@ public class SavedDecksFragment extends Fragment
 
     private void loadDecks()
     {
+        if (getView() == null)
+            return;
+
+        TextView textListError = getView().findViewById(R.id.textListError);
+        textListError.setVisibility(View.GONE);
+
+        if (!UsersService.getInstance().isLoggedIn())
+        {
+            textListError.setVisibility(View.VISIBLE);
+            textListError.setText("You must be logged in to view saved decks.");
+        }
+
         SavedDecksService.getInstance().getAll(result ->
         {
             requireActivity().runOnUiThread(() ->

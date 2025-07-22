@@ -43,6 +43,7 @@ public class PublicDecksFragment extends Fragment
     public DeckListAdapter adapter;
     public List<DeckSummaryDTO> decks = new ArrayList<>();
     private DeckListArgumentsDTO arguments = new DeckListArgumentsDTO();
+    private TextView textListError;
 
     @Nullable
     @Override
@@ -50,6 +51,9 @@ public class PublicDecksFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_public_decks, container, false);
         recyclerView = view.findViewById(R.id.deck_list);
+
+        textListError = view.findViewById(R.id.textListError);
+        textListError.setVisibility(View.GONE);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new DeckListAdapter(
@@ -99,8 +103,17 @@ public class PublicDecksFragment extends Fragment
         return view;
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        getDecks(arguments);
+    }
+
     private void getDecks(DeckListArgumentsDTO arguments)
     {
+        textListError.setVisibility(View.GONE);
+
         DecksService.getInstance().getPublic(
             arguments, new Callback<DeckListDTO>()
             {
@@ -114,12 +127,16 @@ public class PublicDecksFragment extends Fragment
                         decks.addAll(deckListDTO.decks);
                         adapter.updateData(deckListDTO.decks);
                     }
+                    else
+                    {
+                        textListError.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<DeckListDTO> call, Throwable t)
                 {
-                    // Handle error
+                    textListError.setVisibility(View.VISIBLE);
                 }
             }
         );

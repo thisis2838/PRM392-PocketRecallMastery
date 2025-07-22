@@ -36,6 +36,11 @@ public class UsersService
         return token != null && !token.isEmpty();
     }
 
+    public Integer getUserId()
+    {
+        return prefs.getInt("userId", -1);
+    }
+
     public void login(String username, String password, Callback<LoginResponseDTO> callback)
     {
         LoginRequestDTO request = new LoginRequestDTO(username, password);

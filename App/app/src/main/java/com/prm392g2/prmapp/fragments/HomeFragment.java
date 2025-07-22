@@ -45,6 +45,12 @@ public class HomeFragment extends Fragment
         recRecentDecks.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recRecentDecks.setVisibility(View.INVISIBLE);
 
+        TextView textTopDecksError = view.findViewById(R.id.textTopDecksError);
+        textTopDecksError.setVisibility(View.GONE);
+
+        TextView textRecentDecksError = view.findViewById(R.id.textRecentDecksError);
+        textRecentDecksError.setVisibility(View.GONE);
+
         updateWeeklyStats();
 
         final var clickListener = new DeckListAdapter.OnItemClickListener()
@@ -76,8 +82,17 @@ public class HomeFragment extends Fragment
                     requireActivity().runOnUiThread(() ->
                     {
                         recTopDecks.setVisibility(View.VISIBLE);
+                        textTopDecksError.setVisibility(View.GONE);
                         var adapter = new DeckListAdapter(response.body(), clickListener);
                         recTopDecks.setAdapter(adapter);
+                    });
+                }
+                else
+                {
+                    requireActivity().runOnUiThread(() ->
+                    {
+                        recTopDecks.setVisibility(View.INVISIBLE);
+                        textTopDecksError.setVisibility(View.VISIBLE);
                     });
                 }
             }
@@ -85,6 +100,11 @@ public class HomeFragment extends Fragment
             @Override
             public void onFailure(Call<List<DeckSummaryDTO>> call, Throwable t)
             {
+                requireActivity().runOnUiThread(() ->
+                {
+                    recTopDecks.setVisibility(View.INVISIBLE);
+                    textTopDecksError.setVisibility(View.VISIBLE);
+                });
             }
         });
 
@@ -98,8 +118,17 @@ public class HomeFragment extends Fragment
                     requireActivity().runOnUiThread(() ->
                     {
                         recRecentDecks.setVisibility(View.VISIBLE);
+                        textRecentDecksError.setVisibility(View.GONE);
                         var adapter = new DeckListAdapter(response.body(), clickListener);
                         recRecentDecks.setAdapter(adapter);
+                    });
+                }
+                else
+                {
+                    requireActivity().runOnUiThread(() ->
+                    {
+                        recRecentDecks.setVisibility(View.INVISIBLE);
+                        textRecentDecksError.setVisibility(View.VISIBLE);
                     });
                 }
             }
@@ -107,6 +136,11 @@ public class HomeFragment extends Fragment
             @Override
             public void onFailure(Call<List<DeckSummaryDTO>> call, Throwable t)
             {
+                requireActivity().runOnUiThread(() ->
+                {
+                    recRecentDecks.setVisibility(View.INVISIBLE);
+                    textRecentDecksError.setVisibility(View.VISIBLE);
+                });
             }
         });
 
@@ -127,11 +161,11 @@ public class HomeFragment extends Fragment
             return;
         }
 
-        ((TextView)(getView().findViewById(R.id.textDecksViewed)))
+        ((TextView) (getView().findViewById(R.id.textDecksViewed)))
             .setText(Integer.toString(UserWeeklyStatsService.getInstance().getDeckViews()));
-        ((TextView)(getView().findViewById(R.id.textDecksLearned)))
+        ((TextView) (getView().findViewById(R.id.textDecksLearned)))
             .setText(Integer.toString(UserWeeklyStatsService.getInstance().getDecksLearned()));
-        ((TextView)(getView().findViewById(R.id.textCardsTurned)))
+        ((TextView) (getView().findViewById(R.id.textCardsTurned)))
             .setText(Integer.toString(UserWeeklyStatsService.getInstance().getCardsTurned()));
     }
 }

@@ -30,6 +30,12 @@ public class UnauthorizedInterceptor implements Interceptor
 
         if (response.code() == 401)
         {
+            context.getSharedPreferences("auth", Context.MODE_PRIVATE)
+                .edit()
+                .remove("token")
+                .remove("userId")
+                .apply();
+
             new Handler(Looper.getMainLooper()).post(() ->
             {
                 if (!LoginActivity.isActive)
