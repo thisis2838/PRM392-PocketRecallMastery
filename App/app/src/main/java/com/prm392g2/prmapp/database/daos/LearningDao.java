@@ -6,7 +6,7 @@ import androidx.room.Update;
 import androidx.room.Delete;
 import androidx.room.Query;
 
-import com.prm392g2.prmapp.entities.Learning;
+import com.prm392g2.prmapp.database.entities.Learning;
 
 import java.util.List;
 
@@ -27,12 +27,6 @@ public interface LearningDao
 
     @Update
     void update(Learning learning);
-
-    @Query("UPDATE Learning SET currentCardIndex = :currentLearningIndex WHERE id = :learningId")
-    void updateCurrentLearningIndex(int learningId, int currentLearningIndex);
-
-    @Query("UPDATE Learning SET hardCardIndexes = :hardIndexes WHERE id = :learningId")
-    void updateHardIndexes(int learningId, String hardIndexes);
 
     @Delete
     void delete(Learning learning);

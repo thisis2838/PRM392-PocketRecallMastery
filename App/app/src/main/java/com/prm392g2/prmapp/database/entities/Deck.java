@@ -1,6 +1,8 @@
-package com.prm392g2.prmapp.entities;
+package com.prm392g2.prmapp.database.entities;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.GregorianCalendar;
@@ -19,34 +21,23 @@ import java.util.GregorianCalendar;
             childColumns = "learningId",
             onDelete = androidx.room.ForeignKey.SET_NULL
         )
-    },
-    indices = {
-        @androidx.room.Index("creatorId"),
-        @androidx.room.Index("learningId")
     }
 )
 public class Deck
 {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     public int id;
+
     public String name;
     public String description;
-    public int creatorId;
+    public int cardsCount;
     public int version;
-    public boolean isSaved = false;
     public GregorianCalendar createdAt;
     public GregorianCalendar updatedAt = null;
+    @ColumnInfo(index = true)
     public Integer learningId = null;
-
-    public Deck(int id, String name, String description, int creatorId, int version, GregorianCalendar createdAt)
-    {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.creatorId = creatorId;
-        this.version = version;
-        this.createdAt = createdAt;
-    }
+    @ColumnInfo(index = true)
+    public int creatorId;
 
     public Deck()
     {

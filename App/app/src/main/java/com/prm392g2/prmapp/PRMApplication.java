@@ -7,6 +7,8 @@ import com.prm392g2.prmapp.database.PRMDatabase;
 import com.prm392g2.prmapp.network.ApiClient;
 import com.prm392g2.prmapp.services.DecksService;
 import com.prm392g2.prmapp.services.HomeService;
+import com.prm392g2.prmapp.services.SavedDecksService;
+import com.prm392g2.prmapp.services.UserWeeklyStatsService;
 import com.prm392g2.prmapp.services.UsersService;
 
 import java.text.SimpleDateFormat;
@@ -30,6 +32,8 @@ public class PRMApplication extends Application
             UsersService.initialize(this);
             DecksService.initialize(this);
             HomeService.initialize(this);
+            SavedDecksService.initialize(this);
+            UserWeeklyStatsService.initialize(this);
         }
         catch (Throwable e)
         {

@@ -47,6 +47,7 @@
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/textDecksViewed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -72,6 +73,7 @@
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/textDecksLearned"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -91,12 +93,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Card\nTurned"
+                android:text="Cards\nTurned"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/textCardsTurned"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

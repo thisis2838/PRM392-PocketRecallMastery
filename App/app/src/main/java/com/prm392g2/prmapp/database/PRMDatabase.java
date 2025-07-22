@@ -11,10 +11,10 @@ import com.prm392g2.prmapp.database.daos.CardDao;
 import com.prm392g2.prmapp.database.daos.DeckDao;
 import com.prm392g2.prmapp.database.daos.LearningDao;
 import com.prm392g2.prmapp.database.daos.UserDao;
-import com.prm392g2.prmapp.entities.Card;
-import com.prm392g2.prmapp.entities.Deck;
-import com.prm392g2.prmapp.entities.Learning;
-import com.prm392g2.prmapp.entities.User;
+import com.prm392g2.prmapp.database.entities.Card;
+import com.prm392g2.prmapp.database.entities.Deck;
+import com.prm392g2.prmapp.database.entities.Learning;
+import com.prm392g2.prmapp.database.entities.User;
 
 @Database(entities = { User.class, Deck.class, Card.class, Learning.class }, version = 1)
 @TypeConverters({ Converters.class })

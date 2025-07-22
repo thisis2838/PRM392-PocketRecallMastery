@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,7 @@ import com.prm392g2.prmapp.activities.DeckEditingActivity;
 import com.prm392g2.prmapp.adapters.DeckListAdapter;
 import com.prm392g2.prmapp.dtos.decks.DeckSummaryDTO;
 import com.prm392g2.prmapp.services.HomeService;
+import com.prm392g2.prmapp.services.UserWeeklyStatsService;
 
 import java.util.List;
 
@@ -42,6 +44,8 @@ public class HomeFragment extends Fragment
         recRecentDecks = view.findViewById(R.id.recRecentDecks);
         recRecentDecks.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recRecentDecks.setVisibility(View.INVISIBLE);
+
+        updateWeeklyStats();
 
         final var clickListener = new DeckListAdapter.OnItemClickListener()
         {
@@ -107,5 +111,27 @@ public class HomeFragment extends Fragment
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        updateWeeklyStats();
+    }
+
+    private void updateWeeklyStats()
+    {
+        if (getView() == null)
+        {
+            return;
+        }
+
+        ((TextView)(getView().findViewById(R.id.textDecksViewed)))
+            .setText(Integer.toString(UserWeeklyStatsService.getInstance().getDeckViews()));
+        ((TextView)(getView().findViewById(R.id.textDecksLearned)))
+            .setText(Integer.toString(UserWeeklyStatsService.getInstance().getDecksLearned()));
+        ((TextView)(getView().findViewById(R.id.textCardsTurned)))
+            .setText(Integer.toString(UserWeeklyStatsService.getInstance().getCardsTurned()));
     }
 }

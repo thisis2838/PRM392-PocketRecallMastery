@@ -6,7 +6,7 @@ import androidx.room.Query;
 import androidx.room.Delete;
 import androidx.room.Update;
 
-import com.prm392g2.prmapp.entities.User;
+import com.prm392g2.prmapp.database.entities.User;
 
 import java.util.List;
 

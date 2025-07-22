@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.prm392g2.prmapp.R;
-import com.prm392g2.prmapp.entities.Card;
+import com.prm392g2.prmapp.database.entities.Card;
 
 import java.util.ArrayList;
 import java.util.List;

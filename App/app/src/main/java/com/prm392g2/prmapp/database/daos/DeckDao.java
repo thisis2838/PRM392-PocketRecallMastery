@@ -6,8 +6,9 @@ import androidx.room.Update;
 import androidx.room.Delete;
 import androidx.room.Query;
 
-import com.prm392g2.prmapp.entities.Deck;
-import com.prm392g2.prmapp.entities.extensions.DeckWithAll;
+import com.prm392g2.prmapp.database.entities.Deck;
+import com.prm392g2.prmapp.database.entities.extensions.DeckWithAll;
+import com.prm392g2.prmapp.database.entities.extensions.DeckWithUserAndLearning;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public interface DeckDao
 {
     @Query("SELECT * FROM Deck")
-    List<Deck> getAll();
+    List<DeckWithUserAndLearning> getAllWithUserAndLearning();
 
     @Query("SELECT * FROM Deck WHERE id = :id")
     Deck getById(int id);
@@ -31,4 +32,7 @@ public interface DeckDao
 
     @Delete
     void delete(Deck deck);
+
+    @Query("DELETE FROM Deck WHERE id = :id")
+    void deleteById(int id);
 }

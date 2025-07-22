@@ -1,4 +1,4 @@
-package com.prm392g2.prmapp.entities;
+package com.prm392g2.prmapp.database.entities;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -10,10 +10,5 @@ public class User
     public int id;
     public String username;
 
-    public User(int id, String username)
-    {
-        this.id = id;
-        this.username = username;
-    }
     public User() {}
 }

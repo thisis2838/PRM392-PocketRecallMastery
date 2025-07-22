@@ -6,7 +6,7 @@ import androidx.room.Update;
 import androidx.room.Delete;
 import androidx.room.Query;
 
-import com.prm392g2.prmapp.entities.Card;
+import com.prm392g2.prmapp.database.entities.Card;
 
 import java.util.List;
 
@@ -21,6 +21,9 @@ public interface CardDao
 
     @Insert
     void insert(Card card);
+
+    @Insert
+    void insertAll(List<Card> cards);
 
     @Update
     void update(Card card);
