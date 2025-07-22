@@ -47,6 +47,7 @@ public class UsersService
                     {
                         prefs.edit()
                             .putString("token", loginResponse.getToken())
+                            .putInt("userId", loginResponse.getUserId())
                             .apply();
                     }
                 }
@@ -81,26 +82,6 @@ public class UsersService
         UserApi api = ApiClient.getInstance().create(UserApi.class);
         Call<Void> call = api.requestEmailChange("Bearer " + token, dto);
         call.enqueue(callback);
-    }
-
-    public void confirmEmailChange(String email, String otp, Callback<Void> callback) {
-        String token = prefs.getString("token", null);
-        if (token == null) {
-            if (callback != null) {
-                callback.onFailure(null, new Exception("Not authenticated"));
-            }
-            return;
-        }
-
-        VerifyOtpRequestDTO dto = new VerifyOtpRequestDTO(email, otp, "change-email");
-        UserApi api = ApiClient.getInstance().create(UserApi.class);
-        Call<Void> call = api.confirmEmailChange("Bearer " + token, dto);
-        call.enqueue(callback);
-    }
-
-    private String getToken()
-    {
-        return prefs.getString("token", "");
     }
 
     private static UsersService instance;

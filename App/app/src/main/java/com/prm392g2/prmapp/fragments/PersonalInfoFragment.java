@@ -57,7 +57,7 @@ public class PersonalInfoFragment extends Fragment {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(), "OTP sent to new email", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getString(R.string.otp_sent_new_email), Toast.LENGTH_SHORT).show();
                             // Navigate to OTP dialog/activity
                         } else if (response.code() == 400) {
                             try {
@@ -67,13 +67,13 @@ public class PersonalInfoFragment extends Fragment {
                                 e.printStackTrace();
                             }
                         } else {
-                            Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
                     }
                 });
             }).show(getParentFragmentManager(), "ChangeEmailDialog");
@@ -87,8 +87,9 @@ public class PersonalInfoFragment extends Fragment {
         btnLogout.setOnClickListener(v -> {
             SharedPreferences prefs = requireContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
             prefs.edit().remove("token").apply();
+            prefs.edit().remove("userId").apply();
 
-            Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.logged_out), Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(requireContext(), LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -108,13 +109,13 @@ public class PersonalInfoFragment extends Fragment {
                     tvUsername.setText(response.body().username);
                     tvEmail.setText(response.body().email);
                 } else {
-                    Toast.makeText(requireContext(), "Failed to load user info", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), getString(R.string.failed_load_user_info), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UserSummaryDTO> call, Throwable t) {
-                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.error_with_message, t.getMessage()), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -123,6 +124,5 @@ public class PersonalInfoFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadUserInfo();
-        ((MainActivity) requireActivity()).setToolbarTitle("Personal Info");
-    }
+        ((MainActivity) requireActivity()).setToolbarTitle(getString(R.string.personal_info_title));    }
 }

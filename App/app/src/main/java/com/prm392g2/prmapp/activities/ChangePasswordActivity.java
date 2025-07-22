@@ -47,17 +47,17 @@ public class ChangePasswordActivity extends AppCompatActivity {
             String confirmPassword = editTextConfirmNewPassword.getText().toString().trim();
 
             if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.change_password_fill_all_fields), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!newPassword.equals(confirmPassword)) {
-                editTextConfirmNewPassword.setError("Passwords do not match");
+                editTextConfirmNewPassword.setError(getString(R.string.change_password_no_match));
                 return;
             }
 
             if (!isValidPassword(newPassword)) {
-                editTextNewPassword.setError("Password too weak. Must be 6+ chars, include upper, lower, digit, and special char.");
+                editTextNewPassword.setError(getString(R.string.change_password_weak));
                 return;
             }
 
@@ -75,7 +75,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private void changePassword(String currentPassword, String newPassword) {
         String token = getSharedPreferences("auth", MODE_PRIVATE).getString("token", null);
         if (token == null) {
-            Toast.makeText(this, "You are not logged in.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.not_logged_in), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -86,17 +86,16 @@ public class ChangePasswordActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ChangePasswordActivity.this, "Password changed successfully.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChangePasswordActivity.this, getString(R.string.change_password_success), Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(ChangePasswordActivity.this, "Failed to change password. Please check your current password.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChangePasswordActivity.this, getString(R.string.change_password_failed), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(ChangePasswordActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+                Toast.makeText(ChangePasswordActivity.this, getString(R.string.network_error_with_message, t.getMessage()), Toast.LENGTH_SHORT).show();            }
         });
     }
 }

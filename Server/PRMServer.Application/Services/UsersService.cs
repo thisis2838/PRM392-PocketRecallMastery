@@ -41,7 +41,7 @@ namespace PRMServer.Application.Services
             return await _userManager.CreateAsync(user, dto.Password);
         }
 
-        public async Task<string?> LoginAsync(LoginRequestDTO dto)
+        public async Task<LoginResponseDTO?> LoginAsync(LoginRequestDTO dto)
         {
             var user = await _userManager.FindByNameAsync(dto.UserName);
             if (user == null) return null;
@@ -49,7 +49,13 @@ namespace PRMServer.Application.Services
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
             if (!result.Succeeded) return null;
 
-            return GenerateJwtToken(user);
+            var response = new LoginResponseDTO
+            {
+                Token = GenerateJwtToken(user),
+                UserId = user.Id
+            };
+
+            return response;
         }
 
         public async Task LogoutAsync()

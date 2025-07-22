@@ -7,7 +7,7 @@ namespace PRMServer.Application.Services.Contracts
     public interface IUsersService
     {
         Task<IdentityResult> RegisterAsync(RegisterDTO dto);
-        Task<string?> LoginAsync(LoginRequestDTO dto);
+        Task<LoginResponseDTO?> LoginAsync(LoginRequestDTO dto);
         Task LogoutAsync();
         public Task<UserDetailDTO?> GetUser(int userId);
         Task<UserSummaryDTO?> GetCurrentUserAsync(ClaimsPrincipal user);

@@ -97,4 +97,37 @@
     <string name="email_changed_success">Email changed successfully!</string>
     <string name="failed_change_email">Failed to change email: %1$s</string>
     <string name="network_error_with_message">Network error: %1$s</string>
+
+    <string name="login_empty_fields">All fields must be entered</string>
+    <string name="login_invalid_credentials">Wrong Username or Password</string>
+    <string name="login_success">Login successful</string>
+
+    <string name="register_all_fields_required">All fields are required</string>
+    <string name="register_invalid_email">Invalid email format</string>
+    <string name="register_passwords_no_match">Passwords do not match</string>
+    <string name="register_password_requirements">Password must be at least 6 characters and include uppercase, lowercase, digit, and symbol</string>
+    <string name="register_otp_sent">OTP sent. Please verify your email.</string>
+    <string name="register_failed_with_code">Failed: %1$s</string>
+    <string name="register_error_with_message">Error: %1$s</string>
+    <string name="email_empty">Please enter your email</string>
+
+    <string name="change_password_fill_all_fields">Please fill in all fields.</string>
+    <string name="change_password_no_match">Passwords do not match</string>
+    <string name="change_password_weak">Password too weak. Must be 6+ chars, include upper, lower, digit, and special char.</string>
+    <string name="change_password_success">Password changed successfully.</string>
+    <string name="change_password_failed">Failed to change password. Please check your current password.</string>
+
+    <string name="reset_password_no_match">Passwords do not match</string>
+    <string name="reset_password_weak">Password must be at least 6 characters and include uppercase, lowercase, digit, and symbol</string>
+    <string name="reset_password_success">Password reset successfully</string>
+    <string name="reset_password_failed">Reset failed</string>
+    <string name="network_error">Network error</string>
+
+    <string name="otp_sent_new_email">OTP sent to new email</string>
+    <string name="unexpected_error">Unexpected error</string>
+    <string name="logged_out">Logged out</string>
+    <string name="failed_load_user_info">Failed to load user info</string>
+    <string name="error_with_message">Error: %1$s</string>
+    <string name="personal_info_title">Personal Info</string>
+    <string name="settings_title">Settings</string>
 </resources>

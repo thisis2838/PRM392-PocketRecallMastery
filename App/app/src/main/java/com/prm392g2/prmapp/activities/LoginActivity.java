@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity
 
         if (username.isEmpty() || password.isEmpty())
         {
-            Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.login_empty_fields), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -82,14 +82,14 @@ public class LoginActivity extends AppCompatActivity
 
                 if (response.isSuccessful() && response.body() != null)
                 {
-                    Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
                 else
                 {
-                    Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.login_invalid_credentials), Toast.LENGTH_SHORT).show();
                     loginButton.setEnabled(true);
                 }
             }
@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity
             public void onFailure(Call<LoginResponseDTO> call, Throwable t)
             {
                 loginButton.setEnabled(true);
-                Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.network_error_with_message, t.getMessage()), Toast.LENGTH_SHORT).show();
             }
         });
     }

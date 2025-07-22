@@ -80,13 +80,13 @@ namespace PRMServer.Application.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequestDTO model)
+        public async Task<ActionResult<LoginResponseDTO>> Login(LoginRequestDTO model)
         {
-            var token = await _usersService.LoginAsync(model);
-            if (token == null)
+            var response = await _usersService.LoginAsync(model);
+            if (response == null)
                 return Unauthorized("Invalid username or password.");
 
-            return Ok(new { token });
+            return Ok(response);
         }
 
         [Authorize]

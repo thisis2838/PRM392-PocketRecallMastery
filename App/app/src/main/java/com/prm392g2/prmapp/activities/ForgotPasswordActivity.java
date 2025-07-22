@@ -37,7 +37,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         sendOtpButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             if (email.isEmpty()) {
-                Toast.makeText(this, "Please enter your email", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.email_empty), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -55,14 +55,14 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                         intent.putExtra("purpose", "reset-password");
                         startActivity(intent);
                     } else {
-                        Toast.makeText(ForgotPasswordActivity.this, "Unable to send OTP. Try again later.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ForgotPasswordActivity.this, getString(R.string.otp_resent_failed), Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     sendOtpButton.setEnabled(true);
-                    Toast.makeText(ForgotPasswordActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForgotPasswordActivity.this, getString(R.string.network_error_try_again), Toast.LENGTH_SHORT).show();
                 }
             });
         });

@@ -97,4 +97,37 @@
     <string name="email_changed_success">Thay đổi email thành công!</string>
     <string name="failed_change_email">Thay đổi email thất bại: %1$s</string>
     <string name="network_error_with_message">Lỗi mạng: %1$s</string>
+
+    <string name="login_empty_fields">Vui lòng nhập đầy đủ tất cả các trường</string>
+    <string name="login_invalid_credentials">Sai tên đăng nhập hoặc mật khẩu</string>
+    <string name="login_success">Đăng nhập thành công</string>
+
+    <string name="register_all_fields_required">Vui lòng nhập đầy đủ tất cả các trường</string>
+    <string name="register_invalid_email">Định dạng email không hợp lệ</string>
+    <string name="register_passwords_no_match">Mật khẩu không khớp</string>
+    <string name="register_password_requirements">Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt</string>
+    <string name="register_otp_sent">Mã OTP đã được gửi. Vui lòng xác minh email của bạn.</string>
+    <string name="register_failed_with_code">Thất bại: %1$s</string>
+    <string name="register_error_with_message">Lỗi: %1$s</string>
+    <string name="email_empty">Nhập Email của bạn</string>
+
+    <string name="change_password_fill_all_fields">Vui lòng nhập đầy đủ tất cả các trường.</string>
+    <string name="change_password_no_match">Mật khẩu không khớp</string>
+    <string name="change_password_weak">Mật khẩu quá yếu. Phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.</string>
+    <string name="change_password_success">Đổi mật khẩu thành công.</string>
+    <string name="change_password_failed">Đổi mật khẩu thất bại. Vui lòng kiểm tra mật khẩu hiện tại.</string>
+
+    <string name="reset_password_no_match">Mật khẩu không khớp</string>
+    <string name="reset_password_weak">Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt</string>
+    <string name="reset_password_success">Đặt lại mật khẩu thành công</string>
+    <string name="reset_password_failed">Đặt lại mật khẩu thất bại</string>
+    <string name="network_error">Lỗi mạng</string>
+
+    <string name="otp_sent_new_email">Mã OTP đã được gửi đến email mới</string>
+    <string name="unexpected_error">Lỗi không xác định</string>
+    <string name="logged_out">Đã đăng xuất</string>
+    <string name="failed_load_user_info">Không thể tải thông tin người dùng</string>
+    <string name="error_with_message">Lỗi: %1$s</string>
+    <string name="personal_info_title">Thông tin cá nhân</string>
+    <string name="settings_title">Cài đặt</string>
 </resources>

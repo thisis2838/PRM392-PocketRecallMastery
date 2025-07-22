@@ -28,7 +28,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         super.onResume();
         getPreferenceManager().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
-        ((MainActivity) requireActivity()).setToolbarTitle("Settings");
+        ((MainActivity) requireActivity()).setToolbarTitle(getString(R.string.settings_title));
     }
 
     @Override

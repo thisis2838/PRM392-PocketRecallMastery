@@ -45,25 +45,25 @@ public class RegisterActivity extends AppCompatActivity
 
             if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty())
             {
-                Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.register_all_fields_required), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!isValidEmail(email))
             {
-                Toast.makeText(this, "Invalid email format", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.register_invalid_email), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!password.equals(confirmPassword))
             {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.register_passwords_no_match), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!isValidPassword(password))
             {
-                Toast.makeText(this, "Password must be at least 6 characters and include uppercase, lowercase, digit, and symbol", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.register_password_requirements), Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -76,7 +76,7 @@ public class RegisterActivity extends AppCompatActivity
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     btnRegister.setEnabled(true);
                     if (response.isSuccessful()) {
-                        Toast.makeText(RegisterActivity.this, "OTP sent. Please verify your email.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, getString(R.string.register_otp_sent), Toast.LENGTH_SHORT).show();
 
                         // Go to OTP activity
                         Intent intent = new Intent(RegisterActivity.this, VerifyOtpActivity.class);
@@ -86,7 +86,7 @@ public class RegisterActivity extends AppCompatActivity
                         intent.putExtra("purpose", "register");
                         startActivity(intent);
                     } else {
-                        String errorMessage = "Failed: " + response.code();
+                        String errorMessage = getString(R.string.register_failed_with_code, String.valueOf(response.code()));
                         try {
                             if (response.errorBody() != null) {
                                 errorMessage = response.errorBody().string();
@@ -103,8 +103,7 @@ public class RegisterActivity extends AppCompatActivity
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     btnRegister.setEnabled(true);
-                    Toast.makeText(RegisterActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                    Toast.makeText(RegisterActivity.this, getString(R.string.register_error_with_message, t.getMessage()), Toast.LENGTH_SHORT).show();                }
             });
         });
 

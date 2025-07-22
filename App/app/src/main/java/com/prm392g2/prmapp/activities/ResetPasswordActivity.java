@@ -41,12 +41,12 @@ public class ResetPasswordActivity extends AppCompatActivity {
             String confirmPassword = confirmPasswordEditText.getText().toString().trim();
 
             if (!newPassword.equals(confirmPassword)) {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.reset_password_no_match), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!isValidPassword(newPassword)) {
-                Toast.makeText(this, "Password must be at least 6 characters and include uppercase, lowercase, digit, and symbol", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.reset_password_weak), Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -56,18 +56,17 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(ResetPasswordActivity.this, "Password reset successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ResetPasswordActivity.this, getString(R.string.reset_password_success), Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(ResetPasswordActivity.this, PasswordResetSuccessActivity.class));
                         finish();
                     } else {
-                        Toast.makeText(ResetPasswordActivity.this, "Reset failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ResetPasswordActivity.this, getString(R.string.reset_password_failed), Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-                    Toast.makeText(ResetPasswordActivity.this, "Network error", Toast.LENGTH_SHORT).show();
-                }
+                    Toast.makeText(ResetPasswordActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();                }
             });
         });
     }
